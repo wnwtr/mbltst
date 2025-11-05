@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osmanlı Döneminde Balkanlar (1774-1914) Çoktan Seçmeli Test</title>
+    <button onclick="window.location.href='index.html'" style="position: fixed; bottom: 40px; right: 40px; padding: 20px 30px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Geri Dön</button>    
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0 auto; 
+            max-width: 800px;
+            padding: 20px; 
+            background-color: #f9f9f9; 
+            color: #333; 
+            line-height: 1.6;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        #showAnswersBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        #showAnswersBtn:hover { 
+            background-color: #219a52; 
+        }
+        .question { 
+            background-color: white; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        .question p { 
+            font-weight: bold; 
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+        }
+        .option { 
+            display: flex; 
+            align-items: center; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            padding: 8px; 
+            border-radius: 5px; 
+            transition: background-color 0.3s; 
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+        .option input { 
+            display: none; 
+        }
+        .option .radio { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background-color: white; 
+            border: 2px solid #3498db; 
+            margin-right: 15px; 
+            position: relative; 
+        }
+        .option .radio::after { 
+            content: ''; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #3498db; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; 
+        }
+        .option input:checked + .radio::after { 
+            display: block; 
+        }
+        .option.correct { 
+            background-color: #27ae60; 
+            color: white; 
+        }
+        .option.incorrect { 
+            background-color: #e74c3c; 
+            color: white; 
+        }
+        .answer-hint { 
+            display: none; 
+            margin-top: 10px; 
+            font-size: 0.9em; 
+            color: #27ae60; 
+            font-style: italic; 
+            font-weight: normal;
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 5px;
+        }
+        button.finish { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        button.finish:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.3em; 
+            color: #2c3e50; 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>OSMANLI DÖNEMİNDE BALKANLAR (1774-1914) SORULARI</h1>
+    <button id="showAnswersBtn" onclick="showAllAnswers()">Cevapları Göster</button>
+    <form id="quizForm"></form>
+    <button class="finish" onclick="finishQuiz()">Testi Bitir</button>
+    <div id="result"></div>
+
+    <script>
+        // Soru verileri
+        const quizData = [
+            {
+                question: "14. yüzyılda Osmanlı Devleti'nin Balkanlar'a yönelik izlemiş olduğu hangi politika sonucu Müslümanların nüfusu artmıştır?",
+                options: [
+                    { letter: 'A', text: 'İskan' },
+                    { letter: 'B', text: 'Askere alma' },
+                    { letter: 'C', text: 'Vergi muafiyeti' },
+                    { letter: 'D', text: 'Asimilasyon' },
+                    { letter: 'E', text: 'Diplomasi' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "Sırp Kilisesi 1832'de hangi koşulla özerk olmuştur?",
+                options: [
+                    { letter: 'A', text: 'Metropolit seçiminin onaylanması hakkının İstanbul Patrikliği\'nde kalması' },
+                    { letter: 'B', text: 'Sırp Kilisesi\'nin tüm piskoposlarının İstanbul\'dan atanması' },
+                    { letter: 'C', text: 'Sırp kralının kilise üzerinde tam yetkili olması' },
+                    { letter: 'D', text: 'Kilisenin tamamen bağımsız olması' },
+                    { letter: 'E', text: 'İstanbul Patrikliği\'ne vergi ödemesi' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "Jovan Rajiç'in hangi alanda çalışmalar yaptığı belirtilmektedir?",
+                options: [
+                    { letter: 'A', text: 'Hukuk' },
+                    { letter: 'B', text: 'Tarih' },
+                    { letter: 'C', text: 'Müzik' },
+                    { letter: 'D', text: 'Dil' },
+                    { letter: 'E', text: 'Felsefe' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "1812 yılında Sırbistan'a hangi antlaşmayla kısmi özerklik verildi?",
+                options: [
+                    { letter: 'A', text: 'Londra' },
+                    { letter: 'B', text: 'Atina' },
+                    { letter: 'C', text: 'İstanbul' },
+                    { letter: 'D', text: 'Küçük Kaynarca' },
+                    { letter: 'E', text: 'Bükreş' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "1800 yılında Fener Patriği, Balkan topraklarındaki metropolitlere gönderdiği genelgede aşağıdakilerden hangisini emretmiştir?",
+                options: [
+                    { letter: 'A', text: 'Bulgar kiliselerinin bağımsız hale getirilmesini' },
+                    { letter: 'B', text: 'Bulgar kilise okullarının güçlendirilmesini' },
+                    { letter: 'C', text: 'Kiliselerde yalnızca Bulgarca yazılmış kitapların okutulmasını' },
+                    { letter: 'D', text: 'Bulgar kilise okullarının kapatılmasını ve kiliselerde yalnızca Rumca yazılmış kitapların okutulmasını' },
+                    { letter: 'E', text: 'Metropolitlerin yerel dillerde ayin yapmasını' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "Sırp Knezliği'nin sınırlarını 24.000 km'den 37.000 km'ye çıkaran knezin adı aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'Danilo' },
+                    { letter: 'B', text: 'Miloş' },
+                    { letter: 'C', text: 'Kapodistrias' },
+                    { letter: 'D', text: 'Petır' },
+                    { letter: 'E', text: 'Milan' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "Yoannis Kapodistrias hangi üniversitede eğitim almıştır?",
+                options: [
+                    { letter: 'A', text: 'Cambridge Üniversitesi' },
+                    { letter: 'B', text: 'Padova Üniversitesi' },
+                    { letter: 'C', text: 'Sorbonne Üniversitesi' },
+                    { letter: 'D', text: 'Oxford Üniversitesi' },
+                    { letter: 'E', text: 'Harvard Üniversitesi' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "Filhellenizm'in anlamı aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'Helen tarihçiliği' },
+                    { letter: 'B', text: 'Helen dostluğu' },
+                    { letter: 'C', text: 'Helen karşıtlığı' },
+                    { letter: 'D', text: 'Helen kültürü' },
+                    { letter: 'E', text: 'Yunan filolojisi' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "1847 yılında İstanbul'da hangi cemaat kendi kiliselerini kurmak için girişimlerde bulundu?",
+                options: [
+                    { letter: 'A', text: 'Arnavutlar' },
+                    { letter: 'B', text: 'Hırvatlar' },
+                    { letter: 'C', text: 'Bulgarlar' },
+                    { letter: 'D', text: 'Romenler' },
+                    { letter: 'E', text: 'Rümlar' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Vuk Stefanoviç Karaciç hangi milliyetçi akımın fikir öncüleri arasındadır?",
+                options: [
+                    { letter: 'A', text: 'Bosna' },
+                    { letter: 'B', text: 'Bulgaristan' },
+                    { letter: 'C', text: 'Sırbistan' },
+                    { letter: 'D', text: 'Yunanistan' },
+                    { letter: 'E', text: 'Romanya' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Mora İsyanı sonrası Rus, İngiliz ve Fransız donanmalarının birleşerek Akdeniz'de Osmanlı donanmasına yönelik yaptıkları saldırının adı aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'Tripoliçe Katliamı' },
+                    { letter: 'B', text: 'Batak Katliamı' },
+                    { letter: 'C', text: 'Navarin Faciası' },
+                    { letter: 'D', text: 'Harmanlı Katliamı' },
+                    { letter: 'E', text: 'Babıali Baskını' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Kapodistrias, Napolyon Savaşları sonrasında hangi kongrede Rusya'yı temsil etmiştir?",
+                options: [
+                    { letter: 'A', text: 'Paris' },
+                    { letter: 'B', text: 'Londra' },
+                    { letter: 'C', text: 'Lahey' },
+                    { letter: 'D', text: 'Viyana' },
+                    { letter: 'E', text: 'Berlin' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "1870'de İstanbul'da Rum Patrikliği ile kilise ve okullar için şiddetli çatışmalarda bulunan kurumun ismi nedir?",
+                options: [
+                    { letter: 'A', text: 'Rus Kilisesi' },
+                    { letter: 'B', text: 'Bulgar Eksarhanesi' },
+                    { letter: 'C', text: 'Sırp Kilisesi' },
+                    { letter: 'D', text: 'Ohri Patrikhanesi' },
+                    { letter: 'E', text: 'Yunan Kilisesi' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "Yunanistan siyasetinde ortaya çıkan üç siyasi parti nasıl adlandırılmıştır?",
+                options: [
+                    { letter: 'A', text: 'Rus, Osmanlı ve Fransız yanlıları' },
+                    { letter: 'B', text: 'Rus, Avusturya ve İngiliz yanlıları' },
+                    { letter: 'C', text: 'Rus, Fransız ve İngiliz yanlıları' },
+                    { letter: 'D', text: 'Rus, Osmanlı ve Alman yanlıları' },
+                    { letter: 'E', text: 'Rus, Alman ve Fransız yanlıları' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Anayasal rejimle Sırbistan yönetimini idare eden Aleksandır Karacorceviç'in çıkardığı en önemli kanun nedir?",
+                options: [
+                    { letter: 'A', text: 'Askerlik kanunu' },
+                    { letter: 'B', text: 'Örfi kanun' },
+                    { letter: 'C', text: 'Toprak kanunu' },
+                    { letter: 'D', text: 'Emlak kanunu' },
+                    { letter: 'E', text: 'Vatandaşlık kanunu' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Çar Lazar hangi savaşta öldürüldü?",
+                options: [
+                    { letter: 'A', text: 'Çirmen Savaşı' },
+                    { letter: 'B', text: 'Varna Savaşı' },
+                    { letter: 'C', text: 'Mohaç Savaşı' },
+                    { letter: 'D', text: 'Kosova Meydan Savaşı' },
+                    { letter: 'E', text: 'Osmanlı-Rus Savaşı' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "1870 yılında Sultan Abdülaziz tarafından verilen fermanla hangi kurum kuruldu?",
+                options: [
+                    { letter: 'A', text: 'Bulgar Eksarhlığı' },
+                    { letter: 'B', text: 'Bulgar Papazevi' },
+                    { letter: 'C', text: 'Bulgar Havrası' },
+                    { letter: 'D', text: 'Bulgar Metropolitliği' },
+                    { letter: 'E', text: 'Bulgar Patrikhanesi' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "Sırbistan'da yaşayan Müslümanların beyliği terk etmesi konusu hangi tarihte ve toplantıda karara bağlandı?",
+                options: [
+                    { letter: 'A', text: '1812, Bükreş Antlaşması' },
+                    { letter: 'B', text: '1878, Berlin Antlaşması' },
+                    { letter: 'C', text: '1878, Ayastefanos Antlaşması' },
+                    { letter: 'D', text: '1791, Ziştovi Antlaşması' },
+                    { letter: 'E', text: '1862, Kanlıca Konferansı' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "Tepedelenli Ali Paşa'yı Arnavutluk'ta bağımsız hareket etmesinden dolayı Yanya valiliğinden azleden padişah aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'II. Mahmud' },
+                    { letter: 'B', text: 'II. Abdülhamid' },
+                    { letter: 'C', text: 'I. Ahmed' },
+                    { letter: 'D', text: 'II. Murad' },
+                    { letter: 'E', text: 'VI. Mehmed' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "Piskopos Ilarion Makariopolski, 3 Nisan 1860 tarihinde Bulgar Kilisesi'nin bağımsızlığını hangi olayla ilan etmiştir?",
+                options: [
+                    { letter: 'A', text: 'Osmanlı Devleti\'nden aldığı resmi bir belgeyle' },
+                    { letter: 'B', text: 'Rusya\'nın desteğini alarak bir bildiri yayınlayarak' },
+                    { letter: 'C', text: 'Sveti Stefan Kilisesi\'nde bir isyan başlatarak' },
+                    { letter: 'D', text: 'Paskalya ayininde sultanın adını anarak' },
+                    { letter: 'E', text: 'Patriğin adını anmadan yönettiği Paskalya ayini ile' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "Aşağıdakilerden hangisi Sırbistan'ın özerklik kazanmasındaki önemli anlaşmalardan biri değildir?",
+                options: [
+                    { letter: 'A', text: '1792 Yaş Antlaşması (Rusya ile Osmanlı arasında)' },
+                    { letter: 'B', text: '1829 Edirne Antlaşması (Rusya ile Osmanlı arasında)' },
+                    { letter: 'C', text: '1878 Ayastefanos Antlaşması (Rusya ile Osmanlı arasında)' },
+                    { letter: 'D', text: '1812 Bükreş Antlaşması (Rusya ile Osmanlı arasında)' },
+                    { letter: 'E', text: '1826 Akkerman Anlaşması (Rusya ile Osmanlı arasında)' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "Filiki Eteria'nın başkanlığını yapan kişi aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'Miloş' },
+                    { letter: 'B', text: 'Danilo' },
+                    { letter: 'C', text: 'Petır' },
+                    { letter: 'D', text: 'İpsilanti' },
+                    { letter: 'E', text: 'Kolokotronis' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "Bulgar Çarı Simeon Bizanslılara karşı savaşarak hangi şehri kuşattı?",
+                options: [
+                    { letter: 'A', text: 'Selanik' },
+                    { letter: 'B', text: 'Belgrad' },
+                    { letter: 'C', text: 'İstanbul' },
+                    { letter: 'D', text: 'Ankara' },
+                    { letter: 'E', text: 'Bursa' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Bulgarların Tanzimat Fermanı sonrasında İstanbul'da açtıkları ilk dinî mekân aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'Bulgar Havrası' },
+                    { letter: 'B', text: 'Bulgar Patrikhanesi' },
+                    { letter: 'C', text: 'Bulgar Metropolitliği' },
+                    { letter: 'D', text: 'Bulgar Eksahanesi' },
+                    { letter: 'E', text: 'Papaz Evi' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "Aşağıdakilerden hangisi Romen millî kahramanları arasında yer almaktadır?",
+                options: [
+                    { letter: 'A', text: 'Rigas Velestinlis' },
+                    { letter: 'B', text: 'Vasil Levski' },
+                    { letter: 'C', text: 'Micu-Klein' },
+                    { letter: 'D', text: 'Vuk Karaciç' },
+                    { letter: 'E', text: 'Paisiy Hilendarski' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Padişah II. Mahmud'un Sırbistan'a verdiği 1830 tarihli özerklik fermanına göre Sırp Knezi Sırbistan'ı nasıl yönetecektir?",
+                options: [
+                    { letter: 'A', text: 'Meclis marifetiyle' },
+                    { letter: 'B', text: 'Askeri diktatörlük ile' },
+                    { letter: 'C', text: 'Kilise marifetiyle' },
+                    { letter: 'D', text: 'Anayasa ile' },
+                    { letter: 'E', text: 'Osmanlı valisinin yardımıyla' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "1870'da İstanbul'da Rum Patrikhanesi ile kilise ve okullar için şiddetli çatışmalarda bulunan kurumun ismi aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'Bulgar Eksahanesi' },
+                    { letter: 'B', text: 'Ohri Patrikhanesi' },
+                    { letter: 'C', text: 'Yunan kilisesi' },
+                    { letter: 'D', text: 'Rus Kilisesi' },
+                    { letter: 'E', text: 'Sırp kilisesi' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "Roma İmparatorluğunda 391'den itibaren ..... İmparatorluğun tek dini idi.",
+                options: [
+                    { letter: 'A', text: 'Hristiyanlık' },
+                    { letter: 'B', text: 'Budizm' },
+                    { letter: 'C', text: 'İslam' },
+                    { letter: 'D', text: 'Musevilik' },
+                    { letter: 'E', text: 'Çoktanıcılık' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "3 Şubat 1830 tarihinde Londra'da idare şekli monarşi olarak kararlaştırılan ve bağımsızlığını ilan eden devletin ismi aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'Arnavutluk' },
+                    { letter: 'B', text: 'Yunanistan' },
+                    { letter: 'C', text: 'Romanya' },
+                    { letter: 'D', text: 'Sırbistan' },
+                    { letter: 'E', text: 'Bulgaristan' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "Bulgarların millî kilise kurma talepleri Rum Patrikhanesi tarafından reddedilince hangi kilise otoritesine başvurarak yeni bir kilise kurma girişiminde bulundular?",
+                options: [
+                    { letter: 'A', text: 'İskenderiye Patriğine' },
+                    { letter: 'B', text: 'Rus Patriğine' },
+                    { letter: 'C', text: 'Antakya Patriğine' },
+                    { letter: 'D', text: 'Katoliklerin dinî lideri Papa\'ya' },
+                    { letter: 'E', text: 'Yahudilerin dinî lideri Hahambaşına' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "Miloş'un muhalifleri tarafından oluşturulan ve 1835'te kabul edilen anayasanın adı aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'Miloş Anayasası' },
+                    { letter: 'B', text: 'Fransız Anayasası' },
+                    { letter: 'C', text: 'Türk Anayasası' },
+                    { letter: 'D', text: 'Alman Anayasası' },
+                    { letter: 'E', text: 'Rus Anayasası' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Romen tarihinde Eflak ve Boğdan'a İstanbul Fener'de yaşayan Rumlardan bey tayin edilmesiyle ilgili döneme 'Bizans sonrası Bizans' adını veren kişi kimdir?",
+                options: [
+                    { letter: 'A', text: 'Rigas Velentislis' },
+                    { letter: 'B', text: 'Miçu-Klein' },
+                    { letter: 'C', text: 'Vuk Karaciç' },
+                    { letter: 'D', text: 'Dimitri Candemir' },
+                    { letter: 'E', text: 'Nicolae Jorga' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "Başknezlik unvanı hangi millet tarafından kullanılmaktadır?",
+                options: [
+                    { letter: 'A', text: 'Karadağ' },
+                    { letter: 'B', text: 'Bosna' },
+                    { letter: 'C', text: 'Bulgaristan' },
+                    { letter: 'D', text: 'Sırbistan' },
+                    { letter: 'E', text: 'Romanya' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "Osmanlı idaresinden ayrılan Yunanistan iç işlerinde problemler yaşamıştır. Bu esnada Muhafazakar ve Liberaller şeklinde iki taraf oluşmuştur. Liberallerin lideri aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'Otto' },
+                    { letter: 'B', text: 'Aleksandır Mavrokordato' },
+                    { letter: 'C', text: 'Teodor Kolokotronis' },
+                    { letter: 'D', text: 'Georg' },
+                    { letter: 'E', text: 'Koletis' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Aşağıdakilerden hangisi ilk Yunan devlet başkanı Kapodistrias'ın muhalifleri ile arasında yaşanan anlaşmazlık konularından biri değildir?",
+                options: [
+                    { letter: 'A', text: 'Müslümanlardan kalan arazilerin paylaşımı' },
+                    { letter: 'B', text: 'Toprak meselesi' },
+                    { letter: 'C', text: 'Rusya taraftarlığı' },
+                    { letter: 'D', text: 'Fransız taraftarlığı' },
+                    { letter: 'E', text: 'Diktatörce yönetim' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "III. Selim döneminde Balkanlarda önemli etki bırakan ve Vidin bölgesi idaresine verilen kişi kimdir?",
+                options: [
+                    { letter: 'A', text: 'Alemdar Mustafa Paşa' },
+                    { letter: 'B', text: 'Tirsinikli İsmail Ağa' },
+                    { letter: 'C', text: 'Kabakçı Mustafa' },
+                    { letter: 'D', text: 'Sokollu Mehmed Paşa' },
+                    { letter: 'E', text: 'Pazvantoğlu Osman Paşa' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "Yunan kilisesi İstanbul Patrikliğinden özerkliğini ne zaman ilan etti?",
+                options: [
+                    { letter: 'A', text: '1923' },
+                    { letter: 'B', text: '1878' },
+                    { letter: 'C', text: '1821' },
+                    { letter: 'D', text: '1912' },
+                    { letter: 'E', text: '1833' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "Yunanistan'da Otto'nun hükümdarlık dönemine verilen ad aşağıdakilerden hangisidir?",
+                options: [
+                    { letter: 'A', text: 'Bizantinokratia' },
+                    { letter: 'B', text: 'Bavarokratia' },
+                    { letter: 'C', text: 'Aristokratia' },
+                    { letter: 'D', text: 'Demokratia' },
+                    { letter: 'E', text: 'Turkokratia' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "Gayrimüslimlerin devlet hizmetine alınması ne zaman başladı?",
+                options: [
+                    { letter: 'A', text: 'II. Meşrutiyet sonrası' },
+                    { letter: 'B', text: 'Islahat Fermanı sonrası' },
+                    { letter: 'C', text: 'I. Meşrutiyet sonrası' },
+                    { letter: 'D', text: 'Tanzimat Fermanı sonrası' },
+                    { letter: 'E', text: 'Kanun-i Esasi sonrası' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "Hangi liderin önderliğinde I. Sırp isyanı gerçekleşti?",
+                options: [
+                    { letter: 'A', text: 'Vasil Levski' },
+                    { letter: 'B', text: 'Kara Yorgi' },
+                    { letter: 'C', text: 'Kapodistriya' },
+                    { letter: 'D', text: 'Miloş' },
+                    { letter: 'E', text: 'Obrenoviç' }
+                ],
+                correct: 'B'
+            }
+        ];
+
+        let answers = {};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+
+            // Soruları rastgele karıştır
+            const shuffledQuiz = shuffle([...quizData]);
+
+            shuffledQuiz.forEach((item, index) => {
+                const qNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${qNum}`;
+
+                const p = document.createElement('p');
+                p.textContent = item.question;
+                div.appendChild(p);
+
+                // Şıkları rastgele karıştır
+                const shuffledOptions = shuffle([...item.options]);
+                shuffledOptions.forEach((opt, optIndex) => {
+                    const newLetter = String.fromCharCode(65 + optIndex);
+                    const label = document.createElement('label');
+                    label.className = 'option';
+                    label.htmlFor = `q${qNum}${newLetter}`;
+                    label.innerHTML = `<input type="radio" id="q${qNum}${newLetter}" name="q${qNum}" value="${newLetter}" onchange="checkAnswer(${qNum})"><span class="radio"></span>${newLetter}) ${opt.text}`;
+                    div.appendChild(label);
+
+                    // Eğer bu şık orijinal doğruysa, yeni harfi doğru olarak kaydet
+                    if (opt.letter === item.correct) {
+                        answers[`q${qNum}`] = { correct: newLetter, text: `${newLetter}) ${opt.text}` };
+                    }
+                });
+
+                const hintP = document.createElement('p');
+                hintP.className = 'answer-hint';
+                hintP.id = `hint${qNum}`;
+                hintP.innerHTML = `Doğru cevap: <strong>${answers[`q${qNum}`].text}</strong>`;
+                div.appendChild(hintP);
+
+                form.appendChild(div);
+            });
+        }
+
+        // Sayfa yüklendiğinde quiz'i render et (rastgele)
+        window.onload = renderQuiz;
+
+        function checkAnswer(num) {
+            const q = `q${num}`;
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (!selected) return;
+
+            const correct = answers[q].correct;
+            const options = document.querySelectorAll(`#q${num} .option`);
+
+            // Önce tüm renkleri sıfırla
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            // Doğru şıkkı yeşil yap
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            // Seçilen yanlışsa kırmızı yap
+            if (selected.value !== correct) {
+                const selectedOpt = document.querySelector(`#q${num} .option:has(input[value="${selected.value}"])`);
+                selectedOpt.classList.add('incorrect');
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q].correct) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function finishQuiz() {
+            // Tüm doğru şıkları yeşil yap
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const options = document.querySelectorAll(`#q${i} .option`);
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === answers[`q${i}`].correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            // Skoru hesapla ve göster
+            const score = calculateScore();
+            document.getElementById('result').innerHTML = `Toplam Skor: ${score} / ${total}`;
+            document.querySelector('.finish').disabled = true;
+        }
+
+        function showAllAnswers() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`hint${i}`).style.display = 'block';
+            }
+            document.getElementById('showAnswersBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>
