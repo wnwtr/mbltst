@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17.-18. YÜZYIL OSMANLI TARİHİ FİNAL Testi</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0 auto; 
+            max-width: 800px;
+            padding: 20px; 
+            background-color: #f9f9f9; 
+            color: #333; 
+            line-height: 1.6;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        #showAnswersBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        #showAnswersBtn:hover { 
+            background-color: #219a52; 
+        }
+        .question { 
+            background-color: white; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        .question p { 
+            font-weight: normal; 
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+            white-space: pre-line;
+        }
+        .option { 
+            display: flex; 
+            align-items: center; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            padding: 8px; 
+            border-radius: 5px; 
+            transition: background-color 0.3s; 
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+        .option input { 
+            display: none; 
+        }
+        .option .radio { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background-color: white; 
+            border: 2px solid #3498db; 
+            margin-right: 15px; 
+            position: relative; 
+        }
+        .option .radio::after { 
+            content: ''; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #3498db; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; 
+        }
+        .option input:checked + .radio::after { 
+            display: block; 
+        }
+        .option.correct { 
+            background-color: #27ae60; 
+            color: white; 
+        }
+        .option.incorrect { 
+            background-color: #e74c3c; 
+            color: white; 
+        }
+        .answer-hint { 
+            display: none; 
+            margin-top: 10px; 
+            font-size: 0.9em; 
+            color: #27ae60; 
+            font-style: italic; 
+            font-weight: normal;
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 5px;
+        }
+        button.finish { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        button.finish:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.3em; 
+            color: #2c3e50; 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>17.-18. YÜZYIL OSMANLI TARİHİ FİNAL SORULARI</h1>
+    <button onclick="window.location.href='index.html'" style="position: fixed; bottom: 40px; right: 40px; padding: 20px 30px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Geri Dön</button>    
+    <button id="showAnswersBtn" onclick="showAllAnswers()">Cevapları Göster</button>
+    <form id="quizForm"></form>
+    <button class="finish" onclick="finishQuiz()">Testi Bitir</button>
+    <div id="result"></div>
+
+    <script>
+        // Soru verileri: 17.-18. YÜZYIL OSMANLI TARİHİ FİNAL.txt dosyasından alınmıştır.
+        const quizData = [
+            {
+                question: "<strong>Aşağıdaki savaşlardan hangisinden sonra I. Mahmud 'gazi' ünvanı ile anılmaya başlanmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Özi kuşatması' },
+                    { letter: 'B', text: "Belgrad'ın fethi" },
+                    { letter: 'C', text: 'Petervaradin Savaşı' },
+                    { letter: 'D', text: 'Arpaçay Savaşı' },
+                    { letter: 'E', text: 'Ducum Savaşı' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1724 yılında Osmanlı Devleti ile Rusya'nın imzaladığı İstanbul Antlaşması'nda karara bağlanan hususlardan biridir?</strong>",
+                options: [
+                    { letter: 'A', text: "Rusya Erdelan ve Gilan'dan çekilecektir." },
+                    { letter: 'B', text: "Rusya Bakü ve Derbend'den çekilecektir." },
+                    { letter: 'C', text: 'Güney Şirvan Rus, Kuzey Şirvan Osmanlı egemenliğinde kalacaktır.' },
+                    { letter: 'D', text: "İki taraf da İran hükümdarı olarak II. Tahmasb'ı tanıyacaktır." },
+                    { letter: 'E', text: "Osmanlılar Tebriz ve Revan'ı boşaltacaktır." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Şahin Giray'ın Kırım hanlığı ile ilgili aşağıdakilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Kırım'da saltanat usulünü uygulayacağını ilan etmiştir." },
+                    { letter: 'B', text: 'Vakıf mallarını kamulaştırmıştır.' },
+                    { letter: 'C', text: 'Orduyu Avrupai tarzda yeniden örgütlemiştir.' },
+                    { letter: 'D', text: 'Reformları Osmanlılar tarafından da desteklenmiştir.' },
+                    { letter: 'E', text: "Rusya'nın desteği ile han seçilmiştir." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisinin 1645 Girit seferinin görünürdeki sebebi olduğu söylenebilir?</strong>",
+                options: [
+                    { letter: 'A', text: "Malta korsanlarının Girit'e yerleşme isteği" },
+                    { letter: 'B', text: "Kızlarağası Sümbül Ağa'yı taşıyan geminin Malta korsanları tarafından ele geçirilmesi" },
+                    { letter: 'C', text: "Girit'in kısa sürede Osmanlı topraklarına katılacağı inancı" },
+                    { letter: 'D', text: "Kösem Sultan'ın Venedikliler üzerine sefer açılması isteği" },
+                    { letter: 'E', text: "Deli Hüseyin Paşa'nın Girit'teki faaliyetleri" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1787-1792 Osmanlı - Rus Savaşı ile ilgili olarak söylenemez?</strong>",
+                options: [
+                    { letter: 'A', text: 'Osmanlılar, bu savaşta Özi ve Bender kalelerini kaybetmişlerdir.' },
+                    { letter: 'B', text: 'Cezayirli Gazi Hasan Paşa donanma ile savaşa iştirak etmiştir.' },
+                    { letter: 'C', text: 'Savaş sonunda Kırım bağımsızlığını kazanmıştır.' },
+                    { letter: 'D', text: "Kafkaslar'daki Anapa ve Soğucak kaleleri Rusların eline geçmiştir." },
+                    { letter: 'E', text: 'Savaş sonunda Yaş Antlaşması imzalanmıştır.' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Esasen Erdel kökenli olan ...... Müslüman olup Osmanlı hizmetine girdikten sonra, Yirmisekiz Mehmed Çelebi'nin oğlu olup onunla Fransa seyahatine katılan ...... ile birlikte III. Ahmed'in fermanı ve Şeyhülislam Yenişehirli Abdullah Efendi'nin fetvası ile Türkçe harfli ilk Osmanlı matbaasını kurmuştur.\n\n<strong>Yukarıda verilen cümledeki boşluklara sırasıyla aşağıdaki ifadelerden hangileri getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'İbrahim Müteferrika - Said Efendi' },
+                    { letter: 'B', text: 'Ferenc Rakoczi - Katib Çelebi' },
+                    { letter: 'C', text: 'Humbaracı Ahmed Paşa - İbrahim Müteferrika' },
+                    { letter: 'D', text: 'Alexander Mavrocordato - Katib Çelebi' },
+                    { letter: 'E', text: 'Said Efendi - Ferenc Rakoczi' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "Mora Seferi'nin oldukça başarılı geçmiş olması, Sadrazam Damad Ali Paşa'nın ertesi sene, Venedik donanma üssü olan..... üzerine yürümesine neden oldu.\n\n<strong>Yukarıda verilen cümledeki boşluğa aşağıdaki ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Korfu Adası' },
+                    { letter: 'B', text: 'İstria Yarımadası' },
+                    { letter: 'C', text: 'Kotor Körfezi' },
+                    { letter: 'D', text: 'Selanik Limanı' },
+                    { letter: 'E', text: 'Kandiye Dukalığı' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "Osmanlı ordusu 1716 senesinde Avusturya karşısında ...... Savaşı'nda mağlup olmuş, Sadrazam Damad Ali Paşa bu savaşta hayatını kaybetmiştir.\n\n<strong>Yukarıdaki boşluğa aşağıdaki ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Petervaradin' },
+                    { letter: 'B', text: 'Belgrad' },
+                    { letter: 'C', text: 'Zenta' },
+                    { letter: 'D', text: 'Salankamen' },
+                    { letter: 'E', text: 'Mora' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1768-1774 Osmanlı Rus savaşları ile ilgili olarak söylenemez?</strong>",
+                options: [
+                    { letter: 'A', text: "Savaş sonunda taraflar Küçük Kaynarca Antlaşması'nı imzalamışlardır." },
+                    { letter: 'B', text: "Rus donanması Osmanlı donanmasını Çeşme'de yakmıştır." },
+                    { letter: 'C', text: "Rusya'nın teşvikiyle Mora'da büyük bir isyan çıkmıştır." },
+                    { letter: 'D', text: "Avusturya, Rusya'nın yanında savaşa girmiştir." },
+                    { letter: 'E', text: "Osmanlı ordusu Rus ordusu karşısında Kartal'da büyük bir bozgun yaşamıştır." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>16. yüzyılın sonunda Safevi Devleti'nin toparlanmasını sağlayıp Azerbaycan ve Kafkas illerini Osmanlılardan alan Safevi hükümdarı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Timur Han' },
+                    { letter: 'B', text: 'Babür Şah' },
+                    { letter: 'C', text: 'Şah Safi' },
+                    { letter: 'D', text: 'Şah Tahmasp' },
+                    { letter: 'E', text: 'Şah Abbas' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>1664 Vasvar Antlaşması hakkında aşağıdakilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Antlaşma metni Osmanlı ordugahında kâğıda döküldü.' },
+                    { letter: 'B', text: 'Osmanlılar ve Habsburg devletleri arasında varılan barış Macar soylularınca desteklendi.' },
+                    { letter: 'C', text: 'Osmanlılar adına IV. Mehmed tarafından tasdik edildi.' },
+                    { letter: 'D', text: 'Habsburglar adına I. Leopold tarafından onaylandı.' },
+                    { letter: 'E', text: 'Antlaşma ala halihi/status quo ilkesine dayanarak hazırlandı.' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Ziştovi Antlaşması'nda yer alan maddelerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'İki tarafın ellerindeki esirler serbest bırakılacaktır.' },
+                    { letter: 'B', text: 'Sınır bölgelerinde ticaret ve seyahate devam edilecektir.' },
+                    { letter: 'C', text: 'İki devlet arasındaki eski antlaşmalar aynı halleriyle cari olacaktır.' },
+                    { letter: 'D', text: 'Avusturya, Rusya ile barış yapılana kadar Belgrad\'ı elinde tutacaktır.' },
+                    { letter: 'E', text: 'Avusturya savaşta ele geçirdiği yerleri iade edecektir.' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "Prut Antlaşması ile Osmanlılar istediklerini almış görünmektedir. Rusların ...... önemli bir gelişmedir.\n\n<strong>Yukarıda verilen cümledeki boşluğa aşağıda verilen ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Kafkasya'daki kazanımlarını terk etmek zorunda kalmaları" },
+                    { letter: 'B', text: "Azak'ı terk etmek zorunda kalarak Karadeniz'e çıkışlarının engellenmesi" },
+                    { letter: 'C', text: "İlk defa Karadeniz'e donanma indirebilecek güce ulaşmaları" },
+                    { letter: 'D', text: 'Osmanlı sınırları içerisinde istedikleri yerde konsolosluk açabilecek olmaları' },
+                    { letter: 'E', text: 'Lehistan işgalini tamamlayamadan geri çekilmek zorunda kalmaları' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Merzifonlu Kara Mustafa Paşa'nın 1682'de Macar soylusu Tököli İmre'yi Orta Macar kralı ilan etmesinin sebebi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Viyana kuşatmasında Macar savaşçılardan yardım almak' },
+                    { letter: 'B', text: 'Macarlar ve Fransızlar arasındaki ittifakı güçlendirmek' },
+                    { letter: 'C', text: "Macaristan'daki Protestanlarla ittifak kurarak Habsburg yönetimini sıkıştırmak" },
+                    { letter: 'D', text: 'Macar soylularını Osmanlı hakimiyetine ısındırmak' },
+                    { letter: 'E', text: "Podolya'nın Osmanlıların elinde kalmasını sağlamak" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Osmanlı tarihinde padişahların hal edilmesine ilişkin aşağıdakilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Osmanlı bürokrat ve ulemasının hanedana karşı güçlendiğine işaret ediyordu.' },
+                    { letter: 'B', text: 'İslam hukukuna aykırı bir uygulamaydı.' },
+                    { letter: 'C', text: 'Çoğunlukla şeyhülislam fetvasıyla gerçekleşirdi.' },
+                    { letter: 'D', text: 'Padişahın tahttan indirilmesine çoğu vakit bir isyan eşlik ediyordu.' },
+                    { letter: 'E', text: 'Yeniçeri ağası, sipahiler, vezirler ve ulema gibi grupların padişah değişikliklerinde etkisi vardı.' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Avusturya ile imzalanan Belgrad Antlaşması'nın maddeleri arasında yer alır?</strong>",
+                options: [
+                    { letter: 'A', text: "Avusturya İstanbul'da bir temsilcilik açabilecektir." },
+                    { letter: 'B', text: 'Prut Nehri iki ülke arasında sınır olacaktır.' },
+                    { letter: 'C', text: 'Avusturya 300.000 altın savaş tazminatı ödeyecektir.' },
+                    { letter: 'D', text: "II. Ferenc Rakoczi Avusturya'ya iade olunacaktır." },
+                    { letter: 'E', text: "Banat Avusturya'ya bırakılacaktır." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "1787 yılında Osmanlı Devleti'nin Rusya'ya savaş ilanı ile başlayan savaş süreci 1792 yılında imzalanan ..... Antlaşması ile sona ermiştir.\n\n<strong>Yukarıdaki cümlede boş bırakılan yere aşağıdaki ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'İstanbul' },
+                    { letter: 'B', text: 'Bahçesaray' },
+                    { letter: 'C', text: 'Belgrad' },
+                    { letter: 'D', text: 'Ziştovi' },
+                    { letter: 'E', text: 'Yaş' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1768 senesinde Osmanlı Devleti'nin Rusya'ya savaş ilan etmesinin nedenlerinden biridir?</strong>",
+                options: [
+                    { letter: 'A', text: "II. Katerina'nın hayatını kaybetmesi" },
+                    { letter: 'B', text: "Rusların Mora'da Osmanlı karşıtı bir isyanı teşvikleri" },
+                    { letter: 'C', text: "Rusya'nın Kırım topraklarına müdahalesi" },
+                    { letter: 'D', text: "Rusya'nın Kazakları Osmanlılara karşı kışkıtmaları" },
+                    { letter: 'E', text: "Rusya'nın Bakü ve Derbend'i işgal etmesi" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Kerden Antlaşması'nın maddeleri arasında yer almaz?</strong>",
+                options: [
+                    { letter: 'A', text: "Tebriz Osmanlılara, Hemedan İran'a bırakılacaktır." },
+                    { letter: 'B', text: 'Taraflar arasındaki esirler mübadele olunacaktır.' },
+                    { letter: 'C', text: 'İranlı hacıların yol güvenliği sağlanacaktır.' },
+                    { letter: 'D', text: 'Kasr-ı Şirin Antlaşması sınırlarına dönülecektir.' },
+                    { letter: 'E', text: 'İki ülke başkentlerinde elçilikler ihdas olunacaktır.' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 18. yüzyılda Osmanlıların Safevilerle olan mücadelelerinin ilk evresinde (1723-1727) Kafkaslar'da ele geçirilen yerler arasında değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Tiflis' },
+                    { letter: 'B', text: 'Gence' },
+                    { letter: 'C', text: 'Bakü' },
+                    { letter: 'D', text: 'Revan' },
+                    { letter: 'E', text: 'Lori' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>17. yüzyılda Osmanlı donanmasında kullanılan kadırgalar hakkında aşağıda verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Çektiri sınıfı kürekli gemilerdi.' },
+                    { letter: 'B', text: 'Çok sayıda top taşıyabiliyordu.' },
+                    { letter: 'C', text: "Akdeniz'in coğrafi şartlarına uygun bir yapıları vardı." },
+                    { letter: 'D', text: '16. yüzyılın ilk yarısında Barbaros Hayreddin tarafından daha da geliştirilmişti.' },
+                    { letter: 'E', text: 'Deniz muharebelerinde süratli davranabilen esnek ve hareketli bir gemi cinsiydi.' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1768 senesinde Osmanlı Devleti'nin Rusya'ya savaş ilan etmesinin nedenleri arasında yer almamaktadır?</strong>",
+                options: [
+                    { letter: 'A', text: "Rusya'nın Osmanlılarla olan antlaşmalara sadık kalmaması" },
+                    { letter: 'B', text: "Rusya'nın Kırım'ı işgali" },
+                    { letter: 'C', text: "Rusya'nın Polonya'nın iç işlerine karışması" },
+                    { letter: 'D', text: "Rusya'nın Osmanlı topraklarına tecavüzü" },
+                    { letter: 'E', text: "Rusya'nın Osmanlı tebaasını katletmesi" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "Pasarofça Antlaşması'ndan sonra başlayıp Patrona Halil İsyanı'na kadar devam eden, temel olarak barışı devam ettirme arzusu güden bir siyasetin hâkim olduğu ve önemli bazı değişimlerin yaşandığı döneme .......... adı verilir.\n\n<strong>Yukarıdaki boşluğa aşağıdaki ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Duraklama Devri' },
+                    { letter: 'B', text: 'Fetret Devri' },
+                    { letter: 'C', text: 'Kadınlar Saltanatı' },
+                    { letter: 'D', text: 'Lale Devri' },
+                    { letter: 'E', text: 'Nizam-ı Cedid' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Osmanlı nasihatname yazarlarının hazinenin zayıflamasını engellemek için önerdikleri tedbirlerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Kapıkulu ocaklarının sayısını azaltmak' },
+                    { letter: 'B', text: 'Vezir ailelerinin tesis ettiği vakıfları denetlemek' },
+                    { letter: 'C', text: 'Reayanın toprağını terk etmesini engellemek' },
+                    { letter: 'D', text: 'Sahte seyyid ve şerifleri ortaya çıkarmak' },
+                    { letter: 'E', text: 'Yüksek maliyetli silah türlerinin kullanılmasından kaçınmak' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>I. Mahmud dönemi (1730-1754) Osmanlı-İran ilişkileri ile ilgili olarak aşağıda verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Ducum Savaşı'nda galip gelince I. Mahmud 'Gazi' unvanını kullanmaya başlamıştır." },
+                    { letter: 'B', text: "Osmanlılar 1736 yılında Nadir Şah'ı İran'ın meşru hükümdarı olarak kabul etmişlerdir." },
+                    { letter: 'C', text: "Osmanlılar, Kerden Antlaşması'nı imzalayarak tüm kazanımlarından vazgeçmişlerdir." },
+                    { letter: 'D', text: 'Osmanlılar Akderbent ve Arpaçay savaşlarında İranlılara mağlup olmuştur.' },
+                    { letter: 'E', text: "Osmanlılar, İran'a karşı Ruslarla birlikte hareket etmişlerdir." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>1703 Edirne Vakası'na ilişkin aşağıda verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "İsyan II. Mustafa'nın tahttan indirilmesi ile neticelenmiştir." },
+                    { letter: 'B', text: "İsyancılar dönemin şeyhülislamı Feyzullah Efendi'yi katletmişlerdir." },
+                    { letter: 'C', text: "Hadiseler İstanbul'da cebecilerin isyan etmesi ile başlamıştır." },
+                    { letter: 'D', text: 'Bu isyan Patrona Halil İsyanı olarak da bilinir.' },
+                    { letter: 'E', text: "Bu isyan sonrası padişahlar Edirne'de uzun süreli ikameti bırakmıştır." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1746 yılında imzalanan ve Osmanlı Devleti ile İran arasında yaşanan mücadeleleri sonlandıran antlaşmadır?</strong>",
+                options: [
+                    { letter: 'A', text: 'İstanbul Antlaşması' },
+                    { letter: 'B', text: 'Kasr-ı Şirin Antlaşması' },
+                    { letter: 'C', text: 'Hemedan Antlaşması' },
+                    { letter: 'D', text: 'Ferhad Paşa Antlaşması' },
+                    { letter: 'E', text: 'Kerden Antlaşması' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıda 1715 Mora Seferi ile ilgili verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Osmanlılar bu sene içerisinde Mora Yarımadası'nı geri almayı başarmışlardır." },
+                    { letter: 'B', text: "Venedik'in Karadağlı isyancılara verdiği destek savaşın sebeplerindendir." },
+                    { letter: 'C', text: 'Sefer esnasında ilk olarak İstendil Adası fethedilmiştir.' },
+                    { letter: 'D', text: 'Dönemin padişahı III. Ahmed bizzat sefere iştirak etmiştir.' },
+                    { letter: 'E', text: 'Osmanlı kara ordusuna denizden donanma da eşlik etmiştir.' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Merzifonlu Kara Mustafa Paşa'nın 1682'de Macar soylusu Tököli İmre'yi Orta Macar Kralı ilan etmesinin sebebi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Viyana kuşatmasında Macar savaşçılardan yardım almak' },
+                    { letter: 'B', text: "Podolya'nın Osmanlıların elinde kalmasını sağlamak" },
+                    { letter: 'C', text: 'Macarlar ve Fransızlar arasındaki ittifakı güçlendirmek' },
+                    { letter: 'D', text: "Macaristan'daki Protestanlarla ittifak kurarak Habsburg yönetimini sıkıştırmak" },
+                    { letter: 'E', text: 'Macar soylularını Osmanlı hakimiyetine ısındırmak' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1722 yılında başlayan Osmanlı-İran savaşlarının Irak-ı Acem cephesinde yaşanan gelişmelerden biridir?</strong>",
+                options: [
+                    { letter: 'A', text: "Van Valisi Köprülü Abdullah Paşa Tebriz'i almıştır." },
+                    { letter: 'B', text: 'Sefere Basra üzerinden Osmanlı donanması da iştirak etmiştir.' },
+                    { letter: 'C', text: "Osmanlılar Kirmanşah ve Hemedan'ı ele geçirmiştir." },
+                    { letter: 'D', text: 'Bağdat, Şah II. Tahmasb tarafından ele geçirilmiştir.' },
+                    { letter: 'E', text: "Tiflis ve Revan Osmanlıların eline geçmiştir." }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Prut Savaşı'na giden süreçte yaşanan hadiseler Avrupa'da yaşanan gelişmelerden hangisinin bir yansıması olarak değerlendirilebilir?</strong>",
+                options: [
+                    { letter: 'A', text: 'İspanya Veraset Savaşları' },
+                    { letter: 'B', text: 'Rakoczi İsyanı' },
+                    { letter: 'C', text: 'Büyük Kuzey Savaşları' },
+                    { letter: 'D', text: 'Lehistan Veraset Savaşları' },
+                    { letter: 'E', text: 'Reform hareketleri' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "1736 yılında Osmanlı Devleti ile Rusya arasındaki savaş ..... başladı.\n\n<strong>Yukarıda verilen cümlede yer alan boşluğa aşağıdaki ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Rusya'nın Azak Kalesi üzerine yürümesiyle" },
+                    { letter: 'B', text: "Rusya'nın Mora'da Osmanlı karşıtı bir isyanı teşvikiyle" },
+                    { letter: 'C', text: "Canım Hoca Mehmed Paşa'nın donanmayla Karadeniz'e açılmasıyla" },
+                    { letter: 'D', text: 'Avusturya ve Rusya arasında bir ittifak antlaşmasının imzalanmasıyla' },
+                    { letter: 'E', text: "Osmanlıların Özi'ye saldırmasıyla" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıda Şahin Giray'ın Kırım hanlığı ile ilgili olarak verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Reformları Osmanlılar tarafından da desteklenmiştir.' },
+                    { letter: 'B', text: "Rusya'nın desteği ile han seçilmiştir." },
+                    { letter: 'C', text: 'Orduyu Avrupai tarzda yeniden örgütlemiştir.' },
+                    { letter: 'D', text: "Kırım'da saltanat usulünü uygulayacağını ilan etmiştir." },
+                    { letter: 'E', text: 'Vakıf mallarını kamulaştırmıştır.' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>1665'te Fazıl Ahmed Paşa ve Fransız daimî elçisi Denis de la Haye arasındaki diplomatik çekişme aşağıdakilerden hangisiyle daha iyi açıklanabilir?</strong>",
+                options: [
+                    { letter: 'A', text: "Fransız krallığının 17. yüzyılın ikinci yarısında güçlenmesi" },
+                    { letter: 'B', text: "XIV. Louis'nin Osmanlı sarayıyla diplomatik denklik kurma çabası" },
+                    { letter: 'C', text: "XIV. Louis'nin Macar asilzadeleriyle temas kurması" },
+                    { letter: 'D', text: 'Osmanlı sularında Fransız ticaret hacminin azalması' },
+                    { letter: 'E', text: 'Osmanlı ve Fransız diplomatlarının farklı eğitimlerden geçmesi' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Kırım, aşağıdaki hadiselerden hangisinden sonra Osmanlı egemenliğinden çıkarak bağımsız hâle gelmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Aynalıkavak Tenkihnamesi' },
+                    { letter: 'B', text: 'İran Mukasemesi' },
+                    { letter: 'C', text: 'İstanbul Antlaşması' },
+                    { letter: 'D', text: 'Belgrad Antlaşması' },
+                    { letter: 'E', text: 'Küçük Kaynarca Antlaşması' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Ziştovi Antlaşması'nda karara bağlanan hususlardan biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Avusturya, Rusya'ya verdiği desteği sonlandıracak" },
+                    { letter: 'B', text: "Hotin Kalesi emaneten Avusturya'nın elinde kalacak" },
+                    { letter: 'C', text: "Kuzey Bosna bölgesi Avusturya'ya terk olunacak" },
+                    { letter: 'D', text: 'Tarafların elindeki esirler serbest bırakılacak' },
+                    { letter: 'E', text: 'Avusturya işgal ettiği yerlerden çekilecek' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1724 yılında Osmanlı Devleti ile Rusya'nın imzaladığı İstanbul Antlaşması'nda karara bağlanan hususlardan biridir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Şirvan bölgesi tamamen Osmanlı egemenliğine bırakılacaktır.' },
+                    { letter: 'B', text: "Rusların Gilan ve Mazenderan'da hakimiyeti Osmanlılarca kabul edilecektir." },
+                    { letter: 'C', text: 'Kırım Hanları İran meselelerine müdahil olmayacaktır.' },
+                    { letter: 'D', text: "Osmanlı Devleti Tebriz ve Urumiye'den ordularını çekecektir." },
+                    { letter: 'E', text: "İki taraf da İran'ın meşru hükümdarı olarak Eşref Han'ı kabul edecektir." }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Şah Abbas'ı 1603'te Osmanlılara savaş açmaya sevk eden sebepler arasında değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Safevi ordusunun Şah Abbas reformlarının ardından güçlenmesi' },
+                    { letter: 'B', text: 'Osmanlı ordularının batıda Habsburg güçleriyle meşgul olması' },
+                    { letter: 'C', text: "Şah Abbas'ın Osmanlı ülkesinde çıkan taht kavgasından istifade etmek istemesi" },
+                    { letter: 'D', text: "Osmanlıların Kafkasya'da sağlam bir idare tesis etmekte yetersiz kalması" },
+                    { letter: 'E', text: "Celali karışıklıklarının Anadolu'daki düzeni sarsması" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Osmanlı Devleti'nin 1784 yılında Rusya'ya verdiği Kırım senedinin Osmanlılar açısından olumlu değerlendirilebilecek maddesi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Soğucak kalesi ve çevresi Osmanlılara ait olacaktır.' },
+                    { letter: 'B', text: "Kırım bölgesinin Ruslara ait olduğu kabul edilecektir." },
+                    { letter: 'C', text: "Rusya, Kırım'ın iç işlerine karışmayacaktır." },
+                    { letter: 'D', text: 'Kırım Beyannamesi yürürlükten kalkacaktır.' },
+                    { letter: 'E', text: "Şahin Giray'ın hanlığı her iki devletçe kabul edilecektir." }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Osmanlı Devleti'nin 1787 yılında Rusya'ya savaş ilan etmesinden önceki süreçte yaşanan hadiselerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Ferah Ali Paşa'nın Anapa ve Soğucak kalelerini temelinden yıkması" },
+                    { letter: 'B', text: "II. Irakli'nin daveti ile Rus askerlerinin Tiflis'e girmesi" },
+                    { letter: 'C', text: 'II. Katerina\'nın "Grek Projesi"ni devreye sokması' },
+                    { letter: 'D', text: "İmam Mansur'un Osmanlı Devleti'ne bağlılığını bildirmesi" },
+                    { letter: 'E', text: "Rusya'nın Eflak, Boğdan ve Besarabya'da konsolosluklar açmak istemesi" }
+                ],
+                correct: 'A'
+            }
+        ];
+
+        let answers = {};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+
+            // Soruları rastgele karıştır
+            const shuffledQuiz = shuffle([...quizData]);
+
+            shuffledQuiz.forEach((item, index) => {
+                const qNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${qNum}`;
+
+                const p = document.createElement('p');
+                p.innerHTML = item.question;
+                div.appendChild(p);
+
+                // Şıkları rastgele karıştır
+                const shuffledOptions = shuffle([...item.options]);
+                shuffledOptions.forEach((opt, optIndex) => {
+                    const newLetter = String.fromCharCode(65 + optIndex);
+                    const label = document.createElement('label');
+                    label.className = 'option';
+                    label.htmlFor = `q${qNum}${newLetter}`;
+                    label.innerHTML = `<input type="radio" id="q${qNum}${newLetter}" name="q${qNum}" value="${newLetter}" onchange="checkAnswer(${qNum})"><span class="radio"></span>${newLetter}) ${opt.text}`;
+                    div.appendChild(label);
+
+                    // Eğer bu şık orijinal doğruysa, yeni harfi doğru olarak kaydet
+                    if (opt.letter === item.correct) {
+                        answers[`q${qNum}`] = { correct: newLetter, text: `${newLetter}) ${opt.text}` };
+                    }
+                });
+
+                const hintP = document.createElement('p');
+                hintP.className = 'answer-hint';
+                hintP.id = `hint${qNum}`;
+                hintP.innerHTML = `Doğru cevap: <strong>${answers[`q${qNum}`].text}</strong>`;
+                div.appendChild(hintP);
+
+                form.appendChild(div);
+            });
+        }
+
+        // Sayfa yüklendiğinde quiz'i render et (rastgele)
+        window.onload = renderQuiz;
+
+        function checkAnswer(num) {
+            const q = `q${num}`;
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (!selected) return;
+
+            const correct = answers[q].correct;
+            const options = document.querySelectorAll(`#q${num} .option`);
+
+            // Önce tüm renkleri sıfırla
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            // Doğru şıkkı yeşil yap
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            // Seçilen yanlışsa kırmızı yap
+            if (selected.value !== correct) {
+                const selectedOpt = selected.parentElement;
+                selectedOpt.classList.add('incorrect');
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q].correct) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function finishQuiz() {
+            // Tüm doğru şıkları yeşil yap
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const options = document.querySelectorAll(`#q${i} .option`);
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === answers[`q${i}`].correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            // Skoru hesapla ve göster
+            const score = calculateScore();
+            document.getElementById('result').innerHTML = `Toplam Skor: ${score} / ${total}`;
+            document.querySelector('.finish').disabled = true;
+        }
+
+        function showAllAnswers() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`hint${i}`).style.display = 'block';
+            }
+            document.getElementById('showAnswersBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>

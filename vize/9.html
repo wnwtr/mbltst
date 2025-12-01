@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>17.-18. YÜZYIL OSMANLI TARİHİ VİZE SORULARI Çoktan Seçmeli Test</title>
+    <button onclick="window.location.href='index.html'" style="position: fixed; bottom: 40px; right: 40px; padding: 20px 30px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Geri Dön</button>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0 auto; 
+            max-width: 800px;
+            padding: 20px; 
+            background-color: #f9f9f9; 
+            color: #333; 
+            line-height: 1.6;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        #showAnswersBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        #showAnswersBtn:hover { 
+            background-color: #219a52; 
+        }
+        .question { 
+            background-color: white; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        .question p { 
+            font-weight: normal; 
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+            white-space: pre-line;
+        }
+        .option { 
+            display: flex; 
+            align-items: center; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            padding: 8px; 
+            border-radius: 5px; 
+            transition: background-color 0.3s; 
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+        .option input { 
+            display: none; 
+        }
+        .option .radio { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background-color: white; 
+            border: 2px solid #3498db; 
+            margin-right: 15px; 
+            position: relative; 
+        }
+        .option .radio::after { 
+            content: ''; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #3498db; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; 
+        }
+        .option input:checked + .radio::after { 
+            display: block; 
+        }
+        .option.correct { 
+            background-color: #27ae60; 
+            color: white; 
+        }
+        .option.incorrect { 
+            background-color: #e74c3c; 
+            color: white; 
+        }
+        .answer-hint { 
+            display: none; 
+            margin-top: 10px; 
+            font-size: 0.9em; 
+            color: #27ae60; 
+            font-style: italic; 
+            font-weight: normal;
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 5px;
+        }
+        button.finish { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        button.finish:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.3em; 
+            color: #2c3e50; 
+            font-weight: bold;
+        }
+        /* Cevap Anahtarı Stili */
+        #answerKey {
+            background-color: #f0f4f8;
+            border: 1px solid #c_s_c;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre;
+            font-size: 1.1em;
+            color: #333;
+        }
+        #answerKey h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>17.-18. YÜZYIL OSMANLI TARİHİ VİZE SORULARI</h1>
+    <button id="showAnswersBtn" onclick="showAllAnswers()">Cevapları Göster</button>
+    <form id="quizForm"></form>
+    <button class="finish" onclick="finishQuiz()">Testi Bitir</button>
+    <div id="result"></div>
+    <script>
+        // Soru verileri
+        const quizData = [
+            {
+                question: "<strong>Aşağıdakilerden hangisi kalyon türü gemilerin özelliklerinden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Sığ kıyı ve limanlara yanaşmaları kolaydı.' },
+                    { letter: 'B', text: 'Rüzgârlı havalarda yelkenleriyle uzun mesafeler kat edebilirlerdi.' },
+                    { letter: 'C', text: 'Çok sayıda topla donatılırlardı.' },
+                    { letter: 'D', text: 'Yüksek bordalı ve geniş güverteli inşa edilirlerdi.' },
+                    { letter: 'E', text: 'Personel, mühimmat ve kargo taşımaya elverişliydiler.' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Osmanlı-Safevi savaşının 1615’te yeniden başlamasının sebepleri arasında değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Veziriazam Öküz Mehmed Paşa’nın Nasuh Paşa zamanında imzalanan antlaşmayı tanımaması' },
+                    { letter: 'B', text: 'Bazı Gürcü prenslerinin Osmanlı sarayına iltica etmesi' },
+                    { letter: 'C', text: 'Safevilerin Gürcistan’daki faaliyetleri' },
+                    { letter: 'D', text: 'Şah Abbas’ın 1612’de taahhüt ettiği miktarda ipeği yollamaması' },
+                    { letter: 'E', text: 'Osmanlı elçisinin Safevi sarayında hapsedilmesi' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>1682’de Osmanlı tersanelerinde donanmada istihdam edilmek üzere yeniden kalyon inşasına başlanması hakkında aşağıda verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'İlk aşamada on kalyon inşa edilmiştir.' },
+                    { letter: 'B', text: 'Kalyon inşasında Garp Ocaklarından gelenlerden yardım alınmıştır.' },
+                    { letter: 'C', text: 'Merzifonlu Kara Mustafa Paşa’nın sadrazamlığında gerçekleşmiştir.' },
+                    { letter: 'D', text: 'Kalyonların Kuzey Afrika’daki limanlarda yapılmasına karar verilmiştir.' },
+                    { letter: 'E', text: 'İnşa edilen gemilerin kaç mürettebat ve topla donatılacağı kurala bağlanmıştır.' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Avusturyalılarla savaşan Osmanlı ordu neferlerinin 1687 tarihinde başlattığı isyanın nedenler arasında gösterilemez?</strong>",
+                options: [
+                    { letter: 'A', text: 'Askerlere ödenmesi gereken maaşların gecikmesi' },
+                    { letter: 'B', text: 'Serdar-ı ekrem Sarı Süleyman Paşa’nın başarısız ordu yönetimi' },
+                    { letter: 'C', text: 'Ordu neferlerinin Merzifonlu Kara Mustafa Paşa’ya duydukları öfke' },
+                    { letter: 'D', text: 'Osmanlı ordusunun Mohaç’ta ağır bir hezimete uğraması' },
+                    { letter: 'E', text: 'Osmanlı ordusu içindeki yaşam koşullarının kötüleşmesi' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>1681 Bahçesaray Antlaşması’na ilişkin aşağıdakilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Rus Çarlığı Kırım hanına haraç ödeyecektir.' },
+                    { letter: 'B', text: 'Osmanlı ve Rus devletleri arasında yirmi yıllık bir ateşkesi öngörür.' },
+                    { letter: 'C', text: 'Rus çarı Osmanlı sadrazamına denk hâle getirilmiştir.' },
+                    { letter: 'D', text: 'Özi nehri Osmanlı ve Rus toprakları arasında sınır kabul edilmiştir.' },
+                    { letter: 'E', text: 'İlk Osmanlı-Rus antlaşması kabul edilir.' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>1688–1689 tarihinde Osmanlı elçisi Zülfikar Efendi’nin Habsburg temsilcileriyle yürüttüğü diplomatik müzakereler hakkında aşağıdakilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Belgrad’ın Habsburgların eline geçmesi üzerine diplomatik görüşmelerden sonuç alamadı.' },
+                    { letter: 'B', text: 'Avusturya yolculuğuna Aleksandr İskerletzâde’nin refakatinde çıktı.' },
+                    { letter: 'C', text: 'Habsburg idaresi tarafından bir süre Viyana dışında rehin tutuldu.' },
+                    { letter: 'D', text: 'III. William’ın arabuluculuğu üzerine görevlendirildi.' },
+                    { letter: 'E', text: 'Viyana’da ayrıca Fransız temsilcileriyle görüştü.' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>1603–18 Osmanlı-Safevi Savaşı esnasında Anadolu’dan kalkıp İran’a giden Celali kitlelerinin Şah Abbas sarayında büyük bir saygıyla karşılanmasının sebebi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Şah Abbas’ın Celali liderleriyle tanışma arzusu' },
+                    { letter: 'B', text: 'Osmanlı Sultanını diplomatik arenada küçük düşürmek' },
+                    { letter: 'C', text: 'Celalileri Osmanlı ordularına karşı kullanma isteği' },
+                    { letter: 'D', text: 'İran’a giren Celali gruplarını göz önünde tutma çabası' },
+                    { letter: 'E', text: 'İran saray geleneklerinde yabancılara gösterilen hürmet' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>1648 yılında ulema, sipahi ve yeniçerilerin ittifakıyla tahttan indirilip katledilen Osmanlı padişahı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'I. İbrahim' },
+                    { letter: 'B', text: 'II. Osman' },
+                    { letter: 'C', text: 'IV. Murad' },
+                    { letter: 'D', text: 'V. Mehmed' },
+                    { letter: 'E', text: 'V. Mustafa' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Şah Abbas’ı 1603’te Osmanlılara savaş açmaya şevk eden sebepler arasında değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Celali karışıklıklarının Anadolu’daki düzeni sarsması' },
+                    { letter: 'B', text: 'Şah Abbas’ın Osmanlı ülkesinde çıkan taht kavgasından istifade etmek istemesi' },
+                    { letter: 'C', text: 'Osmanlı ordularının batıda Habsburg güçleriyle meşgul olması' },
+                    { letter: 'D', text: 'Osmanlıların Kafkasya’da sağlam bir idare tesis etmekte yetersiz kalması' },
+                    { letter: 'E', text: 'Safevi ordusunun Şah Abbas reformlarının ardından güçlenmesi' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi İran Şahı I. Abbas’ın uygulamaya koyduğu reformlardan biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Top temin etmek için Batılılarla iletişime geçmek' },
+                    { letter: 'B', text: 'Resmî dili Farsçaya çevirmek' },
+                    { letter: 'C', text: '40.000 kişilik düzenli bir ordu kurmak' },
+                    { letter: 'D', text: 'İdarede Türkmen emirlerin etkinliğini azaltmak' },
+                    { letter: 'E', text: 'İsfahan’ı bir kültür merkezi haline getirmek' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>17. yüzyılın ilk yarısında tayin edilen sadrazamların bir önceki asra kıyasla ortalama görev sürelerinin giderek düşmesinin aşağıdakilerden hangisine işaret ettiği iddia edilebilir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Osmanlı Devleti’nin geçirdiği siyasi istikrarsızlık' },
+                    { letter: 'B', text: 'Padişah değişikliklerinin sıklaşması' },
+                    { letter: 'C', text: 'Enderun eğitiminin zayıflaması' },
+                    { letter: 'D', text: 'Tımarlı sipahiliğin bozulması' },
+                    { letter: 'E', text: 'Saray ağalarının güçlenmesi' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1699 Karlofça müzakerelerinde Rus temsilcilerinin barış imzalanmasına sıcak bakmamalarını en iyi şekilde açıklamaktadır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Osmanlılar ve Ruslar arasında 1700 İstanbul Antlaşması’nın imzalanması' },
+                    { letter: 'B', text: 'Rusların Eflak ve Boğdan’ı ele geçirmek istemesi' },
+                    { letter: 'C', text: 'Rus Çarı Petro’nun elçilerine imza yetkisi vermemesi' },
+                    { letter: 'D', text: 'Rusların Karadeniz’deki limanlara ulaşma isteği' },
+                    { letter: 'E', text: 'Antlaşmanın *status quo/uti possidetis* prensibini esas alması' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Köprülü Mehmed Paşa’nın 1688’de Fransız elçisi Jean de la Haye ve oğlunu hapsettirmesinin sebebi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Fransız elçilerin diplomatik görüşmelede kural ve teamüllere uymaması' },
+                    { letter: 'B', text: 'Osmanlı ordusunun bu tarihte Erdel seferine çıkması' },
+                    { letter: 'C', text: 'Köprülü Mehmed Paşa’nın sert tabiatı olması' },
+                    { letter: 'D', text: 'Fransa Kralı XIV.\nLouis’nin St. Gotthard ve Kandiye’de düşman kuvvetlerine yardım etmesi' },
+                    { letter: 'E', text: 'Fransız sefareti ve Venedikliler arasında şifreli mektuplar ele geçirilmesi' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Osmanlı siyasetname ve ıslahatname literatüründe “cenebî” kavramının taşıdığı anlam aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Osmanlı topraklarında yaşayan batılı tüccar ve konsoloslar' },
+                    { letter: 'B', text: 'Gayrimüslim tebaa' },
+                    { letter: 'C', text: 'Yerleşik uygulama ve eski kanunların muteber zümrelerin dışında tuttuğu kimseler' },
+                    { letter: 'D', text: 'Celali isyanlarına karışan mazûl tımarlı sipahiler' },
+                    { letter: 'E', text: 'Hanedana mensup olmayanlar' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Osmanlıların 1689’da Habsburg sarayıyla barış akdetmek yerine savaş devam ettirmeye karar vermelerinin sebebi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Ayasofya’da toplanan meşveret meclisinde savaşa devam etme kararının çıkması' },
+                    { letter: 'B', text: 'Osmanlıların Fransızlardan aldığı yardımla ordularını yenilemeleri' },
+                    { letter: 'C', text: 'Fransızların Habsburg yönetimindeki Alman topraklarına saldırması' },
+                    { letter: 'D', text: 'Fazıl Mustafa Paşa’nın sadrazamlığa geçmesi' },
+                    { letter: 'E', text: 'II.\nSüleyman’ın Habsburglarla anlaşmaya varılmasına razı olmaması' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Garp Ocaklarında faaliyet gösteren denizcilerin erken tarihlerde kalyon kullanımına geçmelerinin sebebi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Osmanlı başkentinden çok uzakta oluşları' },
+                    { letter: 'B', text: 'İngiliz ve Hollandalı denizcilerle kurdukları yakın ilişki' },
+                    { letter: 'C', text: 'Barbaros Hayreddin’in mirasına sahip çıkmaları' },
+                    { letter: 'D', text: 'Kuzey Afrika sahillerinin coğrafi özellikleri' },
+                    { letter: 'E', text: 'Korsanlıkla geçinmeleri' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Osmanlı nasihatname yazarlarının hazinenin zayıflamasını engellemek için önerdikleri tedbirlerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Sahte seyyid ve şerifleri ortaya çıkarmak' },
+                    { letter: 'B', text: 'Kapıkulu ocaklarının sayısını azaltmak' },
+                    { letter: 'C', text: 'Vezir ailelerinin tesis ettiği vakıfları denetlemek' },
+                    { letter: 'D', text: 'Reayanın toprağını terk etmesini engellemek' },
+                    { letter: 'E', text: 'Yüksek maliyetli silah türlerinin kullanılmasından kaçınmak' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdaki devletlerden hangisinin 17. yüzyılın ikinci yarısında Orta Avrupa siyasi sahnesinde etkin bir rolü olduğu iddia edilemez?</strong>",
+                options: [
+                    { letter: 'A', text: 'Habsburg İmparatorluğu' },
+                    { letter: 'B', text: 'Kırım Hanlığı' },
+                    { letter: 'C', text: 'Osmanlı Sultanlığı' },
+                    { letter: 'D', text: 'İngiltere Krallığı' },
+                    { letter: 'E', text: 'Lehistan Krallığı' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Osmanlı denizcilerinin 17. yüzyılın sonlarına değin kadırgayı temel savaş gemisi olarak kabul etmesinin sebepleri arasında değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Akdeniz’de yelkenli gemilere uygun rüzgârların azlığı' },
+                    { letter: 'B', text: 'Barbaros Hayreddin’in Osmanlı denizciliğindeki manevi etkisi' },
+                    { letter: 'C', text: 'Akdeniz coğrafyasının kadırga cinsi gemilere uygun oluşu' },
+                    { letter: 'D', text: 'Kadırgaların daha fazla top taşıyabilmeleri' },
+                    { letter: 'E', text: 'Kadırgaların deniz muharebelerinde daha süratli ve etkili tekneler olduğuna inanılması' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>1672’de Osmanlı ve Leh sarayları arasında imzalanan Bucaş Antlaşması’nın yürürlüğe girmemesinin sebebi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Leh kralının son anda fikir değiştirmesi' },
+                    { letter: 'B', text: 'Kırım hanının antlaşmayı tanımaması' },
+                    { letter: 'C', text: 'Fazıl Ahmed Paşa’nın yeni şartlarda ısrar etmesi' },
+                    { letter: 'D', text: 'Leh soylular meclisinin muhalefeti' },
+                    { letter: 'E', text: 'Jan Sobieski’nin Hotin’i ele geçirmesi' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Orta Macar Krallığı hakkında aşağıda verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Habsburg hükümdarı I. Leopold’ün himayesine girdi.' },
+                    { letter: 'B', text: 'Osmanlıların yüksek hâkimiyetini tanıdı.' },
+                    { letter: 'C', text: '1682–1685 yılları arasında varlığını sürdürdü.' },
+                    { letter: 'D', text: 'Macar soylusu Tököli İmre önderliğinde kuruldu.' },
+                    { letter: 'E', text: 'Çoğunlukla Protestan Macar soyluları tarafından destekleniyordu.' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdaki etkenlerden hangisi Venedik güçlerinin 1684–1687 arasında Mora ve Rumeli kıyılarında kazandığı seri zaferlerin sebepleri arasında gösterilebilir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Bu bölgelerin eski Venedik toprağı olması' },
+                    { letter: 'B', text: 'Osmanlıların Mora ve Rumeli kıyılarını önemsememesi' },
+                    { letter: 'C', text: 'Adriyatik’teki korsanlık faaliyetleri' },
+                    { letter: 'D', text: 'Venedik askerî teknolojisinin üstünlüğü' },
+                    { letter: 'E', text: 'Venedik kuvvetlerinin yerli halkın desteğini alması' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdaki isimlerden hangisi Osmanlı nasıhatname ve ıslahatname yazarları arasında değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Nasıruddin Tüsî' },
+                    { letter: 'B', text: 'Katip Çelebi' },
+                    { letter: 'C', text: 'Koçi Bey' },
+                    { letter: 'D', text: 'Gelibolulu Mustafa Âli' },
+                    { letter: 'E', text: 'Hasan Kâfi' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisinin Merzifonlu Kara Mustafa Paşa’nın 1683 Viyana seferine girişmesinin sebeplerinden biri olduğu iddia edilemez?</strong>",
+                options: [
+                    { letter: 'A', text: 'Şanlı bir zafer elde etme isteği' },
+                    { letter: 'B', text: 'Orta Macar Krallığının sınırlarını genişletmek' },
+                    { letter: 'C', text: 'Ani bir baskınla Habsburgları şaşırtmak' },
+                    { letter: 'D', text: 'Tököli İmre’nin desteği sayesinde Viyana’yı çembere alabileceğine inanmak' },
+                    { letter: 'E', text: 'Fazıl Ahmed Paşa’nın 1664’te Habsburglar karşısında aldığı yenilginin öcünü almak' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>1639 Kasr-ı Şirin Antlaşması Osmanlı ve Safevi toprakları arasındaki sınır hattının belirlenmesinde aşağıdaki antlaşmalardan hangisini esas kabul etmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: '1612 - Nasuh Paşa Antlaşması' },
+                    { letter: 'B', text: '1621 - Hotin Antlaşması' },
+                    { letter: 'C', text: '1555 - Amasya Antlaşması' },
+                    { letter: 'D', text: '1606 - Zitvatorok Antlaşması' },
+                    { letter: 'E', text: '1618 - Serav Antlaşması' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Osmanlı düşünürü Gelibolulu Mustafa Âli hakkında aşağıda verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Çiftçilerin topraklarını bırakıp büyük kentlere yerleşmelerini zararlı bulur.' },
+                    { letter: 'B', text: 'Nushatü’s-Selâtin isimli eserin müellifidir.' },
+                    { letter: 'C', text: 'Sultan I. Selim dönemindeki uygulamalara dönülmesi gerektiğini savunur.' },
+                    { letter: 'D', text: 'Yazılarında sert bir eleştiri üslubu kullanmıştır.' },
+                    { letter: 'E', text: 'Osmanlı ülkesindeki bozuklukların düzeltilmesi için kanun-ı kadime dönülmesini teklif eder.' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Köprülü hanesinde yetişip sadaret makamına yükselmiş kişilerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Fazıl Ahmed Paşa' },
+                    { letter: 'B', text: 'Tarhuncu Ahmed Paşa' },
+                    { letter: 'C', text: 'Fazıl Mustafa Paşa' },
+                    { letter: 'D', text: 'Merzifonlu Kara Mustafa Paşa' },
+                    { letter: 'E', text: 'Siyavuş Paşa' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>1669 tarihinde Kandiye kalesini fethederek Girit savaşını sona erdiren Osmanlı serdarı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Köprülü Mehmed Paşa' },
+                    { letter: 'B', text: 'Boynueğri Mehmed Paşa' },
+                    { letter: 'C', text: 'Melek Ahmed Paşa' },
+                    { letter: 'D', text: 'Deli Hüseyin Paşa' },
+                    { letter: 'E', text: 'Fazıl Ahmed Paşa' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>1624’te Bağdat’ın Safevi hâkimiyetine geçişi hakkında aşağıda yazılanlardan hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Diyarbakır valisi Hafız Ahmed Paşa Bekir Subaşı’yı beylerbeyi tayin ederek bağlılığını kazanmaya çalıştı.' },
+                    { letter: 'B', text: 'Bekir Subaşı, Şah Abbas’la yaptığı anlaşma gereği kaleyi Safevilere teslim etti.' },
+                    { letter: 'C', text: 'Kentin Safevilerin eline geçişini müteakip bazı sosyal karışıklıklar yaşandı.' },
+                    { letter: 'D', text: 'Bekir Subaşı, Osmanlılara karşı Safevi makamlarından yardım istedi.' },
+                    { letter: 'E', text: 'Bekir Subaşı önderliğinde ayaklanan garnizon askerleri Bağdat valisini öldürdüler.' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>1664 Vasvar Antlaşması hakkında aşağıda verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Antlaşma aşa hâlihi/status quo ilkesine dayanarak hazırlandı.' },
+                    { letter: 'B', text: 'Habsburglar adına I. Leopold tarafından onaylandı.' },
+                    { letter: 'C', text: 'Antlaşma metni Osmanlı ordugâhında kâğıda döküldu.' },
+                    { letter: 'D', text: 'Osmanlılar adına IV. Mehmed tarafından tasdik edildi.' },
+                    { letter: 'E', text: 'Osmanlılar ve Habsburg devletleri arasında varılan barış Macar soylularınca desteklendi.' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>1683 Viyana bozgunu sonrası Macaristan’daki kayıplardan hangisinin Osmanlı siyasi, askerî ve toplumsal tarihi bakımından diğerlerinden daha derin izler bıraktığı söylenebilir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Estergon' },
+                    { letter: 'B', text: 'Vaç' },
+                    { letter: 'C', text: 'Vişegrad' },
+                    { letter: 'D', text: 'Uyvar' },
+                    { letter: 'E', text: 'Budin' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Osmanlı tarihinde padişahların hal’edilmesine ilişkin aşağıda verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Osmanlı bürokrat ve ulemasının hanedana karşı güçlendiğine işaret ediyordu.' },
+                    { letter: 'B', text: 'İslam hukukuna aykırı bir uygulamaydı.' },
+                    { letter: 'C', text: 'Çoğunlukla şeyhülislamın fetvasıyla gerçekleşirdi.' },
+                    { letter: 'D', text: 'Padişahın tahttan indirilmesine çoğu vakit bir isyan eşlik ediyordu.' },
+                    { letter: 'E', text: 'Yeniçeri ağası, sipahiler, vezirler ve ulema gibi grupların padişah değişikliklerinde etkisi vardı.' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisinin 1645 Girit seferinin görünürdeki sebebi olduğu söylenebilir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Kızlarağası Sümbül Ağa’yı taşıyan geminin Malta korsanları tarafından ele geçirilmesi' },
+                    { letter: 'B', text: 'Malta korsanlarının Girit’e yerleşme isteği' },
+                    { letter: 'C', text: 'Deli Hüseyin Paşa’nın Girit’teki faaliyetleri' },
+                    { letter: 'D', text: 'Kösem Sultan’ın Venedikliler üzerine sefer açılması isteği' },
+                    { letter: 'E', text: 'Girit’in kısa sürede Osmanlı topraklarına katılacağı inancı' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 17. yüzyılın ortasında Osmanlı toplumunda daha güçlü ve istikrarlı bir hükümet kurma isteğinin bulunduğunun göstergelerinden biri kabul edilemez?</strong>",
+                options: [
+                    { letter: 'A', text: 'Katip Çelebi’nin sahibü’s-seyf kavramını ortaya atışı' },
+                    { letter: 'B', text: 'Sadaret konağının 1654’te saray dışına taşınması' },
+                    { letter: 'C', text: 'Kitab-ı Müstetab yazarının kanuna aykırı olduğunu bildiği halde sadrazamlığa tayindeki silsileyi bozması' },
+                    { letter: 'D', text: '1651 isyanında halkın IV.\nMehmed’i ayak divanı toplamaya zorlayışı' },
+                    { letter: 'E', text: 'Koçi Bey’in IV. Murad’a sadrazamları uzun yıllar değiştirmemesini tavsiye edişi' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>1603-18 Osmanlı-Safevi savaşında Safevi kuvvetlerinin Tiflis, Gürcistan, Azerbaycan, Karabağ ve Gence gibi geniş arazileri kısa sürede ele geçirmeleri aşağıdaki tespitlerden hangisiyle izah edilebilir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Osmanlı serdarları askerî kuvvetlere komuta etmekte yetersiz kaldılar.' },
+                    { letter: 'B', text: 'Osmanlılar 17. yüzyılın başında fetih siyasetinden uzaklaştılar.' },
+                    { letter: 'C', text: 'Osmanlılar, 1578-90’da elde ettikleri bölgelerde istikrarlı ve köklü bir idare kurmayı başaramadılar.' },
+                    { letter: 'D', text: 'Osmanlı ordusu doğu sınırına intikal etmekte geç kaldı.' },
+                    { letter: 'E', text: 'Osmanlı başkenti uzak sınır boylarındaki kayıpları önemsemedi.' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>16. yüzyılın sonunda Safevi devletinin toparlanmasını sağlayıp Azerbaycan ve Kafkas illerini Osmanlılardan alan Safevi hükümdarı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Şah Tahması' },
+                    { letter: 'B', text: 'Babür Şah' },
+                    { letter: 'C', text: 'Timur Han' },
+                    { letter: 'D', text: 'Şah Abbas' },
+                    { letter: 'E', text: 'Şah Safi' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıda sayılan Osmanlı devlet adamlarından hangisi 17. yüzyılın ortasında Girit adasındaki çarpışmalara doğrudan katılmamıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Kaplan Mustafa Paşa' },
+                    { letter: 'B', text: 'Civan Kapıcıbaşı Mehmed Paşa' },
+                    { letter: 'C', text: 'Köprülü Mehmed Paşa' },
+                    { letter: 'D', text: 'Fazıl Ahmed Paşa' },
+                    { letter: 'E', text: 'Deli Hüseyin Paşa' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Koçi Bey 17. yüzyılda “Küfr ile dünya durur, zulmile durmaz,” derken Osmanlı siyaset düşüncesindeki hangi ilkeye işaret etmektedir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Erkân-ı erbaa' },
+                    { letter: 'B', text: 'Ancien régime' },
+                    { letter: 'C', text: 'Siyâset-i sultânî' },
+                    { letter: 'D', text: 'Adalet' },
+                    { letter: 'E', text: 'Nizâm-ı âlem' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 17. yüzyılın ortasında Venedik donanmasının Çanakkale boğazını abluka altına almasının yol açtığı sonuçlardan biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Başkente kapıkulu ve esnaf isyanları çıktı.' },
+                    { letter: 'B', text: 'İstanbul’da yiyecek fiyatları arttı.' },
+                    { letter: 'C', text: 'Osmanlı sarayının ihtiyaç duyduğu vergi miktarı yükseldi.' },
+                    { letter: 'D', text: 'IV. Mehmed’in yerine oğlu Süleyman tahta geçirildi.' },
+                    { letter: 'E', text: 'Bazı senelerde İstanbul’da kıtlık tehlikesi ortaya çıktı.' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Fazıl Ahmed Paşa’nın 1663’te Habsburglara karşı sefere çıkmasının temel sebebi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Erdel’deki Habsburg kuvvetlerini bölgeden temizlemek' },
+                    { letter: 'B', text: 'Uyvar’ı Osmanlı topraklarına katmak' },
+                    { letter: 'C', text: 'Hırvat Banı tarafından Kanije karşısında Yenikale’nin inşa ettirilmesi' },
+                    { letter: 'D', text: 'Babası Köprülü Mehmed Paşa’nın vasiyetini yerini getirmek' },
+                    { letter: 'E', text: 'Osmanlı ordusunu başkentten uzaklaştırmak' }
+                ],
+                correct: 'A'
+            }
+        ];
+
+        let answers = {};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+
+            // Soruları rastgele karıştır
+            const shuffledQuiz = shuffle([...quizData]);
+
+            shuffledQuiz.forEach((item, index) => {
+                const qNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${qNum}`;
+
+                const p = document.createElement('p');
+                p.innerHTML = item.question;
+                div.appendChild(p);
+
+                // Şıkları rastgele karıştır
+                const shuffledOptions = shuffle([...item.options]);
+                shuffledOptions.forEach((opt, optIndex) => {
+                    const newLetter = String.fromCharCode(65 + optIndex);
+                    const label = document.createElement('label');
+                    label.className = 'option';
+                    label.htmlFor = `q${qNum}${newLetter}`;
+                    label.innerHTML = `<input type="radio" id="q${qNum}${newLetter}" name="q${qNum}" value="${newLetter}" onchange="checkAnswer(${qNum})"><span class="radio"></span>${newLetter}) ${opt.text}`;
+                    div.appendChild(label);
+
+                    // Eğer bu şık orijinal doğruysa, yeni harfi doğru olarak kaydet
+                    if (opt.letter === item.correct) {
+                        answers[`q${qNum}`] = { correct: newLetter, text: `${newLetter}) ${opt.text}` };
+                    }
+                });
+
+                const hintP = document.createElement('p');
+                hintP.className = 'answer-hint';
+                hintP.id = `hint${qNum}`;
+                hintP.innerHTML = `Doğru cevap: <strong>${answers[`q${qNum}`].text}</strong>`;
+                div.appendChild(hintP);
+
+                form.appendChild(div);
+            });
+        }
+
+        // Sayfa yüklendiğinde quiz'i render et (rastgele)
+        window.onload = renderQuiz;
+
+        function checkAnswer(num) {
+            const q = `q${num}`;
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (!selected) return;
+
+            const correct = answers[q].correct;
+            const options = document.querySelectorAll(`#q${num} .option`);
+
+            // Önce tüm renkleri sıfırla
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            // Doğru şıkkı yeşil yap
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            // Seçilen yanlışsa kırmızı yap
+            if (selected.value !== correct) {
+                const selectedOpt = selected.parentElement;
+                selectedOpt.classList.add('incorrect');
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q].correct) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function finishQuiz() {
+            // Tüm doğru şıkları yeşil yap
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const options = document.querySelectorAll(`#q${i} .option`);
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === answers[`q${i}`].correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            // Skoru hesapla ve göster
+            const score = calculateScore();
+            document.getElementById('result').innerHTML = `Toplam Skor: ${score} / ${total}`;
+            document.querySelector('.finish').disabled = true;
+        }
+
+        function showAllAnswers() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`hint${i}`).style.display = 'block';
+            }
+            document.getElementById('showAnswersBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>
