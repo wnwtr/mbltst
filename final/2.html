@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANTİK NUMİSMATİK FİNAL Testi</title>
+    <button onclick="window.location.href='index.html'" style="position: fixed; bottom: 40px; right: 40px; padding: 20px 30px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Geri Dön</button>      
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0 auto; 
+            max-width: 800px;
+            padding: 20px; 
+            background-color: #f9f9f9; 
+            color: #333; 
+            line-height: 1.6;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        #showAnswersBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        #showAnswersBtn:hover { 
+            background-color: #219a52; 
+        }
+        .question { 
+            background-color: white; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        .question p { 
+            font-weight: normal; 
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+            white-space: pre-line;
+        }
+        .option { 
+            display: flex; 
+            align-items: center; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            padding: 8px; 
+            border-radius: 5px; 
+            transition: background-color 0.3s; 
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+        .option input { 
+            display: none; 
+        }
+        .option .radio { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background-color: white; 
+            border: 2px solid #3498db; 
+            margin-right: 15px; 
+            position: relative; 
+        }
+        .option .radio::after { 
+            content: ''; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #3498db; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; 
+        }
+        .option input:checked + .radio::after { 
+            display: block; 
+        }
+        .option.correct { 
+            background-color: #27ae60; 
+            color: white; 
+        }
+        .option.incorrect { 
+            background-color: #e74c3c; 
+            color: white; 
+        }
+        .answer-hint { 
+            display: none; 
+            margin-top: 10px; 
+            font-size: 0.9em; 
+            color: #27ae60; 
+            font-style: italic; 
+            font-weight: normal;
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 5px;
+        }
+        button.finish { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        button.finish:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.3em; 
+            color: #2c3e50; 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>ANTİK NUMİSMATİK FİNAL SORULARI</h1>
+    <button id="showAnswersBtn" onclick="showAllAnswers()">Cevapları Göster</button>
+    <form id="quizForm"></form>
+    <button class="finish" onclick="finishQuiz()">Testi Bitir</button>
+    <div id="result"></div>
+
+    <script>
+        // Soru verileri: ANTİK NUMİSMATİK FİNAL SORULARI dosyasından alınmıştır.
+        // Hata düzeltildi: Kesme işaretleri escape edildi.
+        const quizData = [
+            {
+                question: "<strong>Perslerin MÖ 546'da Lydia Krallığı'nı yıktıkları zaman Lydia Krallığı ve Pers Krallığı'nın tahtında bulunan kralların isimleri aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Kyros - I. Dareios' },
+                    { letter: 'B', text: 'Alyattes - I. Dareios' },
+                    { letter: 'C', text: 'Kroisos - I. Dareios' },
+                    { letter: 'D', text: 'Gyges - Kyros' },
+                    { letter: 'E', text: 'Kroisos - Kyros' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>İslamiyet'in doğuşundan önce Güney Arabistan'da yer alan ve Atina'nın baykuşlu sikkelerinin imitasyonlarını bastırıp kullanan devlet aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Nebati Devleti' },
+                    { letter: 'B', text: 'Baktria Krallığı' },
+                    { letter: 'C', text: 'Sasani Devleti' },
+                    { letter: 'D', text: 'Himyeri Krallığı' },
+                    { letter: 'E', text: 'Palmyra' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Atina'nın üzerinde lejand bulunmayan ve çok çeşitli tiplerde basılan serilerinin adı olan \"wappenmünzen\" hangi anlama gelmektedir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Tiran sikkeleri' },
+                    { letter: 'B', text: 'Baykuşlar' },
+                    { letter: 'C', text: 'Hanedan armalı sikkeler' },
+                    { letter: 'D', text: 'Kaplumbağalar' },
+                    { letter: 'E', text: 'Konuşan tip' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Atina'da kullanılan ve ana birimi 17.2 gr'lık stater olan, Hellenistik Dönem'de Büyük İskender tarafından da kullanılan ağırlık sistemi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Akha' },
+                    { letter: 'B', text: 'Khios' },
+                    { letter: 'C', text: 'Attika' },
+                    { letter: 'D', text: 'Korinthos' },
+                    { letter: 'E', text: 'Aigina' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Dictator Caesar'ın senatoya girişi sırasında öldürülmesinin ardından bastırılan sikkelerde, ülkeye gelen özgürlüğü ifade etmek için hangi tipler kullanılmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Roma lejyon sancağı' },
+                    { letter: 'B', text: 'İki hançer arasında Pileus' },
+                    { letter: 'C', text: 'Senato betimi' },
+                    { letter: 'D', text: 'Victoria betimi' },
+                    { letter: 'E', text: 'Libertas personifikasyonu' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdaki sikke hangi krallığa ve krala aittir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Pergamon Krallığı - Eumenes' },
+                    { letter: 'B', text: 'Kappadokia Krallığı - Philetairos' },
+                    { letter: 'C', text: 'Bithynia Krallığı - Nikomedes' },
+                    { letter: 'D', text: 'Bithynia Krallığı - 1. Prusias' },
+                    { letter: 'E', text: 'Pontos Krallığı - IV. Mithradates' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Intaglio tekniği ile sikke basan Metapontion kentinin sikkeleri üzerinde hangi tip yer alır?</strong>",
+                options: [
+                    { letter: 'A', text: 'İnek' },
+                    { letter: 'B', text: 'Buğday başağı' },
+                    { letter: 'C', text: 'Tripod' },
+                    { letter: 'D', text: 'Zeus' },
+                    { letter: 'E', text: 'Boğa' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi numismatiğin temas hâlinde bulunduğu bilimlerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Metroloji' },
+                    { letter: 'B', text: 'Sanat tarihi' },
+                    { letter: 'C', text: 'Morfoloji' },
+                    { letter: 'D', text: 'Arkeoloji' },
+                    { letter: 'E', text: 'Metalurji' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Bizans sikke birimlerinden biri olan Solidus aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Bronz sikke' },
+                    { letter: 'B', text: 'Gümüş sikke' },
+                    { letter: 'C', text: '40 nummia değerinde sikke' },
+                    { letter: 'D', text: 'Billon sikke' },
+                    { letter: 'E', text: 'Altın sikke' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>MÖ 213 veya 205'te tedavüle çıkan ve arka yüzünde tropaeum oluşturan Victoria tipi bulunan gümüş Roma sikkelerine verilen ad aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Denarius' },
+                    { letter: 'B', text: 'Victoriatus' },
+                    { letter: 'C', text: 'Aureus' },
+                    { letter: 'D', text: 'Drahmi' },
+                    { letter: 'E', text: 'Quadrigatus' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>7. yüzyılda Emevi Devleti'nin Büyük Suriye ve civarında kullandığı para sistemi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Roma' },
+                    { letter: 'B', text: 'Gassani' },
+                    { letter: 'C', text: 'Bizans' },
+                    { letter: 'D', text: 'Sasani' },
+                    { letter: 'E', text: 'Yunan' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Pers hâkimiyeti altında Kilikia satraplarının sikkelerinin yoğun olarak basıldığı satraplık merkezi kent aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Soloi' },
+                    { letter: 'B', text: 'Tarsos' },
+                    { letter: 'C', text: 'Nagidos' },
+                    { letter: 'D', text: 'Issos' },
+                    { letter: 'E', text: 'Mallos' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Pers Kralı I. Dareios döneminde Pers sikkeleri ile ilgili hangi önemli gelişme yaşanmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Sikke kullanımına son verilmiştir.' },
+                    { letter: 'B', text: "İran'da darphaneler açılmıştır." },
+                    { letter: 'C', text: 'Vergi ve satraplık sistemi düzenlenmiştir.' },
+                    { letter: 'D', text: 'Pers Kral Yolu onarılmış ve ticaret canlandırılmıştır.' },
+                    { letter: 'E', text: 'Perslerin kendi özgün sikke tipi doğmuştur.' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>İskender'in gümüş sikkeleri üzerinde hangi tip görülür?</strong>",
+                options: [
+                    { letter: 'A', text: 'Athena/Nike' },
+                    { letter: 'B', text: 'Herakles/Athena' },
+                    { letter: 'C', text: 'Herakles/Nike' },
+                    { letter: 'D', text: 'Herakles/Sadak ve yay' },
+                    { letter: 'E', text: 'Herakles/Tahtta oturan Zeus' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Ionia kentlerinden Phokaia'nın sikkeleri üzerinde hangi tip görülür?</strong>",
+                options: [
+                    { letter: 'A', text: 'Ton balığı' },
+                    { letter: 'B', text: 'Aslan' },
+                    { letter: 'C', text: 'Arı' },
+                    { letter: 'D', text: 'Fok' },
+                    { letter: 'E', text: 'Yunus' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Bizans sikkelerinde en sık rastlanan dinî sembol aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'İmparator' },
+                    { letter: 'B', text: 'Kutsal kitap' },
+                    { letter: 'C', text: 'Sancak' },
+                    { letter: 'D', text: 'Haç' },
+                    { letter: 'E', text: 'Manus dei (Tanrının eli)' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Ptolemaios Krallığı'nın sikkeleri üzerinde en çok görülen tip aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Şimşek demeti üstünde kartal' },
+                    { letter: 'B', text: 'Tapınak' },
+                    { letter: 'C', text: 'Tahtta oturan Zeus' },
+                    { letter: 'D', text: 'Omphalos üzerinde Apollon' },
+                    { letter: 'E', text: 'Athena' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Artuklu sikke tiplerinden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Melek figürü' },
+                    { letter: 'B', text: 'Elinde kesik baş tutan hükümdar' },
+                    { letter: 'C', text: 'Arkalıklı tahtta oturan imparator' },
+                    { letter: 'D', text: 'At üstünde hükümdar' },
+                    { letter: 'E', text: 'Bağdaş kurmuş hükümdar' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>III. Leon döneminde tedavüle sokulan, ön yüzde kaide üzerinde haç ve arka yüzde yazı bulunan gümüş sikkelere ne ad verilir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Milaresion' },
+                    { letter: 'B', text: 'Nomisma' },
+                    { letter: 'C', text: 'Elektron' },
+                    { letter: 'D', text: 'Billon' },
+                    { letter: 'E', text: 'Solidus' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Tarsos, Kadoi gibi bazı kentlerin sikkeleri üzerinde yarı uzanır vaziyette tasvir edilen, dirsekleriyle içinden su akmakta olan devrik bir amphoraya yaslanıp ellerinde bereket boynuzu, dal ve haşhaş bitkisi tutan figürler kime aittir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Irmak tanrıları' },
+                    { letter: 'B', text: 'Dağlar' },
+                    { letter: 'C', text: 'İmparatorlar' },
+                    { letter: 'D', text: 'Eyalet yöneticileri' },
+                    { letter: 'E', text: 'Tanrıçalar' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Hangi Hellenistik krallığın sikkeleri üzerinde tarih bulunmaktadır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Kappadokia' },
+                    { letter: 'B', text: 'Lysimakhos' },
+                    { letter: 'C', text: 'Bithynia' },
+                    { letter: 'D', text: 'Pergamon' },
+                    { letter: 'E', text: 'Pontos' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Silphium bitkisi hangi Kuzey Afrika Yunan kolonisinin sikkeleri üzerinde yer almaktadır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Naksos' },
+                    { letter: 'B', text: 'Kyrene' },
+                    { letter: 'C', text: 'Selinos' },
+                    { letter: 'D', text: 'Zankle' },
+                    { letter: 'E', text: 'Metapontion' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Pers hâkimiyeti altında Kilikia satraplarının sikkelerinin yoğun olarak basıldığı satraplık merkezi kent aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Nagidos' },
+                    { letter: 'B', text: 'Soloi' },
+                    { letter: 'C', text: 'Mallos' },
+                    { letter: 'D', text: 'Tarsos' },
+                    { letter: 'E', text: 'Issos' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Roma devlet darbı sikkelerin üzerindeki lejandlar hangi dilde yazılmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Latince' },
+                    { letter: 'B', text: 'Lykçe' },
+                    { letter: 'C', text: 'Eski Yunanca' },
+                    { letter: 'D', text: 'Aramice' },
+                    { letter: 'E', text: 'Lydce' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Artuklu Beyi Fahreddin Kara Arslan'ın bir sikkesi üzerinde Kuran taşıyan melek Cebrail'e benzetildiği için hangi Antikçağ figürü kullanılmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Tahtta oturan imparator' },
+                    { letter: 'B', text: 'Artemis' },
+                    { letter: 'C', text: "Medusa'nın başını tutan Perseus" },
+                    { letter: 'D', text: 'İsa' },
+                    { letter: 'E', text: 'Victoria/Nike figürü' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Bizans bronz sikkelerine verilen isim aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: '20 nummia' },
+                    { letter: 'B', text: 'Dekanummia' },
+                    { letter: 'C', text: 'Follis' },
+                    { letter: 'D', text: 'Pentanummia' },
+                    { letter: 'E', text: 'Billon' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Troas bölgesi kentlerinden Ilion'un sikkeleri üzerinde hangi olay ile ilgili nostaljik tipler kullanılmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Büyük İskender'in Pers seferi" },
+                    { letter: 'B', text: 'Pers-Yunan Savaşları' },
+                    { letter: 'C', text: 'Mithradates Savaşları' },
+                    { letter: 'D', text: 'Ionia İsyanı' },
+                    { letter: 'E', text: 'Troia Savaşı' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Sikke tipinin kentin adı ile özdeş olmasına antik numismatik terminolojisinde verilen ad aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Krali sikke' },
+                    { letter: 'B', text: 'Quadratum incusum' },
+                    { letter: 'C', text: 'Ana tip' },
+                    { letter: 'D', text: 'Konuşan tip' },
+                    { letter: 'E', text: 'Magistratus' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Atina'nın wappenmünzen serilerinde görülen betimlerden biridir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Gorgon başı' },
+                    { letter: 'B', text: 'Kaplumbağa' },
+                    { letter: 'C', text: 'Baykuş' },
+                    { letter: 'D', text: 'Zeus' },
+                    { letter: 'E', text: 'Athena' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Malazgirt sonrası kurulan Türk beyliklerinin Yunanca yazıyla Bizans sikke ikonografisini devam ettirmelerinin temel sebeplerinden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Bizans'ın kültürel ve siyasal baskısı" },
+                    { letter: 'B', text: 'Yerel halka kültürel açıdan pozitif yaklaşım sergilemek' },
+                    { letter: 'C', text: 'Hıristiyan halka siyasi açıdan pozitif bir yaklaşım sergilemek' },
+                    { letter: 'D', text: 'Mevcut birim ve tipleri kullanarak ticari devamlılığı sağlamak' },
+                    { letter: 'E', text: 'Hâkimiyetleri altındaki Yunanca konuşan halkla iletişimi korumak' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi numismatiğin temas hâlinde bulunduğu bilimlerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Morfoloji' },
+                    { letter: 'B', text: 'Sanat tarihi' },
+                    { letter: 'C', text: 'Arkeoloji' },
+                    { letter: 'D', text: 'Metalurji' },
+                    { letter: 'E', text: 'Metroloji' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Bizans sikkeleri üzerinde görülen imparatorları niteleyen sıfatlardan biri olan DN (dominus noster)'nin anlamı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Dindar' },
+                    { letter: 'B', text: 'Şerefli' },
+                    { letter: 'C', text: 'Kutsal' },
+                    { letter: 'D', text: 'Ebedi' },
+                    { letter: 'E', text: 'Efendimiz' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Romalıların sikkeden önce kullandıkları \"üzeri işaretli, damgalı bronz anlamına\" gelen ödeme aracı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Aes Grave' },
+                    { letter: 'B', text: 'Aes Signatum' },
+                    { letter: 'C', text: 'Denarius' },
+                    { letter: 'D', text: 'Aureus' },
+                    { letter: 'E', text: 'Aes Rude' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Bizans sikkelerinden öğrendiğimize göre 528 yılında yaşanan deprem sonrasında Antiochia darphanesinin adı ne şekilde değiştirilmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Thessalonica' },
+                    { letter: 'B', text: 'Theupolis' },
+                    { letter: 'C', text: 'Metropolis' },
+                    { letter: 'D', text: 'Kartaca' },
+                    { letter: 'E', text: 'Viranşehir' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Pers altın sikkesinin adı nereden gelmek...</strong>",
+                options: [
+                    { letter: 'A', text: "Lydce'den" },
+                    { letter: 'B', text: "Kral Dareios'un adından" },
+                    { letter: 'C', text: 'Satrap adından' },
+                    { letter: 'D', text: "Aramice'den" },
+                    { letter: 'E', text: "Eski Yunanca'dan" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdaki kentlerden hangisi Arkaik ve Klasik Dönem'de sikke basan Troas kentlerinden biridir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Elaia' },
+                    { letter: 'B', text: 'Pergamon' },
+                    { letter: 'C', text: 'Phokaia' },
+                    { letter: 'D', text: 'Assos' },
+                    { letter: 'E', text: 'Ephesos' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Ptolemaios Krallığı'nın sikkeleri üzerinde en çok görülen tip aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Omphalos üzerinde Apollon' },
+                    { letter: 'B', text: 'Athena' },
+                    { letter: 'C', text: 'Şimşek demeti üstünde kartal' },
+                    { letter: 'D', text: 'Tapınak' },
+                    { letter: 'E', text: 'Tahtta oturan Zeus' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Roma İmparatorluk dönemi kent sikkelerinin arka yüzünde görülen sikkeyi basan kentin halkına verilen ad aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Asylos' },
+                    { letter: 'B', text: 'Dorea' },
+                    { letter: 'C', text: 'Neokoros' },
+                    { letter: 'D', text: 'Ethnikon' },
+                    { letter: 'E', text: 'Damnatio memoriae' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Karia bölgesini Persler adına yöneten Hekatomnos sülalesinin bir üyesi değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Piksodoros' },
+                    { letter: 'B', text: 'Rhoontopates' },
+                    { letter: 'C', text: 'Pharnabazos' },
+                    { letter: 'D', text: 'Mausollos' },
+                    { letter: 'E', text: 'Hidrieos' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Hangi halife döneminde sikke reformu yapılarak Arap İslam Devleti'nin sikkeleri üzerindeki betimler kaldırılmış ve Arapça lejandlı İslami tarzda sikkeler basılmaya başlanmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Muaviye' },
+                    { letter: 'B', text: 'Ömer bin Abdülaziz' },
+                    { letter: 'C', text: 'Yezid' },
+                    { letter: 'D', text: 'Mervan' },
+                    { letter: 'E', text: 'Abdülmelik' }
+                ],
+                correct: 'E'
+            }
+        ];
+
+        let answers = {};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+
+            // Soruları rastgele karıştır
+            const shuffledQuiz = shuffle([...quizData]);
+
+            shuffledQuiz.forEach((item, index) => {
+                const qNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${qNum}`;
+
+                const p = document.createElement('p');
+                p.innerHTML = item.question;
+                div.appendChild(p);
+
+                // Şıkları rastgele karıştır
+                const shuffledOptions = shuffle([...item.options]);
+                shuffledOptions.forEach((opt, optIndex) => {
+                    const newLetter = String.fromCharCode(65 + optIndex);
+                    const label = document.createElement('label');
+                    label.className = 'option';
+                    label.htmlFor = `q${qNum}${newLetter}`;
+                    label.innerHTML = `<input type="radio" id="q${qNum}${newLetter}" name="q${qNum}" value="${newLetter}" onchange="checkAnswer(${qNum})"><span class="radio"></span>${newLetter}) ${opt.text}`;
+                    div.appendChild(label);
+
+                    // Eğer bu şık orijinal doğruysa, yeni harfi doğru olarak kaydet
+                    if (opt.letter === item.correct) {
+                        answers[`q${qNum}`] = { correct: newLetter, text: `${newLetter}) ${opt.text}` };
+                    }
+                });
+
+                const hintP = document.createElement('p');
+                hintP.className = 'answer-hint';
+                hintP.id = `hint${qNum}`;
+                hintP.innerHTML = `Doğru cevap: <strong>${answers[`q${qNum}`].text}</strong>`;
+                div.appendChild(hintP);
+
+                form.appendChild(div);
+            });
+        }
+
+        // Sayfa yüklendiğinde quiz'i render et (rastgele)
+        window.onload = renderQuiz;
+
+        function checkAnswer(num) {
+            const q = `q${num}`;
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (!selected) return;
+
+            const correct = answers[q].correct;
+            const options = document.querySelectorAll(`#q${num} .option`);
+
+            // Önce tüm renkleri sıfırla
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            // Doğru şıkkı yeşil yap
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            // Seçilen yanlışsa kırmızı yap
+            if (selected.value !== correct) {
+                const selectedOpt = selected.parentElement;
+                selectedOpt.classList.add('incorrect');
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q].correct) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function finishQuiz() {
+            // Tüm doğru şıkları yeşil yap
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const options = document.querySelectorAll(`#q${i} .option`);
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === answers[`q${i}`].correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            // Skoru hesapla ve göster
+            const score = calculateScore();
+            document.getElementById('result').innerHTML = `Toplam Skor: ${score} / ${total}`;
+            document.querySelector('.finish').disabled = true;
+        }
+
+        function showAllAnswers() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`hint${i}`).style.display = 'block';
+            }
+            document.getElementById('showAnswersBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>
