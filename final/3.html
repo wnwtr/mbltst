@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAÇLI SEFERLERİ TARİHİ FİNAL Testi</title>
+    <button onclick="window.location.href='index.html'" style="position: fixed; bottom: 40px; right: 40px; padding: 20px 30px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Geri Dön</button>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0 auto; 
+            max-width: 800px;
+            padding: 20px; 
+            background-color: #f9f9f9; 
+            color: #333; 
+            line-height: 1.6;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        #showAnswersBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        #showAnswersBtn:hover { 
+            background-color: #219a52; 
+        }
+        .question { 
+            background-color: white; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        .question p { 
+            font-weight: normal; 
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+            white-space: pre-line;
+        }
+        .option { 
+            display: flex; 
+            align-items: center; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            padding: 8px; 
+            border-radius: 5px; 
+            transition: background-color 0.3s; 
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+        .option input { 
+            display: none; 
+        }
+        .option .radio { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background-color: white; 
+            border: 2px solid #3498db; 
+            margin-right: 15px; 
+            position: relative; 
+        }
+        .option .radio::after { 
+            content: ''; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #3498db; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; 
+        }
+        .option input:checked + .radio::after { 
+            display: block; 
+        }
+        .option.correct { 
+            background-color: #27ae60; 
+            color: white; 
+        }
+        .option.incorrect { 
+            background-color: #e74c3c; 
+            color: white; 
+        }
+        .answer-hint { 
+            display: none; 
+            margin-top: 10px; 
+            font-size: 0.9em; 
+            color: #27ae60; 
+            font-style: italic; 
+            font-weight: normal;
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 5px;
+        }
+        button.finish { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        button.finish:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.3em; 
+            color: #2c3e50; 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>HAÇLI SEFERLERİ TARİHİ FİNAL SORULARI</h1>
+    <button id="showAnswersBtn" onclick="showAllAnswers()">Cevapları Göster</button>
+    <form id="quizForm"></form>
+    <button class="finish" onclick="finishQuiz()">Testi Bitir</button>
+    <div id="result"></div>
+
+    <script>
+        // Soru verileri: 3.Sınıf Haçlı Seferleri Tarihi Final dosyasından alınmıştır.
+        const quizData = [
+            {
+                question: "<strong>Aşağıdaki bilgilerden hangisi ya da hangileri IV. Haçlı Seferi'nin doğurduğu sonuçlardan değildir?</strong><br>I. Bizans merkezinin İznik'e taşınması<br>II. Kıbrıs'ta Bizans hâkimiyetinin son bulması<br>III. Mısır'ın Franklar tarafından işgali",
+                options: [
+                    { letter: 'A', text: 'I ve III' },
+                    { letter: 'B', text: 'II ve III' },
+                    { letter: 'C', text: 'Yalnız I' },
+                    { letter: 'D', text: 'Yalnız II' },
+                    { letter: 'E', text: 'Yalnız III' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Haçlı Seferleri arifesinde, Kudüs'ün siyasi durumu hakkında aşağıdakilerden hangisi doğrudur?</strong>",
+                options: [
+                    { letter: 'A', text: 'Kudüs, Haçlı Seferi çağrısı yapıldığında Selçuklu ailesinden Tutuş tarafından yönetiliyordu.' },
+                    { letter: 'B', text: 'Kudüs, Haçlı Seferleri öncesinde tamamen bağımsız bir şehir devleti olarak varlığını sürdürüyordu.' },
+                    { letter: 'C', text: "Kudüs, Haçlı Seferleri arifesinde Bizans İmparatorluğu'nun kontrolü altındaydı." },
+                    { letter: 'D', text: 'Kudüs, Haçlı Seferleri başladığı sırada Fâtımîlerin eline geçmişti.' },
+                    { letter: 'E', text: "Kudüs, Haçlılar Doğu'ya hareket ettiğinde Selçuklular adına Artuklular tarafindan idare ediliyordu." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Sekizinci Haçı Seferi (1270)'nin hedefi aşağıdakilerden hangisi olmuştur?</strong>",
+                options: [
+                    { letter: 'A', text: 'Mısır' },
+                    { letter: 'B', text: 'Anadolu' },
+                    { letter: 'C', text: 'Tunus' },
+                    { letter: 'D', text: 'Suriye' },
+                    { letter: 'E', text: 'İstanbul' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi ya da hangileri VII. Haçlı Seferi'yle ilgili değildir?</strong><br>I. Kudüs'ün Latin hakimiyetine geçmesi<br>II. Kral IX. Louis'nin Tunus'ta ölmesi<br>III. Kral IX. Louis'nin esir düşmesi",
+                options: [
+                    { letter: 'A', text: 'II ve III' },
+                    { letter: 'B', text: 'Yalnız II' },
+                    { letter: 'C', text: 'Yalnız I' },
+                    { letter: 'D', text: 'I ve II' },
+                    { letter: 'E', text: 'I ve III' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi ya da hangileri Sultan Baybars'ın hükümdarlığı dönemindeki önemli gelişmelerdendir?</strong><br>I. Antakya'nın Haçlılardan alınması<br>II. Mısır'da hilafetin tesis edilmesi<br>III. Hıttîn Savaşı ve Kudüs'ün fethi",
+                options: [
+                    { letter: 'A', text: 'Yalnız II' },
+                    { letter: 'B', text: 'Yalnız I' },
+                    { letter: 'C', text: 'II ve III' },
+                    { letter: 'D', text: 'I ve II' },
+                    { letter: 'E', text: 'Yalnız III' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi ya da hangileri IV. Haçlı Seferi'nin Venedik'in kontrolüne geçmesinde etkili olmuştur?</strong><br>I. Bizans Devleti'nin Venedik'i tehdit etmesi<br>II. Haçlı Seferi'ne beklenenden az sayıda kişinin katılması<br>III. Haçıların Venedik'e nakliye parasını ödeyememesi",
+                options: [
+                    { letter: 'A', text: 'I ve II' },
+                    { letter: 'B', text: 'II ve III' },
+                    { letter: 'C', text: 'I ve II' },
+                    { letter: 'D', text: 'Yalnız II' },
+                    { letter: 'E', text: 'Yalnız I' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi ya da hangileri 1101 Yılı Haçı Seferleri sırasında Frankların kullandığı güzergâhlardan biri değildir?</strong><br>I. Balıkesir-Alaşehir-Denizli-Antalya<br>II. İznik-Gölpazarı-Nallıhan-Ankara-Çankırı<br>III. Eskişehir-Akşehir-Konya-Ereğli",
+                options: [
+                    { letter: 'A', text: 'I ve II' },
+                    { letter: 'B', text: 'Yalnız III' },
+                    { letter: 'C', text: 'Yalnız I' },
+                    { letter: 'D', text: 'II ve III' },
+                    { letter: 'E', text: 'Yalnız II' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi ya da hangileri Alman İmparatoru Friedrich Barbarossa'nın III. Haçlı Seferi öncesinde diplomatik temaslarda bulunduğu hükümdarlar arasındadır?</strong><br>I. Mısır-Suriye Hâkimi Nuredin Mahmud<br>II. Bizans İmparatoru II. Isaakios Angelos<br>III. Selçuklu Sultanı 1. Mesud",
+                options: [
+                    { letter: 'A', text: 'Yalnız III' },
+                    { letter: 'B', text: 'I ve II' },
+                    { letter: 'C', text: 'Yalnız I' },
+                    { letter: 'D', text: 'II ve III' },
+                    { letter: 'E', text: 'Yalnız II' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Haçlı Seferlerinden etkilenen devletlerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Eyyübiler' },
+                    { letter: 'B', text: 'Türkiye Selçuklu Devleti' },
+                    { letter: 'C', text: 'Karahanlılar' },
+                    { letter: 'D', text: 'Danişmendliler' },
+                    { letter: 'E', text: 'Zengiler' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıda verilen bilgilerden hangisi ya da hangileri 1244 Gazze Savaşı'yla ilgilidir?</strong><br>I. Suriye'deki Eyyubi hâkimleri Mısır ordusunu desteklemişlerdir.<br>II. Savaş, Baybars kumandasındaki Hârizmliler ve Mısır ordusunun zaferiyle sonuçlanmıştır.<br>III. Franklar daha önce diplomasi yoluyla elde edilmiş olan bütün kazanımları kaybetmişlerdir.",
+                options: [
+                    { letter: 'A', text: 'Yalnız II' },
+                    { letter: 'B', text: 'II ve III' },
+                    { letter: 'C', text: 'I ve II' },
+                    { letter: 'D', text: 'Yalnız 1' },
+                    { letter: 'E', text: 'I ve III' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>İmparator II. Friedrich'in Haçlı Seferi'ne katılma nedeni aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Dinî görevini yerine getirmek' },
+                    { letter: 'B', text: 'Kendi halkına hizmet etmek' },
+                    { letter: 'C', text: 'Müslümanlarla savaşmak' },
+                    { letter: 'D', text: "Bizans'a yardım sağlamak" },
+                    { letter: 'E', text: 'Siyasi hedeflerini gerçekleştirmek' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Haçlı Seferi'nin öncüleri sayılabilecek olan ilk Haçlı grubu kimin idaresindeydi?</strong>",
+                options: [
+                    { letter: 'A', text: 'Bohemund' },
+                    { letter: 'B', text: 'Etienne de Blois' },
+                    { letter: 'C', text: "Pierre l'Ermite" },
+                    { letter: 'D', text: 'Baudouin' },
+                    { letter: 'E', text: 'Godefroi de Bouillon' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Selahaddin Eyyubî, Nûreddin Mahmud'un ölümünden sonra İslam dünyasında birliği tekrar sağlamak için hangi bölgeleri kendi hâkimiyeti altına almıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Kahire ve Taberiye' },
+                    { letter: 'B', text: 'Kudüs ve Trablus' },
+                    { letter: 'C', text: 'İskenderiye ve Bağdat' },
+                    { letter: 'D', text: 'Halep ve Bağdat' },
+                    { letter: 'E', text: 'Halep ve Musul' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>1097'deki Dorylaion Savaşı'ndan önce gerçekleşen hangi durum savaşın kaderini etkilemiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Bohemund'un imparatora ihaneti" },
+                    { letter: 'B', text: 'Haçlı ordusunun ikiye ayrılmış olması' },
+                    { letter: 'C', text: 'Bizans ordusunun yardıma gelmesi' },
+                    { letter: 'D', text: "Etienne de Blois'nın ülkesine geri dönmesi" },
+                    { letter: 'E', text: 'Türk ordusunda anlaşmazlık çıkması' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdaki gelişmelerden hangisi Haçlı Seferlerinin Avrupa toplumu üzerindeki sosyal etkilerinden biridir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Toplumda tacir ve işçi sınıfının ortaya çıkışı' },
+                    { letter: 'B', text: "Protestan Kilisesi'nin kuruluşu" },
+                    { letter: 'C', text: 'Papalığın itibarının azalması' },
+                    { letter: 'D', text: 'Doğu-Batı ticaretinin gelişmesi' },
+                    { letter: 'E', text: 'Reform hareketinin doğuşu' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Haçlı Seferleri sırasında Bizans'ın büyük zarar görmesi .....<br>Yukarıdaki cümleyi doğru şekilde tamamlayan ifade aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Türklerin işine yaramamıştır.' },
+                    { letter: 'B', text: 'Alman imparatorunun otoritesini güçlendirmiştir.' },
+                    { letter: 'C', text: 'bölgede büyük bir etki yaratmamıştır.' },
+                    { letter: 'D', text: "Türklerin Batı'ya ilerlemelerine yardımcı olmuştur." },
+                    { letter: 'E', text: "Papa'nın nüfuzunun artmasını sağlamıştır." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Bernard de Clairvaux'nun vaazlarında Haçlı Seferi'ni ekonomik bir fırsat olarak tanımlarken kullandığı söylem aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: '"Akıllı bir tüccarsanız bu fırsatı kaçırmayın."' },
+                    { letter: 'B', text: '"Bu yol cennete açılan kapıdır."' },
+                    { letter: 'C', text: '"Günahların affi en büyük zenginliktir."' },
+                    { letter: 'D', text: '"Tanrı sizleri zengin edecektir."' },
+                    { letter: 'E', text: '"Kudüs\'ü almak dünyadaki en büyük fırsattır."' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdaki bilgilerden hangisi ya da hangileri Dördüncü Haçlı Seferi'yle ilgilidir?</strong><br>I. Macar şehri Zara'nın Latinler tarafından işgali<br>II. İstanbul'da Latin hâkimiyeti kurulması<br>III. Seferin Venedik tarafından Mısır'a yönlendirilmesi",
+                options: [
+                    { letter: 'A', text: 'I ve Il' },
+                    { letter: 'B', text: 'Yalnız III' },
+                    { letter: 'C', text: 'Yalnız II' },
+                    { letter: 'D', text: 'Yalnız I' },
+                    { letter: 'E', text: 'II ve III' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Kudüs Haçlı Krallığı'nın yıkılış sürecinde rol oynayan şahsiyetlerdendir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Renaud de Châtillon' },
+                    { letter: 'B', text: 'Raymond de St. Gilles' },
+                    { letter: 'C', text: 'Aice' },
+                    { letter: 'D', text: 'Melisende' },
+                    { letter: 'E', text: 'Baudouin du Bourd' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aforoz edilmiş bir lider olarak VI. Haçlı Seferi'ne kumanda eden hükümdar kimdir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Dük Leopold' },
+                    { letter: 'B', text: 'Kral IX. Louis' },
+                    { letter: 'C', text: 'Kral VII. Louis' },
+                    { letter: 'D', text: 'İmparator II. Friedrich' },
+                    { letter: 'E', text: 'Kral Konrad' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>\"Haçlılar, 13. yüzyılda Doğu'da Müslümanlar karşısında ağır kayıplara uğradıkları hâlde bölgedeki varlıklarını devam ettirme imkânı buldular.\"<br>Bunun sebebi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'İtalyan denizci devletlerin Müslümanlarla uzlaşması' },
+                    { letter: 'B', text: 'Haçlıların Bizans tarafından Müslümanlara karşı korunması' },
+                    { letter: 'C', text: 'Eyyubiler arasındaki anlaşmazlıklar ve Moğolların ortaya çıkışı' },
+                    { letter: 'D', text: 'Büyük Selçuklu Devleti\'nin yıkılışı' },
+                    { letter: 'E', text: 'Alman imparatorunun bölgeye sürekli destek göndermesi' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Bizans İmparatoru I. Aleksios, İstanbul'da Haçlılara karşı nasıl bir tutum sergilemiştir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Gerçek niyetlerini anlayınca Haçlılarla yapmış olduğu anlaşmayı bozdu.' },
+                    { letter: 'B', text: 'Haçlılara boyun eğmek zorunda kaldı.' },
+                    { letter: 'C', text: 'Ordudaki bütün liderlerden vasallık yemini istedi.' },
+                    { letter: 'D', text: "Haçlı liderlerine önce İzmir'i geri almak için iş birliği önerdi." },
+                    { letter: 'E', text: 'Haçlı ordularıyla Urfa üzerine yürümek için anlaşma yaptı.' }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Üçüncü Haçlı Seferi'ne neden olan gelişmelerdendir?</strong>",
+                options: [
+                    { letter: 'A', text: "Nureddin Mahmud'un Mısır'a hakim olması" },
+                    { letter: 'B', text: "Bizans'ın Türklere karşı yardım istemesi" },
+                    { letter: 'C', text: "Urfa Haçlı Kontluğu'nun Batı'dan yardım istemesi" },
+                    { letter: 'D', text: "Bohemund'un Danişmendlilere esir düşmesi" },
+                    { letter: 'E', text: "Müslümanların 1187'de Kudüs'teki Haçlı hâkimiyetine son vermesi" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>İstanbul .... yılında ..... tarafından Latinlerden geri alındı.<br>Yukarıdaki cümledeki boşlukları doğru olarak tamamlayan seçenek hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: '1261 İznik Bizans Devleti' },
+                    { letter: 'B', text: '1291 İznik Bizans Devleti' },
+                    { letter: 'C', text: '1204-Trabzon Bizans Devleti' },
+                    { letter: 'D', text: '1261-Trabzon Bizans Devleti' },
+                    { letter: 'E', text: '1187 Epiros Bizans Devleti' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Beşinci Haçlı Seferi'nin sonuçlarından biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Haçlılar, hiçbir şey elde edemeden 1221'de Dimyat'ı boşaltıp Mısır'dan ayrıldı." },
+                    { letter: 'B', text: 'Yenilgiye uğrayan Kardinal Pelagius barış istemek zorunda kaldı.' },
+                    { letter: 'C', text: "Dimyat'a karşılık Kudüs'ü alan Haçlı orduları bölgeden ayrıldı." },
+                    { letter: 'D', text: "Mısır'da İtalyan tacirlere olan güven sarsıldı." },
+                    { letter: 'E', text: "Mısır'ın yerli Hıristiyan halkının vatandaşlık hakları kısıtlandı." }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Üçüncü Haçlı Seferi'ne katılan Alman Haçlı ordusu Anadolu'da hangi güzergâhı takip etmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: 'İstanbul-İznik-Eskişehir' },
+                    { letter: 'B', text: 'Çanakkale-Balıkesir-İzmir-Efes-Denizli-Antalya' },
+                    { letter: 'C', text: 'İstanbul-Denizli-Konya-Silifke-Antalya' },
+                    { letter: 'D', text: 'Çanakkale - Balıkesir-Alaşehir-Denizli-Konya-Silifke-Antakya' },
+                    { letter: 'E', text: 'Çanakkale-Eskişehir-Konya-Antalya' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>1218 yılında Haçlı Seferi orduları tarafından hedef alınan yer neresidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Tunus' },
+                    { letter: 'B', text: 'İstanbul' },
+                    { letter: 'C', text: 'Kudüs' },
+                    { letter: 'D', text: 'Dimyat' },
+                    { letter: 'E', text: 'İznik' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Moğollar tarafından istila edilen yerlerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Dımaşk' },
+                    { letter: 'B', text: 'Bağdat' },
+                    { letter: 'C', text: 'Halep' },
+                    { letter: 'D', text: 'Antakya' },
+                    { letter: 'E', text: 'Meyyafárikîn' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Üçüncü Haçlı Seferi ordularının Akka'yı hedef almasına yol açmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Kudüs Kralı Guy de Lusignan'in Akka'da esarette olması" },
+                    { letter: 'B', text: "Akka'nın bölgedeki Müslümanların merkezi hâline gelmesi" },
+                    { letter: 'C', text: "Sûr'a kabul edilmeyen Kudüs Kralı Guy de Lusignan'in Akka'yı kuşatması" },
+                    { letter: 'D', text: "Kudüs'ten ayrılan Haçlıların Akka'ya götürülmesi" },
+                    { letter: 'E', text: "Akka'nın her koşulda güvenli bir liman olması" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>1277'de Akka Haçlı Krallığı tahtını satın alarak \"Kudüs Kralı\" unvanını elde eden hükümdar aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'İngiltere Prensi Edward' },
+                    { letter: 'B', text: 'İngiltere Kralı Richard' },
+                    { letter: 'C', text: 'Alman İmparatoru Friedrich Barbarossa' },
+                    { letter: 'D', text: 'Alman İmparatoru Heinrich' },
+                    { letter: 'E', text: "Sicilya Kralı Charles d'Anjou" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Kudüs'te Latin hâkimiyetinin kurulmasıyla ilgili Aşağıdaki bilgilerden hangisi ya da hangileri doğrudur?</strong><br>I. Doğu Hristiyanlarının bölgedeki nüfuzu arttı.<br>II. Godefroi de Bouillon, Kudüs'ün ilk Latin hükümdarı oldu.<br>III. Şehir, 15 Temmuz 1099'da işgal edildi.",
+                options: [
+                    { letter: 'A', text: 'Yalnız III' },
+                    { letter: 'B', text: 'II ve III' },
+                    { letter: 'C', text: 'Yalnız I' },
+                    { letter: 'D', text: 'I ve II' },
+                    { letter: 'E', text: 'Yalnız II' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdaki liderlerden hangisi Beşinci Haçlı Seferi (1218-1221)'nde yer almıştır?</strong>",
+                options: [
+                    { letter: 'A', text: 'Fransa Kralı II. Philippe' },
+                    { letter: 'B', text: 'Alman Kralı III. Konrad' },
+                    { letter: 'C', text: 'Norman lider Bohemund' },
+                    { letter: 'D', text: 'Kudüs Kralı Guy de Lusignan' },
+                    { letter: 'E', text: 'Avusturya Dükü V. Leopold' }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi ya da hangileri 1248 yılında Kral IX. Louis'nin Haçlı Seferine çıkmasında etkili olmamıştır?</strong><br>I. 1187'de Kudüs'ün Müslümanlar tarafından fethi<br>II. 1244 yılında Müslümanların Kudüs'ü geri alması<br>III. IX. Louis'nin Haçlı Seferinin \"Tanrı'nın isteği\" olduğuna inanması",
+                options: [
+                    { letter: 'A', text: 'I ve II' },
+                    { letter: 'B', text: 'Yalnız II' },
+                    { letter: 'C', text: 'II ve III' },
+                    { letter: 'D', text: 'Yalnız I' },
+                    { letter: 'E', text: 'Yalnız III' }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdaki ifadelerden hangisi Haçlı Seferleri hareketinin XI. yüzyıl sonlarında başlamasının sebeplerinden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Bizans Devleti'nin Türklere karşı ücretli asker yardımı istemesi" },
+                    { letter: 'B', text: "Bizans Devleti'nin askerî kudretinin çökmüş olması" },
+                    { letter: 'C', text: 'İslâm dünyasının siyasî ve dinî yönden parçalanmış bir durumda olması' },
+                    { letter: 'D', text: "Sultan Melikşah'ın ölümünden sonra Türk-İslâm dünyasında kargaşa yaşanması" },
+                    { letter: 'E', text: "Moğolların Batı Avrupa'yı harekete geçirmesi" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>İstanbul'un Latinler tarafından işgaliyle sonuçlanan Haçlı Seferi hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: 'Dördüncü Haçlı Seferi' },
+                    { letter: 'B', text: 'İkinci Haçlı Seferi' },
+                    { letter: 'C', text: 'Üçüncü Haçlı Seferi' },
+                    { letter: 'D', text: '1101 Yılı' },
+                    { letter: 'E', text: 'Birinci Haçlı Seferi' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Dördüncü Haçlı Seferi'nin mimarı olan Papa hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: '(Eksik – PDF’de okunamıyor)' },
+                    { letter: 'B', text: 'III. Innocentius' },
+                    { letter: 'C', text: 'II. Clemens' },
+                    { letter: 'D', text: 'IX. Gregorius' },
+                    { letter: 'E', text: 'II. Pious' }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıda verilen bilgilerden hangisi ya da hangileri \"İkinci Haçlı Seferi\" sırasında yaşanan gelişmelerden biri değildir?</strong><br>I. Haçlıların Honaz Dağı'nda hezimete uğratılması<br>II. Dorylaion'da Fransız Haçlı ordusunun imha edilmesi<br>III. Dımaşk'ın Haçlı orduları tarafından kuşatılması",
+                options: [
+                    { letter: 'A', text: 'Yalnız II' },
+                    { letter: 'B', text: 'I ve III' },
+                    { letter: 'C', text: 'I, II ve III' },
+                    { letter: 'D', text: 'II ve III' },
+                    { letter: 'E', text: 'I ve II' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>1187'de Müslümanlar tarafından Haçlılardan geri alınan Kudüs, ne zaman ve hangi yolla tekrar Haçlıların eline geçti?</strong>",
+                options: [
+                    { letter: 'A', text: '1229 yılında, diplomasi yoluyla' },
+                    { letter: 'B', text: '1250 yılında, anlaşma yoluyla' },
+                    { letter: 'C', text: '1192 yılında, ihanet yoluyla' },
+                    { letter: 'D', text: '1250 yılında, hücum yoluyla' },
+                    { letter: 'E', text: '1229 yılında, savaş yoluyla' }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1101 Yılı Haçlı Seferlerinin sonuçlarından biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Suriye'deki Türk-İslâm dünyası büyük bir tehlikeden kurtuldu." },
+                    { letter: 'B', text: "Bizans, Batı Anadolu'yu Türklerden geri alma fırsatı buldu." },
+                    { letter: 'C', text: "Bu seferler, Ereğli'de Haçlıların yenilgisiyle son buldu." },
+                    { letter: 'D', text: "Bizans ile Batı Hıristiyanları arasındaki mevcut güvensizlik daha da arttı." },
+                    { letter: 'E', text: "Yenilmez Haçlı şövalyesi imajı yıkıldı." }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Haçlı Seferlerinin dinî sonuçlarıyla ilgili aşağıdakilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Roma Kilisesi'nin etkisi Asya kıtasında yayılmıştır." },
+                    { letter: 'B', text: 'Haçlı Seferleri Hıristiyanların birleşmesi amacına hizmet etmiştir.' },
+                    { letter: 'C', text: 'Kutsal yerlerdeki İslâm hakimiyeti son bulmuştur.' },
+                    { letter: 'D', text: 'Doğu ve Batı kiliseleri arasındaki ayrılık daha da artmıştır.' },
+                    { letter: 'E', text: "Avrupa'da Papalık itibar kaybına uğramıştır." }
+                ],
+                correct: 'B'
+            }
+        ];
+
+        let answers = {};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+
+            // Soruları rastgele karıştır
+            const shuffledQuiz = shuffle([...quizData]);
+
+            shuffledQuiz.forEach((item, index) => {
+                const qNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${qNum}`;
+
+                const p = document.createElement('p');
+                p.innerHTML = item.question;
+                div.appendChild(p);
+
+                // Şıkları rastgele karıştır
+                const shuffledOptions = shuffle([...item.options]);
+                shuffledOptions.forEach((opt, optIndex) => {
+                    const newLetter = String.fromCharCode(65 + optIndex);
+                    const label = document.createElement('label');
+                    label.className = 'option';
+                    label.htmlFor = `q${qNum}${newLetter}`;
+                    label.innerHTML = `<input type="radio" id="q${qNum}${newLetter}" name="q${qNum}" value="${newLetter}" onchange="checkAnswer(${qNum})"><span class="radio"></span>${newLetter}) ${opt.text}`;
+                    div.appendChild(label);
+
+                    // Eğer bu şık orijinal doğruysa, yeni harfi doğru olarak kaydet
+                    if (opt.letter === item.correct) {
+                        answers[`q${qNum}`] = { correct: newLetter, text: `${newLetter}) ${opt.text}` };
+                    }
+                });
+
+                const hintP = document.createElement('p');
+                hintP.className = 'answer-hint';
+                hintP.id = `hint${qNum}`;
+                hintP.innerHTML = `Doğru cevap: <strong>${answers[`q${qNum}`].text}</strong>`;
+                div.appendChild(hintP);
+
+                form.appendChild(div);
+            });
+        }
+
+        // Sayfa yüklendiğinde quiz'i render et (rastgele)
+        window.onload = renderQuiz;
+
+        function checkAnswer(num) {
+            const q = `q${num}`;
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (!selected) return;
+
+            const correct = answers[q].correct;
+            const options = document.querySelectorAll(`#q${num} .option`);
+
+            // Önce tüm renkleri sıfırla
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            // Doğru şıkkı yeşil yap
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            // Seçilen yanlışsa kırmızı yap
+            if (selected.value !== correct) {
+                const selectedOpt = selected.parentElement;
+                selectedOpt.classList.add('incorrect');
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q].correct) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function finishQuiz() {
+            // Tüm doğru şıkları yeşil yap
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const options = document.querySelectorAll(`#q${i} .option`);
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === answers[`q${i}`].correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            // Skoru hesapla ve göster
+            const score = calculateScore();
+            document.getElementById('result').innerHTML = `Toplam Skor: ${score} / ${total}`;
+            document.querySelector('.finish').disabled = true;
+        }
+
+        function showAllAnswers() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`hint${i}`).style.display = 'block';
+            }
+            document.getElementById('showAnswersBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>
