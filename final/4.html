@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İLK TÜRK İSLAM DEVLETLERİ TARİHİ FİNAL Testi</title>
+    <button onclick="window.location.href='index.html'" style="position: fixed; bottom: 40px; right: 40px; padding: 20px 30px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Geri Dön</button>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0 auto; 
+            max-width: 800px;
+            padding: 20px; 
+            background-color: #f9f9f9; 
+            color: #333; 
+            line-height: 1.6;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        #showAnswersBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        #showAnswersBtn:hover { 
+            background-color: #219a52; 
+        }
+        .question { 
+            background-color: white; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        .question p { 
+            font-weight: normal; 
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+            white-space: pre-line;
+        }
+        .option { 
+            display: flex; 
+            align-items: center; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            padding: 8px; 
+            border-radius: 5px; 
+            transition: background-color 0.3s; 
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+        .option input { 
+            display: none; 
+        }
+        .option .radio { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background-color: white; 
+            border: 2px solid #3498db; 
+            margin-right: 15px; 
+            position: relative; 
+        }
+        .option .radio::after { 
+            content: ''; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #3498db; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; 
+        }
+        .option input:checked + .radio::after { 
+            display: block; 
+        }
+        .option.correct { 
+            background-color: #27ae60; 
+            color: white; 
+        }
+        .option.incorrect { 
+            background-color: #e74c3c; 
+            color: white; 
+        }
+        .answer-hint { 
+            display: none; 
+            margin-top: 10px; 
+            font-size: 0.9em; 
+            color: #27ae60; 
+            font-style: italic; 
+            font-weight: normal;
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 5px;
+        }
+        button.finish { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        button.finish:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.3em; 
+            color: #2c3e50; 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>İLK TÜRK İSLAM DEVLETLERİ TARİHİ FİNAL SORULARI</h1>
+    <button id="showAnswersBtn" onclick="showAllAnswers()">Cevapları Göster</button>
+    <form id="quizForm"></form>
+    <button class="finish" onclick="finishQuiz()">Testi Bitir</button>
+    <div id="result"></div>
+
+    <script>
+        // Soru verileri: İLK TÜRK İSLAM DEVLETLERİ TARİHİ FİNAL SORULARI dosyasından alınmıştır.
+        const quizData = [
+            {
+                question: "<strong>Bu bilgilere göre aşağıdakilerden hangisine varılamaz?</strong><br>Sultan Mahmud 1030 yılında vefat ettiğinde Gazneliler Devleti batıda Azerbaycan sınırlarında, doğuda Hindistan'ın Yukarı Ganj Vadisi'ne, Orta Asya'da Hârizm'den Hint Okyanusu sahillerine kadar uzanan çok geniş bir sahayı kapsıyordu.",
+                options: [
+                    { letter: 'A', text: "Sultan Mahmud'un ölüm tarihi bellidir." },
+                    { letter: 'B', text: "Gaznelilerin sınırı doğuda Hindistan toprakları içindedir." },
+                    { letter: 'C', text: "Gazneliler Devleti sınırları Hint Okyanusu kıyılarına uzanır." },
+                    { letter: 'D', text: "Gazneliler Devleti sınırları çok geniş bir yüz ölçümüne sahiptir." },
+                    { letter: 'E', text: "Azerbaycan, Gazneliler Devleti hakimiyeti altındadır." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Tolunoğulları ülkesinin zenginleşmesiyle isim yapmış şairlerin sayısı da bir hayli artmıştır. Tolunoğulları ilim adamları ve şairlere büyük ihsanlarda bulundukları için bu dönemde çok sayıda şair ön plana çıkmıştır. Bunlar arasında en meşhur olanı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Ahmed b. Yusuf b. İbrahim" },
+                    { letter: 'B', text: "İbnü'd-Dâye" },
+                    { letter: 'C', text: "Ahmed b. Cafer et-Dineverî" },
+                    { letter: 'D', text: "el-Hüseyin b. Abdüsselâm" },
+                    { letter: 'E', text: "el-Velid b. Muhammed et-Temîmî" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>\"Bulgar Türkleri arasında 5.000 kadın ve erkekten müteşekkil 'Barancer' adıyla bilinen bir aile topluca İslâmiyet'e girdiler ve namaz kılmak için kendilerine ahşaptan bir cami yaptılar.\" Bu ifade, aşağıdaki seyyahlardan hangisine aittir?</strong>",
+                options: [
+                    { letter: 'A', text: "İbn Hurdazbih" },
+                    { letter: 'B', text: "İstahri" },
+                    { letter: 'C', text: "Süleyman el-Tâcir" },
+                    { letter: 'D', text: "Ebü'l-Fida" },
+                    { letter: 'E', text: "İbn Fadlan" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Ruslar ve İtil Bulgarları arasında süregelen savaşların başlıca nedenlerinden biridir?</strong>",
+                options: [
+                    { letter: 'A', text: "Sınır çatışması" },
+                    { letter: 'B', text: "İtil Bulgarlarının Moğolların müttefiki olması" },
+                    { letter: 'C', text: "Bulgarların Hazarlara vergi ödemesi" },
+                    { letter: 'D', text: "Kuzeydeki kürk ticareti" },
+                    { letter: 'E', text: "Dini anlaşmazlık" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Batı Karahanlı Devleti döneminde gerçekleşen olaylardan değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Balasagunlu Yusuf Has Hacib'in Kutadgu Bilig adlı eserini Kaşgar kentinde yazması" },
+                    { letter: 'B', text: "Sultan Alp Arslan'ın 1072 tarihinde Mâverâünnehr'e sefer düzenlemesi" },
+                    { letter: 'C', text: "449 (1057-1058) tarihinde Buhara'da çok şiddetli bir veba salgınının meydana gelmesi" },
+                    { letter: 'D', text: "Hârizmşahlar'ın 1212 yılında Batı Karahanlı Devletine son vermesi" },
+                    { letter: 'E', text: "Melikşah'ın Buhara ve Semerkandı zapt ederek Ahmed Han'ı esir alıp Isfahan'a götürmesi" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Bâbek İsyanı'nı bastırmayı başaran Türk kumandanı Afşin'i bu iş için hangi Abbâsî halifesi görevlendirmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "el-Kaim" },
+                    { letter: 'B', text: "el-Mansûr" },
+                    { letter: 'C', text: "Mu'tasım" },
+                    { letter: 'D', text: "Me'mun" },
+                    { letter: 'E', text: "el-Mütevekkil" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Tolunoğulları Devleti'nin kurucusu Ahmed b. Tolun'un asıl mesleği aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Vezirlik" },
+                    { letter: 'B', text: "Askerlik" },
+                    { letter: 'C', text: "Demircilik" },
+                    { letter: 'D', text: "Kâtiplik" },
+                    { letter: 'E', text: "Muallimlik" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Gazneli Sultan İbrahim ile Selçuklular arasında yapılan antlaşmaya göre Gazneliler ile Selçuklular arasındaki sınırı aşağıdakilerden hangisi oluşturmaktaydı?</strong>",
+                options: [
+                    { letter: 'A', text: "Nesa Ovası" },
+                    { letter: 'B', text: "Ceyhun Irmağı" },
+                    { letter: 'C', text: "Hindikuş Dağları" },
+                    { letter: 'D', text: "Sistan Bölgesi" },
+                    { letter: 'E', text: "Seyhun Irmağı" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Karahanlılar döneminde kullanılan edebî dil aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Farsça" },
+                    { letter: 'B', text: "Türkçe" },
+                    { letter: 'C', text: "Soğdca" },
+                    { letter: 'D', text: "Çince" },
+                    { letter: 'E', text: "Arapça" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Karahanlılar Devleti hangi hükümdar zamanında tamamen Müslüman bir karakter kazanmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Bilge Kül Kadır Han" },
+                    { letter: 'B', text: "Ebu'l-Hasan Ali" },
+                    { letter: 'C', text: "Satuk Buğra Han" },
+                    { letter: 'D', text: "Musa (Baytaş) b. Abdülkerim" },
+                    { letter: 'E', text: "Kılıç Buğra Han" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Hazarlar ile Abbâsîler arasındaki son askerî mücadele hangi Abbâsî halifesi döneminde yaşanmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "el-Mansûr" },
+                    { letter: 'B', text: "Hârûn'ür Reşîd" },
+                    { letter: 'C', text: "Me'mun" },
+                    { letter: 'D', text: "Emin" },
+                    { letter: 'E', text: "Saffäh" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1025 yılında Karahanlı Hükümdarı Yusuf Kadır Han ile Gazneli Sultanı Mahmud arasında yapılan görüşme ile ilgili değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Ceyhun Nehri her iki taraf arasında sınır kabul edildi." },
+                    { letter: 'B', text: "İki hanedan arasında akrabalık tesis edilmesine karar verildi." },
+                    { letter: 'C', text: "Karahanlılar ile ilgili meseleleri konuştuktan sonra Arslan bin Selçuk ve emrindeki Oğuzların da Horasan'a nakledilmesi hususunda karara vardılar." },
+                    { letter: 'D', text: "Yusuf Kadır Han ve Gazneli Sultan Mahmud Semerkand civarında buluştu." },
+                    { letter: 'E', text: "Yusuf Kadır Han, Gazneli Mahmud dan yardım istemek zorunda kaldı." }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Sultan Mahmud devri anıtlarının en ünlüsüdür?</strong>",
+                options: [
+                    { letter: 'A', text: "Gazne Camii" },
+                    { letter: 'B', text: "Somnat Mabedi" },
+                    { letter: 'C', text: "Sebük Tegin'in Mezarı" },
+                    { letter: 'D', text: "Gazne Kalesi" },
+                    { letter: 'E', text: "Sultan Mahmud Türbesi" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Yukarıda Gazneli Sultan Mahmud hakkında verilen bilgilerden hangisi yanlıştır?</strong><br>I. Abbasî halifesi el-Kadir-Billâh adına hutbe okuttu.<br>II. Horasan'a sahip oldu.<br>III. Sistan, Cüzcan, Çağaniyan, Huttal ve Harizm'i hâkimiyeti altına aldı.<br>IV. Gur bölgesini kontrol altına almaya çalıştı.<br>V. 1032 yılında vefat etti.",
+                options: [
+                    { letter: 'A', text: "Yalnız IV" },
+                    { letter: 'B', text: "Yalnız II" },
+                    { letter: 'C', text: "Yalnız I" },
+                    { letter: 'D', text: "Yalnız III" },
+                    { letter: 'E', text: "Yalnız V" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Tolunoğlu Ahmed Camii'nde bulunuyordu?</strong>",
+                options: [
+                    { letter: 'A', text: "Çay ocağı" },
+                    { letter: 'B', text: "Doktor" },
+                    { letter: 'C', text: "Dershane" },
+                    { letter: 'D', text: "Bakkal" },
+                    { letter: 'E', text: "Han" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Gazneliler hükümdarı değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Şirzad" },
+                    { letter: 'B', text: "III. Mesud" },
+                    { letter: 'C', text: "Hüsrevşâh" },
+                    { letter: 'D', text: "Ferruhşâh" },
+                    { letter: 'E', text: "Abdürreşid" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdaki Türk hükümdarlarından hangisi Emevilerin Irak Genel Valisi Haccác tarafından öldürülmüştür?</strong>",
+                options: [
+                    { letter: 'A', text: "Nizek Tarhan" },
+                    { letter: 'B', text: "Buharhudât" },
+                    { letter: 'C', text: "Bidun" },
+                    { letter: 'D', text: "Sulu" },
+                    { letter: 'E', text: "Kabaç Hatun" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Yukarıda verilen gerekçelerden hangisi Hazarların İslâm dinini kabul etmelerinde etkili olmuştur?</strong><br>I. Emevilerin Hazar hakanını yenilgiye uğratması<br>II. Rus orduları karşısında tutunamayan Hazar hakanının Hârizmlilere sığınması<br>III. Hz. Ömer zamanında Hazarlara karşı seferler düzenlenmesi<br>IV. Hazar hakanı ile Hristiyanlar arasında sorunlar yaşanması<br>V. Hazarlar ile İtil Bulgarları arasında ticari ilişkilerin yaşanması",
+                options: [
+                    { letter: 'A', text: "Yalnız V" },
+                    { letter: 'B', text: "Yalnız III" },
+                    { letter: 'C', text: "Yalnız IV" },
+                    { letter: 'D', text: "Yalnız I" },
+                    { letter: 'E', text: "Yalnız II" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>İtil Bulgarları bir cenazeleri olduğunda ölüyü hangi yöntemle uğurlarlardı?</strong>",
+                options: [
+                    { letter: 'A', text: "Irmağa atma" },
+                    { letter: 'B', text: "Ağacın tepesine asma" },
+                    { letter: 'C', text: "Toprağa gömme" },
+                    { letter: 'D', text: "Denize atma" },
+                    { letter: 'E', text: "Yakma" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Karahanlıların bilinen en eski hükümdarı Bilge Kül Kadır Han zamanında mücadele ettiği devletlerden biridir?</strong>",
+                options: [
+                    { letter: 'A', text: "İtil Bulgarları" },
+                    { letter: 'B', text: "Hârizmliler" },
+                    { letter: 'C', text: "Sâmâniler" },
+                    { letter: 'D', text: "İlhanlılar" },
+                    { letter: 'E', text: "Gazneliler" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Gaznelilerin ekonomik faaliyetleri hakkında aşağıdaki ifadelerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Gazne, Sultan Mahmud devrinde büyüklük ve gelişme bakımından dünyanın diğer büyük şehirlerinden daha ileri bulunuyordu." },
+                    { letter: 'B', text: "Tüccarlar, güven içinde ticaretlerini yapabilmek ve adaletli bir yönetim için Gazneliler ülkesini tercih ediyorlardı." },
+                    { letter: 'C', text: "Gaznelilerde madencilik faaliyetleri çok zayıftı ve çıkarılan madenlerin sevkiyatı için yol hizmetleri yetersiz kalıyordu." },
+                    { letter: 'D', text: "Sultan İbrahim zamanında Gazne'de 6000 fırıncı, 6000 zahire dükkânı faaliyet gösteriyordu." },
+                    { letter: 'E', text: "Sultan Mahmud 1009'da Narain seferini müteakip yapılan barışla Horasan-Hindistan arasındaki yolları ticarete açmış bulunuyordu." }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Yukarıda verilen bilgilere göre aşağıdakilerden hangisine varılamaz?</strong><br>Sultan Mahmud 1030 yılında vefat ettiğinde Gazneliler Devleti batıda Azerbaycan sınırlarında, doğuda Hindistan'ın Yukarı Ganj Vadisi'ne, Orta Asya'da Harizm'den Hint Okyanusu sahillerine kadar uzanan çok geniş bir sahayı kapsıyordu.",
+                options: [
+                    { letter: 'A', text: "Gazneliler Devleti sınırları çok geniş bir yüz ölçümüne sahiptir." },
+                    { letter: 'B', text: "Gaznelilerin sınırı doğuda Hindistan toprakları içindedir." },
+                    { letter: 'C', text: "Gazneliler Devleti sınırları Hint Okyanusu kıyılarına uzanır." },
+                    { letter: 'D', text: "Sultan Mahmud'un ölüm tarihi bellidir." },
+                    { letter: 'E', text: "Azerbaycan, Gazneliler Devleti hâkimiyeti altındadır." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Gazneli Sultanı Behramşah (Behrâmşah)'ın Sultan Sencer'e bağlı olduğunu göstermektedir?</strong>",
+                options: [
+                    { letter: 'A', text: "Selçuklulara haraç ödemeyi kabul etmesi" },
+                    { letter: 'B', text: "Selçuklu emirleri adına sahte mektuplar göndermesi" },
+                    { letter: 'C', text: "Gurlu Kutbüddin Muhammed'i zehirleterek öldürtmesi" },
+                    { letter: 'D', text: "İsyancılar ile uğraşması" },
+                    { letter: 'E', text: "Çiğilkent (Sakalkent) şehrine saldırması" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Hazarlar ile Abbâsîler arasındaki son askerî mücadele hangi Abbâsî halifesi döneminde yaşanmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Hârûn'ür Reşîd" },
+                    { letter: 'B', text: "Emîn" },
+                    { letter: 'C', text: "el-Mansûr" },
+                    { letter: 'D', text: "Me'mun" },
+                    { letter: 'E', text: "Saffâh" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Yukarıda verilen bilgiye göre Hazarlar hakkında hangisi söylenebilir?</strong><br>\"Hazarlar bölgesinde yapılan kazılarda atlara ait mezarlar ve bu mezarların içinde at iskeletlerinin yanında üzengiler, at koşum takımlarına ait halka ve gemler bulunmuştur.\"",
+                options: [
+                    { letter: 'A', text: "Hazarlar ölülerini toprağa gömerlerdi." },
+                    { letter: 'B', text: "Hazarlar at iskeletinden üzengi yaparlardı." },
+                    { letter: 'C', text: "Hazarlarda atın çok önemli bir yeri vardı." },
+                    { letter: 'D', text: "Hazarlar ölen yakınlarını at koşumları ve üzengiler ile birlikte gömerlerdi." },
+                    { letter: 'E', text: "Hazarlar at kişnemesini uğurlu sayarlardı." }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>İhşidiler döneminde Mısır'da yetişen en önemli tarih âliminin adı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Said b. el-Bitrik" },
+                    { letter: 'B', text: "el-Kindi" },
+                    { letter: 'C', text: "İbn Dukmak" },
+                    { letter: 'D', text: "Suyûti" },
+                    { letter: 'E', text: "Makrizi" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Karahanlıların ekonomik hayatında etkili olan unsurlardan değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "İpekli ve yünlü kumaş üretimi" },
+                    { letter: 'B', text: "Maden sanayii" },
+                    { letter: 'C', text: "Köle ve kürk ticareti" },
+                    { letter: 'D', text: "Meyve üretimi" },
+                    { letter: 'E', text: "Eşkıyalık faaliyetlerinin önlenmesi" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Gazneli Sultanı Behramşah (Behrâmşah)'ın Kirman şehrine kaçmasına neden olmuştur?</strong>",
+                options: [
+                    { letter: 'A', text: "Muhammed Tapar" },
+                    { letter: 'B', text: "Alâeddin Hüseyin" },
+                    { letter: 'C', text: "Tuğrul Şah" },
+                    { letter: 'D', text: "Kutbüddin Muhammed" },
+                    { letter: 'E', text: "Seyfeddin Sûrî" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Yukarıda bazı faaliyetleri hakkında bilgi verilen meşhur Emevi valisi kimdir?</strong><br>I. 674 yılında Beykent'i ele geçirdi.<br>II. Beykent'ten sonra Buhara'ya yöneldi.<br>III. Naibe Kabaç Hatun onunla ağır hükümler taşıyan bir anlaşma yapmak zorunda kaldı.<br>IV. Râmisen, Nesef ve Sağaniyan'ı ele geçirdi.",
+                options: [
+                    { letter: 'A', text: "Ubeydullah b. Ziyad" },
+                    { letter: 'B', text: "Haccâc" },
+                    { letter: 'C', text: "Kuteybe b. Müslim" },
+                    { letter: 'D', text: "Ziyad b. Ebih" },
+                    { letter: 'E', text: "Said b. Osman" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Ebu'l-Misk Kâfûr dönemi ile ilgili aşağıdaki bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Kâfûr'un Mısır'daki yönetimine Abbâsî Halifesi el-Muti onay verdi." },
+                    { letter: 'B', text: "Ebu'l-Hasan Ali, 966'da ölünce Kâfûr kendisini Mısır'ın hâkimi ilân etti." },
+                    { letter: 'C', text: "Kâfûr döneminde Fâtımîler Mısır'ı işgal edip bu devlete son verdi." },
+                    { letter: 'D', text: "Kâfûr, Ünûcûr'un ölümünden sonra yerine geçen kardeşi döneminde de nâibliğini korudu." },
+                    { letter: 'E', text: "Bu dönemde Suriye yeniden İhşîdiler'in hâkimiyeti altına girdi." }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Yukarıdaki ifadeyi kaydeden Arap seyyahı aşağıdakilerden hangisidir?</strong><br>\"Bulgar Türkleri arasında 5.000 kadın ve erkekten müteşekkil 'Barancer' adıyla bilinen bir aile topluca İslâmiyet'e girdiler ve namaz kılmak için kendilerine ahşaptan bir cami yaptılar.\"",
+                options: [
+                    { letter: 'A', text: "İbn Havkal" },
+                    { letter: 'B', text: "İbn Fadlan" },
+                    { letter: 'C', text: "İbn Battûta" },
+                    { letter: 'D', text: "İbn Hurdazbih" },
+                    { letter: 'E', text: "İbn Haldun" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Bâbek İsyanı'nı bastırmayı başaran Türk kumandanı Afşin'i bu iş için hangi Abbasi halifesi görevlendirmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Mu'tasım" },
+                    { letter: 'B', text: "el-Mansûr" },
+                    { letter: 'C', text: "el-Kaim" },
+                    { letter: 'D', text: "el-Mütevekkil" },
+                    { letter: 'E', text: "Me'mun" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Tolunoğlu Ahmed'in uyguladığı mali politikalar arasında yer almaz?</strong>",
+                options: [
+                    { letter: 'A', text: "872 yılında bastırdığı bakır para yanında ayrıca 880 yılında, ağırlık ve ayar olarak daha sağlam \"ed-Dinâru't-Tolûnî\" diye bilinen parayı kestirtti." },
+                    { letter: 'B', text: "Nil Nehri'nin taşıdığı su miktarını tespit etmek ve kuraklığın önüne geçmek gayesiyle er-Ravza Adası'ndaki Mikyas'ı yeniden yaptırdı." },
+                    { letter: 'C', text: "Sulama kanallarını onarttı ve eskilerinin yanında yeni su kanalları ve kemerleri yaptırarak tarımdan elde edilen gelirin artmasını sağladı." },
+                    { letter: 'D', text: "Yolsuzluk yapan memurları görevden alarak maliyeyi çok güvenilir dürüst kimselerin eline bıraktı." },
+                    { letter: 'E', text: "Hazinenin gelirlerini arttırmak için toprak üzerindeki üretimden, hayvancılıktan ve ticaretten ağır vergiler topladı." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>1089 yılında Büyük Selçuklu Sultanı Melikşah'ın hâkimiyetini tanıyan Doğu Karahanlı hükümdarı kimdir?</strong>",
+                options: [
+                    { letter: 'A', text: "Süleyman b. Yusuf" },
+                    { letter: 'B', text: "Hasan b. Süleyman" },
+                    { letter: 'C', text: "Muhammed b. Yusuf" },
+                    { letter: 'D', text: "Mahmud b. Yusuf" },
+                    { letter: 'E', text: "İbrahim b. Nasr" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi İtil Bulgar Devleti'ne komşu değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Hazarlar" },
+                    { letter: 'B', text: "Burtaşlar" },
+                    { letter: 'C', text: "Hârizmliler" },
+                    { letter: 'D', text: "Ruslar" },
+                    { letter: 'E', text: "Başkırtlar" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Soğd, Toharistan, Fergana, Uşrüsene, Karluk, Dokuz Oğuz (Uygurlar) ve diğer bazı Türk hükümdarlarına elçiler göndererek onları İslamiyet'e davet eden Abbasi halifesidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Mu'tasım" },
+                    { letter: 'B', text: "Ebu'l-Abbas es-Seffah" },
+                    { letter: 'C', text: "Ebû Ca'fer el-Mansûr" },
+                    { letter: 'D', text: "Mütevekkil" },
+                    { letter: 'E', text: "Mehdi" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Gazneliler ile ilgili değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Gazneli Mahmud 1000-1027 yılları arasında Hindistan üzerine 17 askerî sefer düzenlemiştir." },
+                    { letter: 'B', text: "Sebük Tegin'in ölümünden sonra yerine veliahtı olan küçük oğlu İsmail tahta çıkmıştır." },
+                    { letter: 'C', text: "Gazneli Devleti'nin gerçek kurucusu Sebük Tegin olmuştur." },
+                    { letter: 'D', text: "Gazneli Mahmud, Mısır ve Suriye'yi egemenliği altına almıştır." },
+                    { letter: 'E', text: "Sebük Tegin, Sâmâni Hükümdarı Emîr II. Nuh'a yardım etmiştir." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Yukarıda Musa b. Abdülkerim hakkında verilen bilgilerden hangisi yanlıştır?</strong><br>I. Satuk Buğra Han'ın oğludur.<br>II. Karahanlılar Devleti'nin tamamının Müslüman olmasını sağlamıştır.<br>III. Baytaş olarak da bilinir.<br>IV. Ebu'l Hasan Ali, onun oğludur.<br>V. Gazneli Sultan Mahmud ile bir antlaşma yapmıştır.",
+                options: [
+                    { letter: 'A', text: "Yalnız III" },
+                    { letter: 'B', text: "Yalnız IV" },
+                    { letter: 'C', text: "Yalnız II" },
+                    { letter: 'D', text: "Yalnız V" },
+                    { letter: 'E', text: "Yalnız I" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Karahanlılar Devleti tarihi alanında yaptıkları çalışmalarla tanınan tarihçiler aşağıdakilerden hangisinde doğru olarak verilmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Osman Turan-Claude Cahen" },
+                    { letter: 'B', text: "Omeljan Pritsak- Speros Vryonis" },
+                    { letter: 'C', text: "Claude Cahen-Reşad Genç" },
+                    { letter: 'D', text: "Omeljan Pritsak-Reşad Genç" },
+                    { letter: 'E', text: "Vasilij Vasilevic Grigorev-Speros Vryonis" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Yukarıda verilen bilgilere göre aşağıdakilerden hangisine ulaşılamaz?</strong><br>Sultan Melikşah 1090 yılında çıktığı II. Mâverâünnehr seferinde Ahmed Han'ı ülkesine iade etti. Ancak ulemâ onu katletti. Artık bu tarihten sonra Batı Karahanlı tahtına çıkacak olan hükümdarları Büyük Selçuklular tayin etmeye başladılar.",
+                options: [
+                    { letter: 'A', text: "Batı Karahanlıların Selçuklulara bağlı olduğu" },
+                    { letter: 'B', text: "Sultan Melikşah'ın, II. Mâverâünnehr seferinin hangi tarihte yapıldığı" },
+                    { letter: 'C', text: "Batı Karahanlı uleması ile hükümdar arasında anlaşmazlık olduğu" },
+                    { letter: 'D', text: "Batı Karahanlı ulemâsının hükümdar seçiminde etkili olduğu" },
+                    { letter: 'E', text: "Selçukluların, Batı Karahanlılara tahakküm ettiği" }
+                ],
+                correct: 'D'
+            }
+        ];
+
+        let answers = {};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+
+            // Soruları rastgele karıştır
+            const shuffledQuiz = shuffle([...quizData]);
+
+            shuffledQuiz.forEach((item, index) => {
+                const qNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${qNum}`;
+
+                const p = document.createElement('p');
+                p.innerHTML = item.question;
+                div.appendChild(p);
+
+                // Şıkları rastgele karıştır
+                const shuffledOptions = shuffle([...item.options]);
+                shuffledOptions.forEach((opt, optIndex) => {
+                    const newLetter = String.fromCharCode(65 + optIndex);
+                    const label = document.createElement('label');
+                    label.className = 'option';
+                    label.htmlFor = `q${qNum}${newLetter}`;
+                    label.innerHTML = `<input type="radio" id="q${qNum}${newLetter}" name="q${qNum}" value="${newLetter}" onchange="checkAnswer(${qNum})"><span class="radio"></span>${newLetter}) ${opt.text}`;
+                    div.appendChild(label);
+
+                    // Eğer bu şık orijinal doğruysa, yeni harfi doğru olarak kaydet
+                    if (opt.letter === item.correct) {
+                        answers[`q${qNum}`] = { correct: newLetter, text: `${newLetter}) ${opt.text}` };
+                    }
+                });
+
+                const hintP = document.createElement('p');
+                hintP.className = 'answer-hint';
+                hintP.id = `hint${qNum}`;
+                hintP.innerHTML = `Doğru cevap: <strong>${answers[`q${qNum}`].text}</strong>`;
+                div.appendChild(hintP);
+
+                form.appendChild(div);
+            });
+        }
+
+        // Sayfa yüklendiğinde quiz'i render et (rastgele)
+        window.onload = renderQuiz;
+
+        function checkAnswer(num) {
+            const q = `q${num}`;
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (!selected) return;
+
+            const correct = answers[q].correct;
+            const options = document.querySelectorAll(`#q${num} .option`);
+
+            // Önce tüm renkleri sıfırla
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            // Doğru şıkkı yeşil yap
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            // Seçilen yanlışsa kırmızı yap
+            if (selected.value !== correct) {
+                const selectedOpt = selected.parentElement;
+                selectedOpt.classList.add('incorrect');
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q].correct) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function finishQuiz() {
+            // Tüm doğru şıkları yeşil yap
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const options = document.querySelectorAll(`#q${i} .option`);
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === answers[`q${i}`].correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            // Skoru hesapla ve göster
+            const score = calculateScore();
+            document.getElementById('result').innerHTML = `Toplam Skor: ${score} / ${total}`;
+            document.querySelector('.finish').disabled = true;
+        }
+
+        function showAllAnswers() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`hint${i}`).style.display = 'block';
+            }
+            document.getElementById('showAnswersBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>
