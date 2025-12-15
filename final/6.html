@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osmanlı Denizcilik Tarihi Final Testi</title>
+    <button onclick="window.location.href='index.html'" style="position: fixed; bottom: 40px; right: 40px; padding: 20px 30px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Geri Dön</button>
+    <style>
+        /* CSS Değişkenleri ile Renk Yönetimi */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --h1-color: #2c3e50;
+            --box-bg: #ffffff;
+            --box-border: #ddd;
+            --option-bg: #f0f0f0;
+            --option-hover-bg: #e8e8e8;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Karanlık Mod Değişkenleri */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --h1-color: #ecf0f1;
+            --box-bg: #1e1e1e;
+            --box-border: #333;
+            --option-bg: #2c2c2c;
+            --option-hover-bg: #3a3a3a;
+            --shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0 auto; 
+            max-width: 800px;
+            padding: 20px; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Tema Değiştirme Butonu */
+        #themeToggleBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--text-color);
+            background-color: var(--box-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+
+        h1 { 
+            text-align: center; 
+            color: var(--h1-color); 
+            font-size: 2em;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+        #showAnswersBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        #showAnswersBtn:hover { 
+            transform: scale(1.05);
+        }
+        .question { 
+            background-color: var(--box-bg); 
+            border: 1px solid var(--box-border); 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: var(--shadow); 
+        }
+        .question p { 
+            font-weight: normal; 
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+            white-space: pre-line;
+        }
+        .option { 
+            display: flex; 
+            align-items: center; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            padding: 10px; 
+            border-radius: 5px; 
+            background-color: var(--option-bg);
+            transition: background-color 0.2s, color 0.2s; 
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+
+        /* --- Hover (İmleç) Sihri --- */
+        /* Doğru şıkkın üzerine gelince yeşil olsun */
+        .option[data-correct="true"]:hover {
+            background-color: #27ae60 !important;
+            color: white !important;
+            border-color: #27ae60;
+        }
+        /* Yanlış şıkkın üzerine gelince kırmızı olsun */
+        .option[data-correct="false"]:hover {
+            background-color: #c0392b !important;
+            color: white !important;
+            border-color: #c0392b;
+        }
+
+        .option input { 
+            display: none; 
+        }
+        .option .radio { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background-color: var(--box-bg); 
+            border: 2px solid #3498db; 
+            margin-right: 15px; 
+            position: relative; 
+            flex-shrink: 0;
+        }
+        .option .radio::after { 
+            content: ''; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #3498db; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; 
+        }
+        .option input:checked + .radio::after { 
+            display: block; 
+        }
+
+        /* Kalıcı Cevap Stilleri (Tıklandıktan sonra) */
+        .option.correct { 
+            background-color: #145a32 !important; 
+            color: #d4efdf !important; 
+        }
+        .option.incorrect { 
+            background-color: #641e16 !important; 
+            color: #fadbd8 !important; 
+        }
+
+        .answer-hint { 
+            display: none; 
+            margin-top: 15px; 
+            font-size: 1em; 
+            color: #2ecc71; 
+            font-style: italic; 
+            font-weight: bold;
+            border-bottom: 1px solid #2ecc71;
+            padding-bottom: 5px;
+        }
+        button.finish { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 30px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        button.finish:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #7f8c8d; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.3em; 
+            color: var(--text-color); 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    
+    <button id="themeToggleBtn" onclick="toggleTheme()">🌙 Koyu Mod</button>
+
+    <h1>OSMANLI DENİZCİLİK TARİHİ FİNAL SORULARI</h1>
+    <button id="showAnswersBtn" onclick="showAllAnswers()">Cevapları Göster</button>
+    <form id="quizForm"></form>
+    <button class="finish" onclick="finishQuiz()">Testi Bitir</button>
+    <div id="result"></div>
+    <script>
+        // Tema Değiştirme Fonksiyonu
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeToggleBtn');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙 Koyu Mod';
+                btn.style.backgroundColor = '#ffffff';
+                btn.style.color = '#333';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️ Açık Mod';
+                btn.style.backgroundColor = '#333';
+                btn.style.color = '#fff';
+            }
+        }
+
+        // Varsayılan tema ayarı
+        document.body.setAttribute('data-theme', 'dark');
+        document.getElementById('themeToggleBtn').innerText = '☀️ Açık Mod';
+
+        // Soru verileri (Osmanlı Denizcilik Tarihi)
+        const quizData = [
+            {
+                question: "Osmanlıların ilk çektirisi olan..... gemisi, daha sonraları nakliyede kullanılan bir buçuk direkli, sivri üçgen yelkenli, yarım güverteli küçük teknelerden ibaretti.<br><br><strong>Yukarıda verilen cümlede yer alan boşluğa aşağıdaki ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: "karamürsel" },
+                    { letter: 'B', text: "pereme" },
+                    { letter: 'C', text: "firkate" },
+                    { letter: 'D', text: "baştarda" },
+                    { letter: 'E', text: "şayka" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdaki gelişmelerin hangisinin akabinde İngilizler Osmanlı sularında kendi bayrakları ile ticaret yapabilir hâle gelmişlerdir?</strong>",
+                options: [
+                    { letter: 'A', text: "İnebahtı Savaşı" },
+                    { letter: 'B', text: "Tunus'un Osmanlılarca fethi" },
+                    { letter: 'C', text: "Baltalimanı Antlaşması" },
+                    { letter: 'D', text: "1580 Ahidnamesi" },
+                    { letter: 'E', text: "Levant Kumpanyası'nın kurulması" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "1503 Ahidnamesi'ne göre Venedikliler Kefalonya kendilerinde kalmak şartıyla ..... şehrini Osmanlılara bırakıyordu.<br><br><strong>Yukarıdaki boşluğa aşağıdaki ifadelerden hangisi getirilemez?</strong>",
+                options: [
+                    { letter: 'A', text: "Modon" },
+                    { letter: 'B', text: "İnebahtı" },
+                    { letter: 'C', text: "Midilli" },
+                    { letter: 'D', text: "Koron" },
+                    { letter: 'E', text: "Drça" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Girit Seferi ile ilgili aşağıdakilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Sefer sonunda Venedik savaş tazminatı ödemeyi kabul etmiştir." },
+                    { letter: 'B', text: "Osmanlı gemi teknolojisinde değişime yol açmıştır." },
+                    { letter: 'C', text: "Yaklaşık yirmi beş yıl boyunca devam etmiştir." },
+                    { letter: 'D', text: "Fransızlar Venediklilere önemli yardımlarda bulunmuşlardır." },
+                    { letter: 'E', text: "Sefer sonunda Osmanlılar adada hakim hâle gelmişlerdir." }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "Aynı zamanda Donanma-yı Hümâyun ricalinden olan Kaptan-1 Derya'dan sonra Tersane'nin birinci hâkimidir.<br><br><strong>Yukarıdaki cümlede boş bırakılan yere aşağıdaki ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Derya Beyi" },
+                    { letter: 'B', text: "Babüssaade Ağası" },
+                    { letter: 'C', text: "Tersane Ağası" },
+                    { letter: 'D', text: "Tersane Kethüdası" },
+                    { letter: 'E', text: "Tersane Emini" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "Osmanı İmparatorluğu topraklarında ticaret yapma hakkı en eskiye uzanan devlet Venedik Cumhuriyeti idi. Önceleri bütün ecnebi devletler Venedik bayrağı altında ticaret yapabilme hakkına sahipken XVI. yüzyılda ilk defa müstakil ticaret yapma müsaadesi aldı, onu daha sonra ..... izledi.<br><br><strong>Yukarıda yer alan cümledeki boşluklara sırasıyla aşağıdaki ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Avusturya İngiltere" },
+                    { letter: 'B', text: "Cenova İspanya" },
+                    { letter: 'C', text: "Fransa İspanya" },
+                    { letter: 'D', text: "Fransa-İngiltere" },
+                    { letter: 'E', text: "Floransa - Fransa" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Karadeniz kıyısında yer alan aşağıdaki şehirlerden hangisi II. Mehmed döneminde feth edilmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Trabzon" },
+                    { letter: 'B', text: "Vize" },
+                    { letter: 'C', text: "Kili" },
+                    { letter: 'D', text: "Samsun" },
+                    { letter: 'E', text: "Akkirman" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Barbaros Hayreddin Paşa Osmanlı hizmetine girmeden önce I. Selim tarafından aşağıdaki yerlerden hangisinin hâkimi olarak tanınmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Sela" },
+                    { letter: 'B', text: "Cezayir" },
+                    { letter: 'C', text: "Trablusgarp" },
+                    { letter: 'D', text: "Tunus" },
+                    { letter: 'E', text: "Midilli" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "Osmanı arşivinde yer alan...... tersanede yapılan harcamaları detaylı bir biçimde gösteriyor oluşu dolayısıyla tersanenin yapısı hakkında bilgi verici niteliktedirler.<br><br><strong>Yukarıdaki cümlede boş bırakılan yere aşağıdaki ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Düvel-i Ecnebiye Defterleri" },
+                    { letter: 'B', text: "Muhasebe Defterleri" },
+                    { letter: 'C', text: "Ruus Defterleri" },
+                    { letter: 'D', text: "Şer'iyye Sicilleri" },
+                    { letter: 'E', text: "Name-i Hümayun Defterleri" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi tersanede ve donanmada hizmet eden tüfekli bir askerî sınıftır?</strong>",
+                options: [
+                    { letter: 'A', text: "Martoloslar" },
+                    { letter: 'B', text: "Akıncılar" },
+                    { letter: 'C', text: "Azaplar" },
+                    { letter: 'D', text: "Forsalar" },
+                    { letter: 'E', text: "Timarlı sipahiler" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi yelkenli gemi türleri arasında yer almaz?</strong>",
+                options: [
+                    { letter: 'A', text: "Karavele" },
+                    { letter: 'B', text: "Kalyon" },
+                    { letter: 'C', text: "Barça" },
+                    { letter: 'D', text: "Burtun" },
+                    { letter: 'E', text: "Kalyata" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "Osmanlı deniz tarihinde gemiciliğin gelişimini üç ayrı dönemde incelemek gerekmektedir: Birincisi, İmparatorluğun kuruluşundan XVII. yüzyılın ikinci yarısına kadar devam eden kürekli gemiler dönemi, ikincisi XIX. yüzyılın ortalarına kadar devam eden dönemi, üçüncüsü de İmparatorluğun yıkılışına kadar süren buharlı gemiler dönemidir.<br><br><strong>Yukarıdaki cümlede boş bırakılan yere aşağıdaki ifadelerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: "direkli gemiler" },
+                    { letter: 'B', text: "yelkenli gemiler" },
+                    { letter: 'C', text: "ambarlı gemiler" },
+                    { letter: 'D', text: "ahşap gemiler" },
+                    { letter: 'E', text: "firkateler" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Mezemorta Hüseyin Paşa ile ilgili aşağıdakilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Donanmada kalyonları ön plana çıkarmıştır." },
+                    { letter: 'B', text: "Korsan kökenli bir denizcidir." },
+                    { letter: 'C', text: "Venedik'le yaptığı mücadelelerde başarılı olmuştur." },
+                    { letter: 'D', text: "Cezayir-i Garp beylerbeyliği yapmıştır." },
+                    { letter: 'E', text: "1701 Bahriye Kanunnamesi'nin uygulayıcısıdır." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1701 tarihli Bahriye Kanunnamesi ile yapılan düzenlemelerden biridir?</strong>",
+                options: [
+                    { letter: 'A', text: "Donanmadaki kalyon sayısı en az kırk olarak belirlenmiştir." },
+                    { letter: 'B', text: "Cezayir-i Bahr-i Sefid eyaleti kaldırılmıştır." },
+                    { letter: 'C', text: "İmparatorlukta tek bir tersanenin bulunması kararlaştırılmıştır." },
+                    { letter: 'D', text: "Derya beylerine peksimet verilmesi uygulaması başlamıştır." },
+                    { letter: 'E', text: "Tüm vezirlere kaptan-ı derya olmanın yolu açılmıştır." }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi tersane sanatkarları (zanaatkarları) arasında yer almaz?</strong>",
+                options: [
+                    { letter: 'A', text: "Neccar" },
+                    { letter: 'B', text: "Makaracı" },
+                    { letter: 'C', text: "Bostancı" },
+                    { letter: 'D', text: "Haddad" },
+                    { letter: 'E', text: "Kumbaracı" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 18. yüzyılda Osmanlı bahriyesinde yapılan yenileşme girişimleri kapsamında değerlendirilemez?</strong>",
+                options: [
+                    { letter: 'A', text: "Yeni tekniklerle gemi inşasına başlanması" },
+                    { letter: 'B', text: "Bahriye Nezareti'nin kurulması" },
+                    { letter: 'C', text: "Fransız gemi mimarlarının tersaneye davet edilmesi" },
+                    { letter: 'D', text: "Tersane'de büyük havuzun inşası" },
+                    { letter: 'E', text: "Hendesehane'nin açılması" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Osmanlı Devleti'nin 1570 yılında Venedik'e savaş ilanının ve Kıbrıs'a sefer düzenlemesinin gerekçeleri arasında gösterilemez?</strong>",
+                options: [
+                    { letter: 'A', text: "Korsanların Mısır defterdarının gemisine el koymaları" },
+                    { letter: 'B', text: "Hac yollarının güvenliğinin temin edilmek istenmesi" },
+                    { letter: 'C', text: "Kara sınır hattında yeni yerleşim sahalarının açılması" },
+                    { letter: 'D', text: "Kıbrıs'ın bir korsan üssü haline dönüşmesi" },
+                    { letter: 'E', text: "İnebahtı Savaşı'nın intikamının alınmak istenmesi" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Kürekle hareket eden gemilerden hangisi en üst düzey deniz komutanlarının kullandığı savaş gemisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Burtun" },
+                    { letter: 'B', text: "Mavna" },
+                    { letter: 'C', text: "Palaşkerme" },
+                    { letter: 'D', text: "Baştarda" },
+                    { letter: 'E', text: "Kalyata" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdaki gelişmelerin hangisinden sonra Gelibolu Tersanesi önemini yitirmeye başlamıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Büyük Gelibolu yangını" },
+                    { letter: 'B', text: "Marmara'nın bir iç deniz haline gelmesi" },
+                    { letter: 'C', text: "Latinlerin Ege adalarından kovulması" },
+                    { letter: 'D', text: "Donanmada yelkenli gemilere geçilmesi" },
+                    { letter: 'E', text: "Haliç'te yeni bir tersanenin açılması" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Osmanlıların yelkenli gemilerle yaptıkları son büyük donanma savaşıdır?</strong>",
+                options: [
+                    { letter: 'A', text: "İnebahtı Savaşı" },
+                    { letter: 'B', text: "Çeşme Savaşı" },
+                    { letter: 'C', text: "Navarin Savaşı" },
+                    { letter: 'D', text: "Mora Seferi" },
+                    { letter: 'E', text: "Koyunadaları Muharebeleri" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Cezayirli Gazi Hasan Paşa'nın denizcilik alanında yaptığı yenilikler arasında yer alır?</strong>",
+                options: [
+                    { letter: 'A', text: "Bahriye Nezareti'nin kurulması" },
+                    { letter: 'B', text: "Tersane-i Amire Mühendishanesi'nin açılması" },
+                    { letter: 'C', text: "İlk yelkenbezi fabrikasının kurulması" },
+                    { letter: 'D', text: "Buharlı gemilere geçilmesi" },
+                    { letter: 'E', text: "Kürek cezalarının artırılmasının sağlanması" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>İnebahtı Savaşı'nda Osmanlı Devleti'nin karşısına çıkan Kutsal İttifak donanmasının teşkiline neden olan gelişme aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Malta'nın Osmanlılarca kuşatılması" },
+                    { letter: 'B', text: "Tunus'un Osmanlılarca fethi" },
+                    { letter: 'C', text: "Osmanlı Devleti'nin Kıbrıs'a sefer düzenlemesi" },
+                    { letter: 'D', text: "Osmanlıların Korfu ve Pulya seferleri" },
+                    { letter: 'E', text: "Viyana'nın Osmanlılarca kuşatılması" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıda Mezemorta Hüseyin Paşa ile ilgili olarak verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Korsan kökenli bir denizcidir." },
+                    { letter: 'B', text: "Cezayir-i Garp beylerbeyliği yapmıştır." },
+                    { letter: 'C', text: "1701 Bahriye Kanunnamesinin uygulayıcısıdır." },
+                    { letter: 'D', text: "Donanmada kalyonları ön plana çıkarmıştır." },
+                    { letter: 'E', text: "Venedik'le yaptığı mücadelelerde başarılı olmuştur." }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi donanma tersanede iken Tersane'de görev yapan yöneticilerin genel adıdır?</strong>",
+                options: [
+                    { letter: 'A', text: "Tersane Eminleri" },
+                    { letter: 'B', text: "Denizciler" },
+                    { letter: 'C', text: "Tersane Ricali" },
+                    { letter: 'D', text: "Donanma Ricali" },
+                    { letter: 'E', text: "Kapı Halkı" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "II. Mehmed, Çanakkale Boğazı'ndaki geçişleri kontrol etmek amacıyla ...... hisarlarını yaptırmıştır.<br><br><strong>Yukarıda boş bırakılan yere aşağıdaki ifadelerden hangisi gelmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Boğazkesen ve Kal'a-yı Sultaniye" },
+                    { letter: 'B', text: "Kilidbahir ve Anadolu Hisarı" },
+                    { letter: 'C', text: "Kal'a-yı Çanak ve Bahr-i Kilid" },
+                    { letter: 'D', text: "Bahr-i Kilid ve Boğazkesen" },
+                    { letter: 'E', text: "Kal'a-yı Sultaniye ve Kilidbahir" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdaki Adriyatik limanlarından hangisi bir korsan üssü değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Ülgün" },
+                    { letter: 'B', text: "Nova" },
+                    { letter: 'C', text: "Draç" },
+                    { letter: 'D', text: "Avlonya" },
+                    { letter: 'E', text: "Spilit" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1463-1479 yılları arasında cereyan eden Osmanlı - Venedik savaşının sonuçlarından biridir?</strong>",
+                options: [
+                    { letter: 'A', text: "Cem Sultan'ın Osmanlılara iadesi" },
+                    { letter: 'B', text: "Venedik'in 300.000 altın savaş tazminatı ödemesi" },
+                    { letter: 'C', text: "Otranto'nun Osmanlı egemenliğine girmesi" },
+                    { letter: 'D', text: "Bağımsız Kıbrıs Krallığı'nın kurulması" },
+                    { letter: 'E', text: "Eğriboz'un Osmanlı hâkimiyetine girmesi" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Kalyon türü gemilerle ilgili olarak aşağıda verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Kadırgalar model alınmak suretiyle yapılmışlardır." },
+                    { letter: 'B', text: "Yapımlarında birden fazla kereste türü kullanılmaktadır." },
+                    { letter: 'C', text: "Rüzgar gücü ile hareket ederler." },
+                    { letter: 'D', text: "Kadırgaya nazaran daha uzun ve yüksek gemilerdir." },
+                    { letter: 'E', text: "100-120 civarında kürekçiye ihtiyaç duyarlar." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıda verilen II. Bayezid dönemi gelişmelerinden hangisi Osmanlı Venedik İlişkilerinin bozulmasına neden olmuştur?</strong>",
+                options: [
+                    { letter: 'A', text: "Venedik'te yaşanan doç değişikliği" },
+                    { letter: 'B', text: "Venedik'in Kıbrıs haracını göndermeyi reddetmesi" },
+                    { letter: 'C', text: "Venedik'in Kotor ve Preveze'yi işgali" },
+                    { letter: 'D', text: "Osmanlıların Magosa limanını kullanmak istemeleri" },
+                    { letter: 'E', text: "Venedik'in bir Haçlı ittifakına dâhil olması" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Osmanlı denizciliğinde yelkenli gemiler döneminin ardından gelen dönem aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Hibrit gemiler dönemi" },
+                    { letter: 'B', text: "Buharlı gemiler dönemi" },
+                    { letter: 'C', text: "Büyük gemiler dönemi" },
+                    { letter: 'D', text: "Kürekli gemiler dönemi" },
+                    { letter: 'E', text: "Ahşap gemiler dönemi" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1715 1718 Osmanlı Venedik savaşları ile ilgili olarak söylenemez?</strong>",
+                options: [
+                    { letter: 'A', text: "Osmanlı donanma kaptanı Canım Hoca Mehmed Paşa'dır." },
+                    { letter: 'B', text: "Anabolu ve Benefşe Venediklilerin eline geçmiştir." },
+                    { letter: 'C', text: "Osmanlıların Korfu kuşatması başarısızlıkla neticelenmiştir." },
+                    { letter: 'D', text: "Osmanlılar Mora yarımadasını ele geçirmişlerdir." },
+                    { letter: 'E', text: "Limni ve Bozcaada önündeki savaşları Osmanlılar kazanmıştır." }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Osmanlı Devleti'nde denizcilik işlerinin en başındaki isim aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Tersane Ağası" },
+                    { letter: 'B', text: "Kaptanpaşa" },
+                    { letter: 'C', text: "Derya Beyi" },
+                    { letter: 'D', text: "Azap Ağası" },
+                    { letter: 'E', text: "Tersane Emini" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi 1684-1699 yılları arasında cereyan eden savaşlarda Venedikliler tarafından ele geçirilen yerlerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Girit" },
+                    { letter: 'B', text: "Sakız" },
+                    { letter: 'C', text: "Modon" },
+                    { letter: 'D', text: "Anabolu" },
+                    { letter: 'E', text: "Benefşe" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Tersane-i Amire'deki gemi inşa faaliyetleri Osmanlı Arşivi'ndeki hangi defterler üzerinden takip edilebilir?</strong>",
+                options: [
+                    { letter: 'A', text: "Düvel-i Ecnebiye Defterleri" },
+                    { letter: 'B', text: "Hadariye Defterleri" },
+                    { letter: 'C', text: "Name-i hümayun Defterleri" },
+                    { letter: 'D', text: "İzn-i sefine defterleri" },
+                    { letter: 'E', text: "Muhasebe Defterleri" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Barbaros Hayreddin Paşa Osmanlı hizmetine girmeden önce I. Selim tarafından aşağıdaki yerlerden hangisinin hakimi olarak tanınmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Cezayir" },
+                    { letter: 'B', text: "Trablusgarp" },
+                    { letter: 'C', text: "Sela" },
+                    { letter: 'D', text: "Tunus" },
+                    { letter: 'E', text: "Midilli" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdaki hadiselerden hangisinden sonra Osmanlı Devleti, Girit üzerine bir sefer düzenleme kararı almıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Sünbül Ağa'nın gemisine yapılan saldırı" },
+                    { letter: 'B', text: "Giritli Ortodoksların Osmanlılardan yardım talebi" },
+                    { letter: 'C', text: "Venedik'in Zante haracını ödememesi" },
+                    { letter: 'D', text: "Venedik'in Osmanlılara Mağosa limanını kullandırmaması" },
+                    { letter: 'E', text: "İspanyolların Koron'u kuşatması" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi kürekli donanma gemilerinden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Kalyata" },
+                    { letter: 'B', text: "Kadırga" },
+                    { letter: 'C', text: "Firkate" },
+                    { letter: 'D', text: "Burtun" },
+                    { letter: 'E', text: "Baştarda" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Venedik Cumhuriyeti, Girit Savaşı sürecinde aşağıdaki yerlerden hangilerini ele geçirmek suretiyle Çanakkale Boğazı'nı tam bir ablukaya almayı başarmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Bozcaada - Limni" },
+                    { letter: 'B', text: "Sakız Sisam" },
+                    { letter: 'C', text: "Kandiye - Resmo" },
+                    { letter: 'D', text: "Eğriboz - İskiri" },
+                    { letter: 'E', text: "Rodos - İstanköy" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>1701 Bahriye Kanunnamesi ile ilgili olarak aşağıda yapılan değerlendirmelerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Denizciliğin bir devlet politikası haline geldiğini gösterir." },
+                    { letter: 'B', text: "Kaptan-ı deryaların konumunu güçlendirici niteliktedir." },
+                    { letter: 'C', text: "Denizcilikte hiyerarşiye önem verir." },
+                    { letter: 'D', text: "Venedik bahriye kanunnamesinin adaptasyonudur." },
+                    { letter: 'E', text: "Denizcilik teşkilatının yapısını değiştirmiştir." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdaki gelişmelerin hangisinin akabinde İngilizler Osmanlı sularında kendi bayrakları ile ticaret yapabilir hale gelmişlerdir?</strong>",
+                options: [
+                    { letter: 'A', text: "Tunus'un Osmanlılarca fethi" },
+                    { letter: 'B', text: "Levant Kumpanyası'nın kurulması" },
+                    { letter: 'C', text: "İnebahtı Savaşı" },
+                    { letter: 'D', text: "1580 Ahidnamesi" },
+                    { letter: 'E', text: "Baltalimanı Antlaşması" }
+                ],
+                correct: 'D'
+            }
+        ];
+
+        let answers = {};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+
+            const shuffledQuiz = shuffle([...quizData]);
+
+            shuffledQuiz.forEach((item, index) => {
+                const qNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${qNum}`;
+
+                const p = document.createElement('p');
+                p.innerHTML = item.question;
+                div.appendChild(p);
+
+                const shuffledOptions = shuffle([...item.options]);
+                shuffledOptions.forEach((opt, optIndex) => {
+                    const newLetter = String.fromCharCode(65 + optIndex);
+                    const label = document.createElement('label');
+                    label.className = 'option';
+                    label.htmlFor = `q${qNum}${newLetter}`;
+                    
+                    // Mouse hover (üzerine gelme) ile cevabı göstermek için veri ekliyoruz
+                    if (opt.letter === item.correct) {
+                        label.setAttribute("data-correct", "true");
+                        answers[`q${qNum}`] = { correct: newLetter, text: `${newLetter}) ${opt.text}` };
+                    } else {
+                        label.setAttribute("data-correct", "false");
+                    }
+
+                    label.innerHTML = `<input type="radio" id="q${qNum}${newLetter}" name="q${qNum}" value="${newLetter}" onchange="checkAnswer(${qNum})"><span class="radio"></span>${newLetter}) ${opt.text}`;
+                    div.appendChild(label);
+                });
+
+                const hintP = document.createElement('p');
+                hintP.className = 'answer-hint';
+                hintP.id = `hint${qNum}`;
+                hintP.innerHTML = `Doğru cevap: <strong>${answers[`q${qNum}`].text}</strong>`;
+                div.appendChild(hintP);
+
+                form.appendChild(div);
+            });
+        }
+
+        window.onload = renderQuiz;
+
+        function checkAnswer(num) {
+            const q = `q${num}`;
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (!selected) return;
+
+            const correct = answers[q].correct;
+            const options = document.querySelectorAll(`#q${num} .option`);
+
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (selected.value !== correct) {
+                const selectedOpt = selected.parentElement;
+                selectedOpt.classList.add('incorrect');
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q].correct) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function finishQuiz() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const options = document.querySelectorAll(`#q${i} .option`);
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === answers[`q${i}`].correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            const score = calculateScore();
+            document.getElementById('result').innerHTML = `Toplam Skor: ${score} / ${total}`;
+            document.querySelector('.finish').disabled = true;
+        }
+
+        function showAllAnswers() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`hint${i}`).style.display = 'block';
+            }
+            document.getElementById('showAnswersBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>
