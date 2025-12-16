@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSMANLI DÖNEMİNDE BALKANLAR (1774-1914) FİNAL SORULARI</title>
+    <button onclick="window.location.href='index.html'" style="position: fixed; bottom: 40px; right: 40px; padding: 20px 30px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Geri Dön</button>
+    <style>
+        /* CSS Değişkenleri ile Renk Yönetimi */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --h1-color: #2c3e50;
+            --box-bg: #ffffff;
+            --box-border: #ddd;
+            --option-bg: #f0f0f0;
+            --option-hover-bg: #e8e8e8;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Karanlık Mod Değişkenleri */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --h1-color: #ecf0f1;
+            --box-bg: #1e1e1e;
+            --box-border: #333;
+            --option-bg: #2c2c2c;
+            --option-hover-bg: #3a3a3a;
+            --shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0 auto; 
+            max-width: 800px;
+            padding: 20px; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Tema Değiştirme Butonu */
+        #themeToggleBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--text-color);
+            background-color: var(--box-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+
+        h1 { 
+            text-align: center; 
+            color: var(--h1-color); 
+            font-size: 2em;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+        #showAnswersBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        #showAnswersBtn:hover { 
+            transform: scale(1.05);
+        }
+        .question { 
+            background-color: var(--box-bg); 
+            border: 1px solid var(--box-border); 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: var(--shadow); 
+        }
+        .question p { 
+            font-weight: normal; 
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+            white-space: pre-line;
+        }
+        .option { 
+            display: flex; 
+            align-items: center; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            padding: 10px; 
+            border-radius: 5px; 
+            background-color: var(--option-bg);
+            transition: background-color 0.2s, color 0.2s; 
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+
+        /* --- Hover (İmleç) Sihri --- */
+        /* Doğru şıkkın üzerine gelince yeşil olsun */
+        .option[data-correct="true"]:hover {
+            background-color: #27ae60 !important;
+            color: white !important;
+            border-color: #27ae60;
+        }
+        /* Yanlış şıkkın üzerine gelince kırmızı olsun */
+        .option[data-correct="false"]:hover {
+            background-color: #c0392b !important;
+            color: white !important;
+            border-color: #c0392b;
+        }
+
+        .option input { 
+            display: none; 
+        }
+        .option .radio { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background-color: var(--box-bg); 
+            border: 2px solid #3498db; 
+            margin-right: 15px; 
+            position: relative; 
+            flex-shrink: 0;
+        }
+        .option .radio::after { 
+            content: ''; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #3498db; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; 
+        }
+        .option input:checked + .radio::after { 
+            display: block; 
+        }
+
+        /* Kalıcı Cevap Stilleri (Tıklandıktan sonra) */
+        .option.correct { 
+            background-color: #145a32 !important; 
+            color: #d4efdf !important; 
+        }
+        .option.incorrect { 
+            background-color: #641e16 !important; 
+            color: #fadbd8 !important; 
+        }
+
+        .answer-hint { 
+            display: none; 
+            margin-top: 15px; 
+            font-size: 1em; 
+            color: #2ecc71; 
+            font-style: italic; 
+            font-weight: bold;
+            border-bottom: 1px solid #2ecc71;
+            padding-bottom: 5px;
+        }
+        button.finish { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 30px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        button.finish:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #7f8c8d; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.3em; 
+            color: var(--text-color); 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    
+    <button id="themeToggleBtn" onclick="toggleTheme()">🌙 Koyu Mod</button>
+
+    <h1>OSMANLI DÖNEMİNDE BALKANLAR (1774-1914) FİNAL SORULARI</h1>
+    <button id="showAnswersBtn" onclick="showAllAnswers()">Cevapları Göster</button>
+    <form id="quizForm"></form>
+    <button class="finish" onclick="finishQuiz()">Testi Bitir</button>
+    <div id="result"></div>
+    <script>
+        // Tema Değiştirme Fonksiyonu
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeToggleBtn');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙 Koyu Mod';
+                btn.style.backgroundColor = '#ffffff';
+                btn.style.color = '#333';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️ Açık Mod';
+                btn.style.backgroundColor = '#333';
+                btn.style.color = '#fff';
+            }
+        }
+
+        // Varsayılan tema ayarı
+        document.body.setAttribute('data-theme', 'dark');
+        document.getElementById('themeToggleBtn').innerText = '☀️ Açık Mod';
+
+        // Soru verileri (Osmanlı Döneminde Balkanlar)
+        const quizData = [
+            {
+                question: "<strong>1912 yılında Rusya hangi devletlerin çıkarlarının çatışmaması için arabuluculuk yapmaya başlamıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Bulgaristan-Yunanistan" },
+                    { letter: 'B', text: "Bulgaristan-Sırbistan" },
+                    { letter: 'C', text: "Karadağ-Yunanistan" },
+                    { letter: 'D', text: "Yunanistan-Romanya" },
+                    { letter: 'E', text: "Karadağ-Romanya" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Balkan milletleri arasında çok dinli özelliğe sahip millet aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Yunanlılar" },
+                    { letter: 'B', text: "Ermeniler" },
+                    { letter: 'C', text: "Arnavutlar" },
+                    { letter: 'D', text: "Sırplar" },
+                    { letter: 'E', text: "Bulgarlar" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Nikola'nın 1867 ve 1868 yıllarındaki diplomatik temasları ile ilgili aşağıdakilerden hangisi doğrudur?</strong>",
+                options: [
+                    { letter: 'A', text: "1867'de III. Napolyon, 1868'de II. Aleksandır ile görüşmüştür." },
+                    { letter: 'B', text: "1867'de II. Aleksandır, 1868'de Prens Dolgorukov ile görüşmüştür." },
+                    { letter: 'C', text: "1867'de Avusturya imparatoru, 1868'de II. Aleksandır ile görüşmüştür." },
+                    { letter: 'D', text: "1867'de Prens Dolgorukov, 1868'de Rus çarı ile görüşmüştür." },
+                    { letter: 'E', text: "1867'de İngiltere kralı, 1868'de III. Napolyon ile görüşmüştür." }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Yunanistan'da 1863 sonrası oluşan yönetim biçimi nasıl tanımlanmaktadır?</strong>",
+                options: [
+                    { letter: 'A', text: "Krallık demokrasisi" },
+                    { letter: 'B', text: "Monarşist demokrasi" },
+                    { letter: 'C', text: "Federal sistem" },
+                    { letter: 'D', text: "Anarşist yönetim" },
+                    { letter: 'E', text: "Diktatörlük" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Kilise Slavcası yerine Sırp halk dilinin kabul edilmesini sağlayan kişi kimdir?</strong>",
+                options: [
+                    { letter: 'A', text: "Vuk Stefanoviç Karaciç" },
+                    { letter: 'B', text: "Jovan Rajiç" },
+                    { letter: 'C', text: "Lazar Hrebeljanović" },
+                    { letter: 'D', text: "Milos Obrenoviç" },
+                    { letter: 'E', text: "Dositej Obradoviç" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Berlin Anlaşması'ndan sonra Doğu Rumeli Vilayeti hangi yönetim sistemi altında idare edilecektir?</strong>",
+                options: [
+                    { letter: 'A', text: "Osmanlı padişahı tarafından doğrudan yönetilecektir." },
+                    { letter: 'B', text: "Sultan tarafından atanacak Hristiyan bir vali tarafından yönetilecektir." },
+                    { letter: 'C', text: "Bulgaristan Prensliği'ne bağlı olacaktır." },
+                    { letter: 'D', text: "Almanya'nın kontrolüne bırakılacaktır." },
+                    { letter: 'E', text: "Rus Çarı tarafından atanan bir vali yönetecektir." }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>İstanbul Bulgarlarının ticarete atılmalarında hangi toplumun ticari faaliyetlerde geri planda kaldığı gözlemlenmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Araplar" },
+                    { letter: 'B', text: "Rumlar" },
+                    { letter: 'C', text: "Ruslar" },
+                    { letter: 'D', text: "Ermeniler" },
+                    { letter: 'E', text: "Yahudiler" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>İsmail Kemal Bey hangi olaydan sonra Arnavutluk'un bağımsızlığını ilan etmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "1878 Osmanlı-Rus Savaşı" },
+                    { letter: 'B', text: "1913 İkinci Balkan Savaşı" },
+                    { letter: 'C', text: "1853-1856 Kırım Savaşı" },
+                    { letter: 'D', text: "1908 Jön Türk Devrimi" },
+                    { letter: 'E', text: "1912-1913 Birinci Balkan Savaşı" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Berlin Antlaşması'ndan sonra 'Büyük Bulgaristan' topraklarının bölünmesiyle kurulan vilayet aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Edirne" },
+                    { letter: 'B', text: "Silistre" },
+                    { letter: 'C', text: "Doğu Rumeli" },
+                    { letter: 'D', text: "Tuna" },
+                    { letter: 'E', text: "Girid" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Karadağ'da adalet sistemi aşağıdakilerden hangisinin elindeydi?</strong>",
+                options: [
+                    { letter: 'A', text: "Meclisin" },
+                    { letter: 'B', text: "Knezin" },
+                    { letter: 'C', text: "Yargıcın" },
+                    { letter: 'D', text: "Piskoposun" },
+                    { letter: 'E', text: "Kabilenin en yaşlı üyelerinin" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "21 Mayıs 1864'de Rusya, Kuzey Kafkasya'yı tamamen kontrolü altına alarak yüz binlerce .....<br><br><strong>Yukarıdaki boşluğa aşağıdakilerden hangisi getirilmelidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Çerkesi zorla tehcir etti." },
+                    { letter: 'B', text: "Rumu zorla tehcir etti." },
+                    { letter: 'C', text: "Sırpı zorla tehcir etti." },
+                    { letter: 'D', text: "Bulgarı zorla tehcir etti." },
+                    { letter: 'E', text: "Rusu göçe zorladı." }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Arnavutların ilk silahlı komitesi ne zaman kurulmuştur?</strong>",
+                options: [
+                    { letter: 'A', text: "1910" },
+                    { letter: 'B', text: "1913" },
+                    { letter: 'C', text: "1908" },
+                    { letter: 'D', text: "1912" },
+                    { letter: 'E', text: "1905" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>1866 yılında Eflak Boğdan Prensi Cuza'nın devrilmesinin temel nedeni aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Halk ayaklanması" },
+                    { letter: 'B', text: "Avrupa ülkelerinin baskısı" },
+                    { letter: 'C', text: "Muhafazakarlar ve liberallerin birlikte düzenledikleri darbe" },
+                    { letter: 'D', text: "Rusya'nın politik baskısı" },
+                    { letter: 'E', text: "Prusya'nın askeri müdahalesi" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "1878 yılında Bulgaristan özerkliğini kazandı ve bir yıl sonra Tırnova Anayasası oluşturuldu.<br><br><strong>Buna göre dışarıdan Alman asıllı hangi prens göreve davet edildi?</strong>",
+                options: [
+                    { letter: 'A', text: "Konstantin" },
+                    { letter: 'B', text: "Aleksandır" },
+                    { letter: 'C', text: "Nikola" },
+                    { letter: 'D', text: "Boris" },
+                    { letter: 'E', text: "Ferdinand" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Romanya, Sırbistan ve Karadağ'ın bağımsızlıkları hangi antlaşmayla resmen kabul edildi?</strong>",
+                options: [
+                    { letter: 'A', text: "Atina" },
+                    { letter: 'B', text: "Bükreş" },
+                    { letter: 'C', text: "İstanbul" },
+                    { letter: 'D', text: "Lozan" },
+                    { letter: 'E', text: "Berlin" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Makedonya topraklarının tekrar Osmanlı'ya bırakılmasını hangi antlaşma sağlamıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Lozan Antlaşması" },
+                    { letter: 'B', text: "Ayastefanos Antlaşması" },
+                    { letter: 'C', text: "Londra Antlaşması" },
+                    { letter: 'D', text: "Berlin Antlaşması" },
+                    { letter: 'E', text: "Paris Antlaşması" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aleksandır'ın Sırbistan başknezliğinden uzaklaştırılmasından sonra hangi siyasi lider geri çağrılmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Aleksandır Karacorceviç" },
+                    { letter: 'B', text: "Mihail Obrenoviç" },
+                    { letter: 'C', text: "Miloş Obrenoviç" },
+                    { letter: 'D', text: "Aleksandır Obrenoviç" },
+                    { letter: 'E', text: "Milan Karacorceviç" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Mora İsyanı öncesi toplanan Yunan meclisinde kabul edilen anayasaya göre yasama organının başına kim seçilmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Andreas Miaoulis" },
+                    { letter: 'B', text: "Georgios Karaiskakis" },
+                    { letter: 'C', text: "Ioannis Kapodistrias" },
+                    { letter: 'D', text: "Aleksandır Mavrokordato" },
+                    { letter: 'E', text: "Teodor Kolokotronis" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Cuza'nın devrilmesinden sonra kurulan hükümet için hangi yöntemle yeni bir bey seçmeye karar verildi?</strong>",
+                options: [
+                    { letter: 'A', text: "Halk oylaması" },
+                    { letter: 'B', text: "Fransa'nın desteğiyle" },
+                    { letter: 'C', text: "Hanedan üyelerinin anlaşması" },
+                    { letter: 'D', text: "Avrupa ülkelerinden bir bey seçme kararı" },
+                    { letter: 'E', text: "Meclis kararı" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Yunanistan'ın Girit'i ilhakını ilan etmesi üzerine hangi savaş başlamıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Osmanlı-Rus" },
+                    { letter: 'B', text: "Osmanlı-Sırbistan" },
+                    { letter: 'C', text: "I. Balkan" },
+                    { letter: 'D', text: "Osmanlı-Yunan" },
+                    { letter: 'E', text: "Sırp-Bulgar" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Arnavut tarihinin en önemli millî kahramanı olarak kabul edilen İskender Bey hangi Osmanlı padişahı döneminde yaşamıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Mehmet Çelebi" },
+                    { letter: 'B', text: "Yıldırım Beyazıt" },
+                    { letter: 'C', text: "Orhan Gazi" },
+                    { letter: 'D', text: "Fatih Sultan Mehmet" },
+                    { letter: 'E', text: "Kanuni Sultan Süleyman" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>1827 yılında Yunanistan'a devlet başkanı seçilen, fakat Yunanistan bağımsız olduktan sonra 1831'de suikastle öldürülen liderin adı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Otto" },
+                    { letter: 'B', text: "Kapodistrias" },
+                    { letter: 'C', text: "Mavrokordato" },
+                    { letter: 'D', text: "Koletis" },
+                    { letter: 'E', text: "Kolokotronis" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>1870 fermanı ile kurulan Bulgar kilisesinin yönetim merkezi hangi şehirde bulunacaktır?</strong>",
+                options: [
+                    { letter: 'A', text: "Filibe" },
+                    { letter: 'B', text: "Sofya" },
+                    { letter: 'C', text: "İstanbul" },
+                    { letter: 'D', text: "Selanik" },
+                    { letter: 'E', text: "Tirnovo" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Birinci Balkan Savaşı sonucunda 30 Mayıs 1913'te imzalanan Londra Antlaşması'na göre Osmanlı sınırları nereye kadar çekilmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Selanik-Vardar" },
+                    { letter: 'B', text: "Çatalca" },
+                    { letter: 'C', text: "Silistre-Tuna" },
+                    { letter: 'D', text: "Edirne-Meriç" },
+                    { letter: 'E', text: "Midye-Enez" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>İkinci Balkan Savaşı sonucunda Osmanlı Devleti hangi şehri geri almıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Gümülcine" },
+                    { letter: 'B', text: "Kavala" },
+                    { letter: 'C', text: "Edirne" },
+                    { letter: 'D', text: "Yanya" },
+                    { letter: 'E', text: "İşkodra" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Jön Türkler'in Balkan topraklarını Osmanlı Devleti'nin elinde tutabilmek için takip ettikleri Makedonya politikasının ilk aşamasındaki stratejileri aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Silah ve jandarma gücüyle Osmanlı birliğine zorlama" },
+                    { letter: 'B', text: "Basın kanunuyla milliyetçi propagandalara karşı sansür uygulama" },
+                    { letter: 'C', text: "Kanunlar yoluyla Osmanlı birliğini sağlama" },
+                    { letter: 'D', text: "Siyasi partileri yasaklama" },
+                    { letter: 'E', text: "Pazarlık ve ikna siyaseti" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>İlk Arnavut milliyetçi örgütlenmesi olarak kabul edilen örgüt aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Balkan İttifakı" },
+                    { letter: 'B', text: "Prizren Birliği" },
+                    { letter: 'C', text: "Başkimi" },
+                    { letter: 'D', text: "Kruya İttifakı" },
+                    { letter: 'E', text: "Arnavut Meşrutiyet Kulübü" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Osmanlı Devleti'nde Ortodokslara verilen isim aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Millet-i Rum" },
+                    { letter: 'B', text: "Kibtiyan" },
+                    { letter: 'C', text: "Millet-i Ermeniyan" },
+                    { letter: 'D', text: "Yahudiyan" },
+                    { letter: 'E', text: "Pavlikan" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Romenlerin Osmanlı Devleti'nden kopuş mücadelesinde bir sembol ve tarihi kahraman olarak kim görülmektedir?</strong>",
+                options: [
+                    { letter: 'A', text: "Bibescu" },
+                    { letter: 'B', text: "Kazıklı Voyvoda" },
+                    { letter: 'C', text: "Constantine Brincoveanu" },
+                    { letter: 'D', text: "Konstantin Mavrokordato" },
+                    { letter: 'E', text: "Dimitrie Cantemir" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>5 Kasım 1885 tarihinde toplanan İstanbul Konferansı'nda Doğu Rumeli Vilayeti ve Bulgaristan Prensliği'nin kurulmasına hangi devlet karşı çıktı ve harp ilan etti?</strong>",
+                options: [
+                    { letter: 'A', text: "Sırbistan" },
+                    { letter: 'B', text: "Rusya" },
+                    { letter: 'C', text: "Fransa" },
+                    { letter: 'D', text: "Yunanistan" },
+                    { letter: 'E', text: "Avusturya" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Makedonya'da isyan ve suikastların artması üzerine büyük güçlerin baskısıyla Abdülhamid'in Vilayat-ı Selase'ye atadığı olağanüstü valinin adı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Derviş Paşa" },
+                    { letter: 'B', text: "Enver Paşa" },
+                    { letter: 'C', text: "Hüseyin Hilmi Paşa" },
+                    { letter: 'D', text: "Halil Paşa" },
+                    { letter: 'E', text: "Mustafa Paşa" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Yeniçeri Ocağı hangi padişah döneminde kaldırıldı?</strong>",
+                options: [
+                    { letter: 'A', text: "II. Mahmud" },
+                    { letter: 'B', text: "III. Mustafa" },
+                    { letter: 'C', text: "II. Abdülhamid" },
+                    { letter: 'D', text: "Abdülaziz" },
+                    { letter: 'E', text: "I. Abdülhamid" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Karadağ'da adalet sistemi aşağıdakilerden hangisinin elindeydi?</strong>",
+                options: [
+                    { letter: 'A', text: "Meclisin" },
+                    { letter: 'B', text: "Yargıcın" },
+                    { letter: 'C', text: "Piskoposun" },
+                    { letter: 'D', text: "Kabilenin en yaşlı üyelerinin" },
+                    { letter: 'E', text: "Knezin" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>1. Sırp İsyanı hangi tarihte başlamıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "1821" },
+                    { letter: 'B', text: "1830" },
+                    { letter: 'C', text: "1844" },
+                    { letter: 'D', text: "1804" },
+                    { letter: 'E', text: "1813" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Eflak ve Boğdan beylikleri uluslararası literatürde hangi nehrin ismiyle anılmaktadır?</strong>",
+                options: [
+                    { letter: 'A', text: "Tuna beylikleri" },
+                    { letter: 'B', text: "Dnyester beylikleri" },
+                    { letter: 'C', text: "Meriç beylikleri" },
+                    { letter: 'D', text: "İdil beylikleri" },
+                    { letter: 'E', text: "Arda beylikleri" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Sırbistan'da ilk ordunun kuruluşu hangi knez döneminde gerçekleşmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Aleksandır" },
+                    { letter: 'B', text: "Otto" },
+                    { letter: 'C', text: "Miloş" },
+                    { letter: 'D', text: "Milan" },
+                    { letter: 'E', text: "Mihailo" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Berlin Antlaşması'ndan sonra Bosna'yı hangi devlet işgal etmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Rusya" },
+                    { letter: 'B', text: "Sırbistan" },
+                    { letter: 'C', text: "Avusturya-Macaristan" },
+                    { letter: 'D', text: "Romanya" },
+                    { letter: 'E', text: "Bulgaristan" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>1. Meşrutiyet hangi tarihte ilan edilmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "1877" },
+                    { letter: 'B', text: "1876" },
+                    { letter: 'C', text: "1880" },
+                    { letter: 'D', text: "1878" },
+                    { letter: 'E', text: "1879" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>1860'dan 1918'e kadar Karadağ'da hükümdarlık yapan kişi kimdir?</strong>",
+                options: [
+                    { letter: 'A', text: "Aleksander Cuza" },
+                    { letter: 'B', text: "Prens Ferdinand" },
+                    { letter: 'C', text: "Milos Obrenoviç" },
+                    { letter: 'D', text: "Nikola Petroviç" },
+                    { letter: 'E', text: "Aleksandır Karacorceviç" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Bulgaristan Prensliği'nin ilk prensi kimdir?</strong>",
+                options: [
+                    { letter: 'A', text: "Milos Obrenoviç" },
+                    { letter: 'B', text: "Boris" },
+                    { letter: 'C', text: "Otto" },
+                    { letter: 'D', text: "Milan Obrenović" },
+                    { letter: 'E', text: "Aleksandır Batenberg" }
+                ],
+                correct: 'E'
+            }
+        ];
+
+        let answers = {};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+
+            const shuffledQuiz = shuffle([...quizData]);
+
+            shuffledQuiz.forEach((item, index) => {
+                const qNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${qNum}`;
+
+                const p = document.createElement('p');
+                p.innerHTML = item.question;
+                div.appendChild(p);
+
+                const shuffledOptions = shuffle([...item.options]);
+                shuffledOptions.forEach((opt, optIndex) => {
+                    const newLetter = String.fromCharCode(65 + optIndex);
+                    const label = document.createElement('label');
+                    label.className = 'option';
+                    label.htmlFor = `q${qNum}${newLetter}`;
+                    
+                    // Mouse hover (üzerine gelme) ile cevabı göstermek için veri ekliyoruz
+                    if (opt.letter === item.correct) {
+                        label.setAttribute("data-correct", "true");
+                        answers[`q${qNum}`] = { correct: newLetter, text: `${newLetter}) ${opt.text}` };
+                    } else {
+                        label.setAttribute("data-correct", "false");
+                    }
+
+                    label.innerHTML = `<input type="radio" id="q${qNum}${newLetter}" name="q${qNum}" value="${newLetter}" onchange="checkAnswer(${qNum})"><span class="radio"></span>${newLetter}) ${opt.text}`;
+                    div.appendChild(label);
+                });
+
+                const hintP = document.createElement('p');
+                hintP.className = 'answer-hint';
+                hintP.id = `hint${qNum}`;
+                hintP.innerHTML = `Doğru cevap: <strong>${answers[`q${qNum}`].text}</strong>`;
+                div.appendChild(hintP);
+
+                form.appendChild(div);
+            });
+        }
+
+        window.onload = renderQuiz;
+
+        function checkAnswer(num) {
+            const q = `q${num}`;
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (!selected) return;
+
+            const correct = answers[q].correct;
+            const options = document.querySelectorAll(`#q${num} .option`);
+
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (selected.value !== correct) {
+                const selectedOpt = selected.parentElement;
+                selectedOpt.classList.add('incorrect');
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q].correct) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function finishQuiz() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const options = document.querySelectorAll(`#q${i} .option`);
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === answers[`q${i}`].correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            const score = calculateScore();
+            document.getElementById('result').innerHTML = `Toplam Skor: ${score} / ${total}`;
+            document.querySelector('.finish').disabled = true;
+        }
+
+        function showAllAnswers() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`hint${i}`).style.display = 'block';
+            }
+            document.getElementById('showAnswersBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>
