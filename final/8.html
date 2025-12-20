@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELÇUKLULAR TARİHİ FİNAL SORULARI</title>
+    <button onclick="window.location.href='index.html'" style="position: fixed; bottom: 40px; right: 40px; padding: 20px 30px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Geri Dön</button>
+    <style>
+        /* CSS Değişkenleri ile Renk Yönetimi */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --h1-color: #2c3e50;
+            --box-bg: #ffffff;
+            --box-border: #ddd;
+            --option-bg: #f0f0f0;
+            --option-hover-bg: #e8e8e8;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Karanlık Mod Değişkenleri */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --h1-color: #ecf0f1;
+            --box-bg: #1e1e1e;
+            --box-border: #333;
+            --option-bg: #2c2c2c;
+            --option-hover-bg: #3a3a3a;
+            --shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0 auto; 
+            max-width: 800px;
+            padding: 20px; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Tema Değiştirme Butonu */
+        #themeToggleBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--text-color);
+            background-color: var(--box-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+
+        h1 { 
+            text-align: center; 
+            color: var(--h1-color); 
+            font-size: 2em;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+        #showAnswersBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        #showAnswersBtn:hover { 
+            transform: scale(1.05);
+        }
+        .question { 
+            background-color: var(--box-bg); 
+            border: 1px solid var(--box-border); 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: var(--shadow); 
+        }
+        .question p { 
+            font-weight: normal; 
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+            white-space: pre-line;
+        }
+        .option { 
+            display: flex; 
+            align-items: center; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            padding: 10px; 
+            border-radius: 5px; 
+            background-color: var(--option-bg);
+            transition: background-color 0.2s, color 0.2s; 
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+
+        /* --- Hover (İmleç) Sihri --- */
+        /* Doğru şıkkın üzerine gelince yeşil olsun */
+        .option[data-correct="true"]:hover {
+            background-color: #27ae60 !important;
+            color: white !important;
+            border-color: #27ae60;
+        }
+        /* Yanlış şıkkın üzerine gelince kırmızı olsun */
+        .option[data-correct="false"]:hover {
+            background-color: #c0392b !important;
+            color: white !important;
+            border-color: #c0392b;
+        }
+
+        .option input { 
+            display: none; 
+        }
+        .option .radio { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background-color: var(--box-bg); 
+            border: 2px solid #3498db; 
+            margin-right: 15px; 
+            position: relative; 
+            flex-shrink: 0;
+        }
+        .option .radio::after { 
+            content: ''; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #3498db; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; 
+        }
+        .option input:checked + .radio::after { 
+            display: block; 
+        }
+
+        /* Kalıcı Cevap Stilleri (Tıklandıktan sonra) */
+        .option.correct { 
+            background-color: #145a32 !important; 
+            color: #d4efdf !important; 
+        }
+        .option.incorrect { 
+            background-color: #641e16 !important; 
+            color: #fadbd8 !important; 
+        }
+
+        .answer-hint { 
+            display: none; 
+            margin-top: 15px; 
+            font-size: 1em; 
+            color: #2ecc71; 
+            font-style: italic; 
+            font-weight: bold;
+            border-bottom: 1px solid #2ecc71;
+            padding-bottom: 5px;
+        }
+        button.finish { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 30px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        button.finish:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #7f8c8d; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.3em; 
+            color: var(--text-color); 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    
+    <button id="themeToggleBtn" onclick="toggleTheme()">🌙 Koyu Mod</button>
+
+    <h1>SELÇUKLULAR TARİHİ FİNAL SORULARI</h1>
+    <button id="showAnswersBtn" onclick="showAllAnswers()">Cevapları Göster</button>
+    <form id="quizForm"></form>
+    <button class="finish" onclick="finishQuiz()">Testi Bitir</button>
+    <div id="result"></div>
+    <script>
+        // Tema Değiştirme Fonksiyonu
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeToggleBtn');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙 Koyu Mod';
+                btn.style.backgroundColor = '#ffffff';
+                btn.style.color = '#333';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️ Açık Mod';
+                btn.style.backgroundColor = '#333';
+                btn.style.color = '#fff';
+            }
+        }
+
+        // Varsayılan tema ayarı
+        document.body.setAttribute('data-theme', 'dark');
+        document.getElementById('themeToggleBtn').innerText = '☀️ Açık Mod';
+
+        // Soru verileri (Selçuklular Tarihi)
+        const quizData = [
+            {
+                question: "<strong>Aşağıdakilerden hangisi taşra teşkilatında bulunan idarecilerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Nedim" },
+                    { letter: 'B', text: "Reis" },
+                    { letter: 'C', text: "Amid" },
+                    { letter: 'D', text: "Muhtesib" },
+                    { letter: 'E', text: "Amil" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "• Bâtıniler ve Karmatiler ile mücadele edilmesi<br>• Suriye'nin fethi<br>• Melik Kavurd ve Melik Tekiş isyanı<br>• Hicaz ve Yemen bölgesinin itaat altına alınması<br><br><strong>Yukarıdaki Melikşah devri olaylarına bakarak aşağıdaki yargılardan hangisine ulaşılamaz?</strong>",
+                options: [
+                    { letter: 'A', text: "Devletin sınırları genişlemeye devam etmiştir." },
+                    { letter: 'B', text: "Bâtınilik gibi heteredoks gruplar ile mücadele edilmiştir." },
+                    { letter: 'C', text: "Selçuklu meliklerinin isyanı ile uğraşılmıştır." },
+                    { letter: 'D', text: "İç isyanlar meydana gelmiştir." },
+                    { letter: 'E', text: "Devlet gerileme sürecine girmiştir." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Sultan Muhammed Tapar döneminde Selçukluların Horasan hakimi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Emir Çavlı Sakavu" },
+                    { letter: 'B', text: "Vezir Ahmed b. Nizâmü'l-Mülk" },
+                    { letter: 'C', text: "Emir Tuğtekin" },
+                    { letter: 'D', text: "Melik Kavurd" },
+                    { letter: 'E', text: "Melik Sencer" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Büyük Selçuklu Devleti Maveraünnehir hâkimiyetini hangi olay sonrasında kaybetmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Hârezmşah Atsız'ın isyanı" },
+                    { letter: 'B', text: "Save Savaşı" },
+                    { letter: 'C', text: "Oğuz İsyanı" },
+                    { letter: 'D', text: "Gur hükümdarının Gazne'yi yakması" },
+                    { letter: 'E', text: "Katavan (Katvan) Savaşı" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "I. Zümrüt Hatun - Seferiye Hatun<br>II. Altuncan Hatun - Seferiye Hatun<br>III. Ayşe Hatun - Seferiye Hatun<br>IV. Ayşe Hatun - Seyyide Hatun<br>V. Altuncan Hatun - Seyyide Hatun<br><br><strong>Sultan Tuğrul Bey yukarıda isimleri verilen Selçuklu hükümdar eşlerinden hangileriyle evlenmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "V" },
+                    { letter: 'B', text: "III" },
+                    { letter: 'C', text: "IV" },
+                    { letter: 'D', text: "II" },
+                    { letter: 'E', text: "I" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Sultan Sencer, Büyük Selçuklu tahtına çıkmadan önce hangi eyaletin melikiydi?</strong>",
+                options: [
+                    { letter: 'A', text: "Hūzistan" },
+                    { letter: 'B', text: "Fars" },
+                    { letter: 'C', text: "Kirman" },
+                    { letter: 'D', text: "Gence" },
+                    { letter: 'E', text: "Horasan" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Gazneli Mahmud ve Yusuf Kadır Han arasında 1025 yılında gerçekleştirilen Semerkand Mülakatı'nda alınan kararlardan biridir?</strong>",
+                options: [
+                    { letter: 'A', text: "Her iki devletin de Selçuklularla sulh ilan etmelerine karar verildi." },
+                    { letter: 'B', text: "Gazneli Mahmud'un Selçuklulara savaş açmasına karar verildi." },
+                    { letter: 'C', text: "Sâmâniler Devleti'nin Gazneli Mahmud'a bırakılmasına karar verildi." },
+                    { letter: 'D', text: "Arslan Yabgu'nun emrindeki Oğuzların Türkistan'dan Horasan'a nakledilmelerine karar verildi." },
+                    { letter: 'E', text: "Yusuf Kadır Han'ın Arslan Yabgu'yu bertaraf etmesine karar verildi." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Antakya'nın Haçlılara kaybedilmesinde hangi Selçuklu emirinin yaptığı hatalar etkili olmuştur?</strong>",
+                options: [
+                    { letter: 'A', text: "Emir Yağısıyan" },
+                    { letter: 'B', text: "Emir Kürboğa" },
+                    { letter: 'C', text: "Emir Mevdûd" },
+                    { letter: 'D', text: "Emir Aksungur" },
+                    { letter: 'E', text: "Emir Bozan" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Sultan Melikşah devrinde gerçekleşen siyasi olaylardan biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Abbasi halifesini Bağdat'tan kovdu." },
+                    { letter: 'B', text: "Gazneli I. Mesud'u mağlup etti." },
+                    { letter: 'C', text: "İznik üzerine ordu gönderdi." },
+                    { letter: 'D', text: "Mervanoğulları hanedanına son verdi." },
+                    { letter: 'E', text: "Batı Karahan seferine çıktı." }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Sultan Berkyaruk döneminde aşağıdakilerden hangisiyle Büyük Selçuklu Devleti'nin bir ilişkisi olmamıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Haçlılar" },
+                    { letter: 'B', text: "Fâtımiler" },
+                    { letter: 'C', text: "Bâtıniler" },
+                    { letter: 'D', text: "Gazneliler" },
+                    { letter: 'E', text: "Karahanlılar" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Katvan Savaşı'ndan sonraki tarihte meydana gelen olaylardan biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Oğuz istilasının meydana gelmesi" },
+                    { letter: 'B', text: "Hârezmşâh Atsız'ın Sultan Sencer'in elçisi şair Edib Sabir'i öldürtmesi" },
+                    { letter: 'C', text: "Save Savaşı'nın yapılması" },
+                    { letter: 'D', text: "Sultan Sencer'in esareti" },
+                    { letter: 'E', text: "Gûr hükümdarı Kutbüddin Muhammed'in Herat'ı alması" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Sultan Alp Arslan Mısır seferi sırasında aşağıdaki şehir ve kalelerin hangisine uğramamıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Haleb" },
+                    { letter: 'B', text: "Kars" },
+                    { letter: 'C', text: "Urfa" },
+                    { letter: 'D', text: "Tulhum" },
+                    { letter: 'E', text: "Malazgirt" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdaki divanlardan hangisi ordu ile ilgilidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Dîvân-ı İnşa" },
+                    { letter: 'B', text: "Dîvân-ı İstifâ" },
+                    { letter: 'C', text: "Dîvân-ı Arz" },
+                    { letter: 'D', text: "Dîvân-ı Mezâlim" },
+                    { letter: 'E', text: "Dîvân-ı İşraf" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "Melik Kutalmış'ın, Sultan Alp Arslan'a karşı isyanı sırasında söylemiş olduğu \"Tuğrul Han yerine ben değil, Alp Arslan sultan oldu. Ayrıca ben ondan yaşlı ve saltanata daha layığım. Şimdi onun padişah olup benim bakıp durmam doğru değildir. Belki savaşıp başımıza ne yazıldığını görmek daha uygundur.\"<br><br><strong>sözleri dikkate alınarak aşağıdaki ifadelerden hangisine ulaşılabilir?</strong>",
+                options: [
+                    { letter: 'A', text: "Tuğrul Bey de tahtı Kutalmış'ın elinden zorla almıştı." },
+                    { letter: 'B', text: "Alp Arslan'a karşı Selçuklu ailesinden Kutalmış'a destek verenler bulunmaktaydı." },
+                    { letter: 'C', text: "Selçuklu ailesinde Melik Kutalmış'tan başka yaşça büyük hanedan üyesi yoktu." },
+                    { letter: 'D', text: "Alp Arslan'dan daha büyük olduğu için hükümdarlığı kendisine layık görmekteydi." },
+                    { letter: 'E', text: "Selçuklu tahtı Kutalmış'a babasından miras kalmıştı." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Muhammed Tapar devrinde Haçlılarla veya Bâtınilerle mücadele eden emirlerden değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Emir İlgazi" },
+                    { letter: 'B', text: "Emir Anuştegin Şirgir" },
+                    { letter: 'C', text: "Atabeg Tuğtegin" },
+                    { letter: 'D', text: "Emir Savtegin" },
+                    { letter: 'E', text: "Atabeg Çavlı" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdaki Selçuklu meliklerinden hangisi Sultan Melikşah'ın ölümünden sonra saltanat mücadelesinde bulunmuştur?</strong>",
+                options: [
+                    { letter: 'A', text: "Melik Kutalmış" },
+                    { letter: 'B', text: "Melik Resûl Tegin" },
+                    { letter: 'C', text: "Melik Mahmûd" },
+                    { letter: 'D', text: "Melik Kavurd" },
+                    { letter: 'E', text: "Emir Erbasgan" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Büyük Selçuklu Devleti'nde bir saray görevlisi değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Câmedar" },
+                    { letter: 'B', text: "Vekil-i Der" },
+                    { letter: 'C', text: "Şarabdar" },
+                    { letter: 'D', text: "Emîr-i Sevâhil" },
+                    { letter: 'E', text: "Emîr-i Çaşnigîr" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Selçuklu ordusunu meydana getiren ana unsurlardan biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Türkmen kuvvetleri" },
+                    { letter: 'B', text: "Gulâmân-ı saray" },
+                    { letter: 'C', text: "Ücretli askerler" },
+                    { letter: 'D', text: "İktâlı hassa askerleri" },
+                    { letter: 'E', text: "Gönüllüler" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "I. Melik Tutuş: Savaştan sonra boynu vuruldu.<br>II. Melik Mahmud: Çiçek hastalığına yakalanarak öldü.<br>III. Terken Hatun: Hastalanarak öldü.<br>IV. Böri-Pars: Savaş meydanında öldürüldü.<br>V. Arslan Argun: Kölesi tarafından hançerlenerek öldürüldü.<br><br><strong>Yukarıda isimleri verilen, Sultan Melikşah'ın vefatı sonrasında Büyük Selçuklu tahtı için mücadeleye giren tarihi şahsiyetlerden hangisinin ölüm nedeni yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "IV" },
+                    { letter: 'B', text: "V" },
+                    { letter: 'C', text: "II" },
+                    { letter: 'D', text: "I" },
+                    { letter: 'E', text: "III" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "I. Behrâmşah'ın Gazneli tahtında bırakılması<br>II. Karahanlı tahtına II. Mahmud b. Muhammed'in getirilmesi<br>III. Abbâsî Halifesi Müsterşid Billâh-Irak Selçuklu Sultanı Mahmud'un Sultan Sencer'e karşı ittifakı<br><br><strong>Yukarıda verilen Sultan Sencer dönemi ile ilgili olaylara bakılarak aşağıdakilerden hangisine ulaşılamaz?</strong>",
+                options: [
+                    { letter: 'A', text: "Sultan Sencer döneminde Selçuklular bulunduğu bölgede egemen güç durumundaydı." },
+                    { letter: 'B', text: "Abbasiler, Selçuklu karşıtı bir politika izlemekteydi." },
+                    { letter: 'C', text: "Karahanlılar, Selçuklu hâkimiyetini kabul etmişti." },
+                    { letter: 'D', text: "Irak Selçukluları Sultan Sencer'e bağlılıklarını sürdürmekteydi." },
+                    { letter: 'E', text: "Selçuklular, Gazneli tahtına kimin geçeceğine karar vermekteydi." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "Malazgirt Savaşı'ndan sonra Anadolu'da Dânişmendli, Artuklu, Mengücüklü ve Saltuklu gibi Türkmen beylikleri kuruldu.<br><br><strong>Yukarıda verilenlere göre aşağıdakilerden hangisine ulaşılamaz?</strong>",
+                options: [
+                    { letter: 'A', text: "Savaş sonunda kazanılan zaferden yararlanılması" },
+                    { letter: 'B', text: "Beyliklerin, Malazgirt Savaşı'ndan sonra yapılan anlaşma şartlarına göre kurulması" },
+                    { letter: 'C', text: "Anadolu'nun Türkleşmeye başlaması" },
+                    { letter: 'D', text: "Beyliklerin kimler tarafından kurulduğundan söz edilmemesi" },
+                    { letter: 'E', text: "Anadolu'da siyasi birliğin Bizans aleyhine bozulması" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "Sultan Melikşâh'ın saltanatına yönelik en büyük tehlike sultanın amcası ve Kirman bölgesinin meliki Kavurd'dan geldi.<br><br><strong>Yukarıda verilen bilgilerden aşağıdakilerin hangisine ulaşılabilir?</strong>",
+                options: [
+                    { letter: 'A', text: "Sultana, bu isyanda veziri yardımcı oluyordu." },
+                    { letter: 'B', text: "Sultan Melikşâh'ın saltanatını istemeyen hanedan mensupları bulunmaktadır." },
+                    { letter: 'C', text: "Kirman bölgesi Selçuklu hâkimiyetinde değildir." },
+                    { letter: 'D', text: "Melikşâh, tahtını bir süre sonra amcası Kavurd'a bırakmak zorunda kaldı." },
+                    { letter: 'E', text: "Selçuklu tahtında sadece eski sultanın oğlu hak talep edebilirdi." }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdaki seçeneklerin hangisinde Berkyaruk tarafından Fars Bölgesi'ne vali tayin edilen Selçuklu emîrinin ismi doğru olarak verilmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Emir Bozan" },
+                    { letter: 'B', text: "Emir Koltaş" },
+                    { letter: 'C', text: "Emir Kürboğa" },
+                    { letter: 'D', text: "Emir Üner" },
+                    { letter: 'E', text: "Emîr Mevdûd" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Rey kentini Büyük Selçuklular'a kazandıran Selçuklu hanedan üyesi aşağıda verilenlerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Tuğrul Bey" },
+                    { letter: 'B', text: "Kutalmış Bey" },
+                    { letter: 'C', text: "İbrahim Yınal Bey" },
+                    { letter: 'D', text: "Çağrı Bey" },
+                    { letter: 'E', text: "Resultegin Bey" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Büyük Selçuklu Sultanı Muhammed Tapar'a biat eden Emir Çavlı Sakavu ile Sultan I. Kılıç Arslan arasındaki anlaşmazlığın nedeni aşağıdakilerden hangisinde doğru olarak verilmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Muhammed Tapar'ın, I. Kılıç Arslan'ı tahttan indirmek istemesi" },
+                    { letter: 'B', text: "1. Kılıç Arslan'ın Büyük Selçuklular'a vergi vermek istememesi" },
+                    { letter: 'C', text: "Emir Çavlı'nın Anadolu'yu istilaya hazırlanması" },
+                    { letter: 'D', text: "Her iki tarafın da Musul'a hâkim olmak istemesi" },
+                    { letter: 'E', text: "Sultan I. Kılıç Arslan'ın Muhammed Tapar'a itaat etmemesi" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıda isimleri verilen Selçuklu meliklerinden hangisi Sultan Melikşah'ın ölümünden sonra saltanat mücadelesinde bulunmuştur?</strong>",
+                options: [
+                    { letter: 'A', text: "Melik Kutalmış" },
+                    { letter: 'B', text: "Melik Resül Tegin" },
+                    { letter: 'C', text: "Emir Erbasgan" },
+                    { letter: 'D', text: "Melik Kavurd" },
+                    { letter: 'E', text: "Melik Mahmûd" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Sultan Sencer döneminde gerçekleşmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Hârezmşah Atsız'ın isyanı" },
+                    { letter: 'B', text: "İbrahim Yınal'ın isyanı" },
+                    { letter: 'C', text: "Hicaz ve Yemen'in Selçuklu tabiiyetine girmesi" },
+                    { letter: 'D', text: "Myriokephalon Savaşı" },
+                    { letter: 'E', text: "Hasan Sabbâh'ın Alamut Kalesi'ni ele geçirmesi" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Sultan Sencer ile ilgili olarak aşağıda verilenlerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Muhammed Tapar'ın Berkyaruk ile mücadelesinde Muhammed Tapar'ı destekledi." },
+                    { letter: 'B', text: "Katvan sahrasında Kara-Hıtaylılar ile mücadele etti." },
+                    { letter: 'C', text: "Oğuzlar ile yaptığı savaş sonrasında onlara esir düştü." },
+                    { letter: 'D', text: "Saltanatı 1118-1141 yılları arasında idi." },
+                    { letter: 'E', text: "Berkyaruk döneminde Horasan meliki idi." }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Selçuklu ordusunda kullanılan ağır silahlardan biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Arrade" },
+                    { letter: 'B', text: "Debbâbe" },
+                    { letter: 'C', text: "Carhlar" },
+                    { letter: 'D', text: "Mancınık" },
+                    { letter: 'E', text: "Zihgirler" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Büyük Selçuklu Devleti'nde bir saray görevlisi değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Emîr-i Sevâhil" },
+                    { letter: 'B', text: "Emîr-i Çaşnigir" },
+                    { letter: 'C', text: "Câmedâr" },
+                    { letter: 'D', text: "Şarabdâr" },
+                    { letter: 'E', text: "Vekil-i Der" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Nesa Savaşı'nın tarihi ve kimler arasında yapıldığı bilgisi aşağıdaki seçeneklerin hangisinde doğru olarak verilmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "22 Ağustos 1039, Sâmâniler - Selçuklular" },
+                    { letter: 'B', text: "22 Ağustos 1040, Sâmâniler - Gazneliler" },
+                    { letter: 'C', text: "28 Haziran 1035, Selçuklular - Hârezmşahlar" },
+                    { letter: 'D', text: "29 Haziran 1038, Selçuklular - Karahanlılar" },
+                    { letter: 'E', text: "29 Haziran 1035, Selçuklular - Gazneliler" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Selçuklu sultanlarının saltanat dönemlerinde meydana gelen önemli savaşlarla ilgili olarak aşağıda yapılan eşleştirmelerden hangisi doğrudur?</strong>",
+                options: [
+                    { letter: 'A', text: "Malazgirt Savaşı - Sultan Tuğrul" },
+                    { letter: 'B', text: "Save Savaşı - Sultan Muhammed Tapar" },
+                    { letter: 'C', text: "Katvan Savaşı - Sultan Sencer" },
+                    { letter: 'D', text: "Dandanakan Savaşı - Selçuk Bey" },
+                    { letter: 'E', text: "Pasinler Savaşı - Sultan Alp Arslan" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Sultan Muhammed Tapar'ın saltanatının başlarında ona karşı isyan eden Selçuklu hanedan azasının adı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Böribars" },
+                    { letter: 'B', text: "Ertaş" },
+                    { letter: 'C', text: "Mengübars" },
+                    { letter: 'D', text: "Berkyaruk" },
+                    { letter: 'E', text: "Tekiş" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "Bir şehrin, bir sanatkâr grubunun veya bir toplumun liderliğini yapan, onlarla devlet arasındaki ilişkileri düzenleyen reisler cülus merasimlerinde protokolde ilk sırada yer alırdı.<br><br><strong>Yukarıda verilenlere göre aşağıdakilerden hangisine ulaşılamaz?</strong>",
+                options: [
+                    { letter: 'A', text: "Reisler cülus merasiminde oldukları için hükümdar seçiminde ilk onların görüşü alınırdı." },
+                    { letter: 'B', text: "Reis, halk içinden çıkan sanatkârlar grubundan biri olabilirdi." },
+                    { letter: 'C', text: "Reis adlı görevlinin tanımı yapılmıştır." },
+                    { letter: 'D', text: "Reis, devletle halk arasındaki irtibatı sağlamaktaydı." },
+                    { letter: 'E', text: "Reis, cülus merasimlerinde yer alması gereken memurlar arasındaydı." }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Hasan Sabbah ile ilgili olarak aşağıda verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Nizârî-İsmaili Devleti'nin kurucusudur." },
+                    { letter: 'B', text: "Fâtımilerin Irak baş dâîsi İbnu Attâş'ın yardımıyla İsmaili eğitimi almıştır." },
+                    { letter: 'C', text: "17 yaşına kadar İsnâaşeriye (Oniki İmâm) mezhebine bağlı olarak yaşamıştır." },
+                    { letter: 'D', text: "Fâtımî Halifesi el-Mustansır'ın veliaht tayin ettiği Nizar'ın taraftarlığını yapmıştır." },
+                    { letter: 'E', text: "Selçuklu veziri Amîdü'l-Mülk'ün öldürülmesinde etkili olmuştur." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Büyük Selçuklu Devleti için duraklama dönemi denilebilecek ve saltanat mücadelelerinin sıklıkla yaşandığı dönem hangi sultanın ölümünden sonra ortaya çıkmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Sencer" },
+                    { letter: 'B', text: "Melikşah" },
+                    { letter: 'C', text: "Berkyaruk" },
+                    { letter: 'D', text: "Çağrı Bey" },
+                    { letter: 'E', text: "Alp Arslan" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Sultan Berkyaruk-Muhammed Tapar mücadelesi hakkında aşağıda verilenlerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Halife Mustazhir-Billâh, Bağdat'a hangi hükümdar gelse onun adına hutbe okutuyordu." },
+                    { letter: 'B', text: "İki taraf arasında yapılan antlaşma sonucu Büyük Selçuklu Devleti resmen ikiye bölündü." },
+                    { letter: 'C', text: "Bir süre sonra Muhammed Tapar'ın veziri Müeyyidü'l-Mülk, Berkyaruk tarafına geçti." },
+                    { letter: 'D', text: "Berkyaruk-Muhammed Tapar mücadelesinin son savaşı Hoy şehri önünde oldu ve Berkyaruk'un zaferi ile sonuçlandı." },
+                    { letter: 'E', text: "İki taraf arasında Hemedan yakınında yapılan ilk savaşı Berkyaruk kaybetti." }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Sultan Alp Arslan'ın Vezir Amîdü'l-Mülk'ü azletme sebeplerinden biridir?</strong>",
+                options: [
+                    { letter: 'A', text: "Tahta geçmeye çalışması" },
+                    { letter: 'B', text: "Nizâmü'l-Mülk'ün sultanı etkilemesi" },
+                    { letter: 'C', text: "Tuğrul Bey'in vasiyetini uygulamaması" },
+                    { letter: 'D', text: "Amîdü'l-Mülk'ün Kutalmış'ı desteklemesi" },
+                    { letter: 'E', text: "Alp Arslan'ı karşılamada hata yapması" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerin hangisi Vezir Nizâmü'l-Mülk'ün bir hükümdarda bulunması gerektiğine inandığı özelliklerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "İyi huylu olması" },
+                    { letter: 'B', text: "Merhametli olması" },
+                    { letter: 'C', text: "Hatip olması" },
+                    { letter: 'D', text: "Güzel yüzlü olması" },
+                    { letter: 'E', text: "Cesur olması" }
+                ],
+                correct: 'C'
+            }
+        ];
+
+        let answers = {};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+
+            const shuffledQuiz = shuffle([...quizData]);
+
+            shuffledQuiz.forEach((item, index) => {
+                const qNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${qNum}`;
+
+                const p = document.createElement('p');
+                p.innerHTML = item.question;
+                div.appendChild(p);
+
+                const shuffledOptions = shuffle([...item.options]);
+                shuffledOptions.forEach((opt, optIndex) => {
+                    const newLetter = String.fromCharCode(65 + optIndex);
+                    const label = document.createElement('label');
+                    label.className = 'option';
+                    label.htmlFor = `q${qNum}${newLetter}`;
+                    
+                    // Mouse hover (üzerine gelme) ile cevabı göstermek için veri ekliyoruz
+                    if (opt.letter === item.correct) {
+                        label.setAttribute("data-correct", "true");
+                        answers[`q${qNum}`] = { correct: newLetter, text: `${newLetter}) ${opt.text}` };
+                    } else {
+                        label.setAttribute("data-correct", "false");
+                    }
+
+                    label.innerHTML = `<input type="radio" id="q${qNum}${newLetter}" name="q${qNum}" value="${newLetter}" onchange="checkAnswer(${qNum})"><span class="radio"></span>${newLetter}) ${opt.text}`;
+                    div.appendChild(label);
+                });
+
+                const hintP = document.createElement('p');
+                hintP.className = 'answer-hint';
+                hintP.id = `hint${qNum}`;
+                hintP.innerHTML = `Doğru cevap: <strong>${answers[`q${qNum}`].text}</strong>`;
+                div.appendChild(hintP);
+
+                form.appendChild(div);
+            });
+        }
+
+        window.onload = renderQuiz;
+
+        function checkAnswer(num) {
+            const q = `q${num}`;
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (!selected) return;
+
+            const correct = answers[q].correct;
+            const options = document.querySelectorAll(`#q${num} .option`);
+
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (selected.value !== correct) {
+                const selectedOpt = selected.parentElement;
+                selectedOpt.classList.add('incorrect');
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q].correct) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function finishQuiz() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const options = document.querySelectorAll(`#q${i} .option`);
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === answers[`q${i}`].correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            const score = calculateScore();
+            document.getElementById('result').innerHTML = `Toplam Skor: ${score} / ${total}`;
+            document.querySelector('.finish').disabled = true;
+        }
+
+        function showAllAnswers() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`hint${i}`).style.display = 'block';
+            }
+            document.getElementById('showAnswersBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>
