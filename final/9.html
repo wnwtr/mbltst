@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TÜRKİYE SELÇUKLULARI VE ANADOLU BEYLİKLERİ FİNAL SORULARI</title>
+   <button onclick="window.location.href='index.html'" style="position: fixed; bottom: 40px; right: 40px; padding: 20px 30px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Geri Dön</button>
+    <style>
+        /* CSS Değişkenleri ile Renk Yönetimi */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --h1-color: #2c3e50;
+            --box-bg: #ffffff;
+            --box-border: #ddd;
+            --option-bg: #f0f0f0;
+            --option-hover-bg: #e8e8e8;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Karanlık Mod Değişkenleri */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --h1-color: #ecf0f1;
+            --box-bg: #1e1e1e;
+            --box-border: #333;
+            --option-bg: #2c2c2c;
+            --option-hover-bg: #3a3a3a;
+            --shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0 auto; 
+            max-width: 800px;
+            padding: 20px; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Tema Değiştirme Butonu */
+        #themeToggleBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--text-color);
+            background-color: var(--box-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+        }
+
+        h1 { 
+            text-align: center; 
+            color: var(--h1-color); 
+            font-size: 2em;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+        #showAnswersBtn { 
+            background-color: #27ae60; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-bottom: 30px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        #showAnswersBtn:hover { 
+            transform: scale(1.05);
+        }
+        .question { 
+            background-color: var(--box-bg); 
+            border: 1px solid var(--box-border); 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px; 
+            box-shadow: var(--shadow); 
+        }
+        .question p { 
+            font-weight: normal; 
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+            white-space: pre-line;
+        }
+        .option { 
+            display: flex; 
+            align-items: center; 
+            margin: 15px 0; 
+            cursor: pointer; 
+            padding: 10px; 
+            border-radius: 5px; 
+            background-color: var(--option-bg);
+            transition: background-color 0.2s, color 0.2s; 
+            font-size: 1.1em;
+            font-weight: normal;
+        }
+
+        /* --- Hover (İmleç) Sihri --- */
+        /* Doğru şıkkın üzerine gelince yeşil olsun */
+        .option[data-correct="true"]:hover {
+            background-color: #27ae60 !important;
+            color: white !important;
+            border-color: #27ae60;
+        }
+        /* Yanlış şıkkın üzerine gelince kırmızı olsun */
+        .option[data-correct="false"]:hover {
+            background-color: #c0392b !important;
+            color: white !important;
+            border-color: #c0392b;
+        }
+
+        .option input { 
+            display: none; 
+        }
+        .option .radio { 
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            background-color: var(--box-bg); 
+            border: 2px solid #3498db; 
+            margin-right: 15px; 
+            position: relative; 
+            flex-shrink: 0;
+        }
+        .option .radio::after { 
+            content: ''; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: #3498db; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            display: none; 
+        }
+        .option input:checked + .radio::after { 
+            display: block; 
+        }
+
+        /* Kalıcı Cevap Stilleri (Tıklandıktan sonra) */
+        .option.correct { 
+            background-color: #145a32 !important; 
+            color: #d4efdf !important; 
+        }
+        .option.incorrect { 
+            background-color: #641e16 !important; 
+            color: #fadbd8 !important; 
+        }
+
+        .answer-hint { 
+            display: none; 
+            margin-top: 15px; 
+            font-size: 1em; 
+            color: #2ecc71; 
+            font-style: italic; 
+            font-weight: bold;
+            border-bottom: 1px solid #2ecc71;
+            padding-bottom: 5px;
+        }
+        button.finish { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 30px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            display: block; 
+            margin: 0 auto; 
+            font-size: 1.1em; 
+            font-weight: bold;
+        }
+        button.finish:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #7f8c8d; 
+            cursor: not-allowed; 
+        }
+        #result { 
+            text-align: center; 
+            margin-top: 30px; 
+            font-size: 1.3em; 
+            color: var(--text-color); 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    
+    <button id="themeToggleBtn" onclick="toggleTheme()">🌙 Koyu Mod</button>
+
+    <h1>TÜRKİYE SELÇUKLU TARİHİ TESTİ</h1>
+    <button id="showAnswersBtn" onclick="showAllAnswers()">Cevapları Göster</button>
+    <form id="quizForm"></form>
+    <button class="finish" onclick="finishQuiz()">Testi Bitir</button>
+    <div id="result"></div>
+    <script>
+        // Tema Değiştirme Fonksiyonu
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeToggleBtn');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙 Koyu Mod';
+                btn.style.backgroundColor = '#ffffff';
+                btn.style.color = '#333';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️ Açık Mod';
+                btn.style.backgroundColor = '#333';
+                btn.style.color = '#fff';
+            }
+        }
+
+        // Varsayılan tema ayarı
+        document.body.setAttribute('data-theme', 'dark');
+        document.getElementById('themeToggleBtn').innerText = '☀️ Açık Mod';
+
+        // Soru verileri (Türkiye Selçuklu Tarihi)
+        const quizData = [
+            {
+                question: "<strong>Aşağıdakilerden hangisi Türkiye Selçuklu Sultanı II. Gıyâseddin Keyhüsrev dönemini ifade eden kavramlardan biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Kösedağ Savaşı" },
+                    { letter: 'B', text: "Moğollar" },
+                    { letter: 'C', text: "Baba İshak" },
+                    { letter: 'D', text: "Sa'deddin Köpek" },
+                    { letter: 'E', text: "Haçlılar" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Sultan II. Gıyâseddin Keyhüsrev dönemi sonrasında yaşanmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Yassıçimen Savaşı" },
+                    { letter: 'B', text: "Myriokephalon Savaşı" },
+                    { letter: 'C', text: "Yükseliş Dönemi" },
+                    { letter: 'D', text: "Kuruluş Dönemi" },
+                    { letter: 'E', text: "Müşterek Saltanat Dönemi" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Sultan I. Alâeddin Keykubâd'ın hükümdarlık döneminde cezalandırdığı emirlerden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Mübarizeddin Behrâm-şâh" },
+                    { letter: 'B', text: "Mübarizeddin Ertokuş" },
+                    { letter: 'C', text: "Bahâeddin Kutluğca" },
+                    { letter: 'D', text: "Seyfeddin Ayaba" },
+                    { letter: 'E', text: "Zeyneddin Başara" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Melikü'l-ümerâ ünvanıyla ordunun başına geçen Sa'deddin Köpek Eyyübilerden hangi yeri alarak nüfuzunu arttırmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Gevele" },
+                    { letter: 'B', text: "Ahlat" },
+                    { letter: 'C', text: "Sümeysât" },
+                    { letter: 'D', text: "Raban" },
+                    { letter: 'E', text: "Halep" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Moğolların huzuruna gitmek üzere tam yola çıkmış iken II. İzzeddin Keykâvus'un bu yolculuktan vazgeçmesine sebep olan önemli olay aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Moğol hanının ölümü" },
+                    { letter: 'B', text: "Şiddetli kış şartları" },
+                    { letter: 'C', text: "Celaleddin Karatay'ın ölümü" },
+                    { letter: 'D', text: "Eyyübîlerin savaş ilan etmesi" },
+                    { letter: 'E', text: "Küçük kardeşi Alâeddin Keykubad'ın ölümü" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Dilmaçoğulları beylerinden biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Arslan Argun" },
+                    { letter: 'B', text: "Togan Arslan" },
+                    { letter: 'C', text: "Muhammed Bey" },
+                    { letter: 'D', text: "Yakut Arslan" },
+                    { letter: 'E', text: "Devletşah" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "I. Bizans imparatorundan sebastos ünvanını aldı.<br>II. İznik'i Büyük Selçuklulara karşı başarıyla savundu.<br>III. Gemlik'te bir donanma kurmaya çalıştı.<br>IV. Süleymanşah'ın kızıyla evlendi.<br>V. Bizans'a karşı savaştı.<br><br><strong>Yukarıda verilen Ebu'l-Kasım'ın faaliyetlerinden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Yalnız V" },
+                    { letter: 'B', text: "Yalnız II" },
+                    { letter: 'C', text: "Yalnız I" },
+                    { letter: 'D', text: "Yalnız III" },
+                    { letter: 'E', text: "Yalnız IV" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Belek Gazi ile ilgili olarak aşağıdaki ifadelerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Kendi hakimiyet sahasında aşırı kuvvetlenmesinden çekinen Büyük Selçuklu Sultanı Sencer tarafından öldürüldü." },
+                    { letter: 'B', text: "Sultan I. Kılıç Arslan'ın dul kalan eşi Ayşe Hatun ile evlenerek Malatya'yı hakimiyet alanına kattı." },
+                    { letter: 'C', text: "Harput, Palu ve Dersim bölgesinde egemenlik kurdu." },
+                    { letter: 'D', text: "Dânişmendli Emîr Gazi ile ittifak kurarak Trabzon Dukası Konstantin'in ve müttefiki Mengücüklü İshak Bey'in ordusunu ağır bir mağlubiyete uğrattı." },
+                    { letter: 'E', text: "Haçlı liderlerinden Urfa Kontu Joscelin de Courtenay ile Kudüs Kralı II. Baudouin'i esir alarak Haçlılar'a büyük bir darbe indirdi." }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdaki Türk beyliklerinden hangisi Malazgirt Zaferi'nin hemen sonrasında kurulmuştur?</strong>",
+                options: [
+                    { letter: 'A', text: "Eretnaoğulları" },
+                    { letter: 'B', text: "Ramazanoğulları" },
+                    { letter: 'C', text: "Aydınoğulları" },
+                    { letter: 'D', text: "Osmanoğulları" },
+                    { letter: 'E', text: "Saltukoğulları" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "I. Birinci Haçlı Seferi meydana geldi.<br>II. Konya başkent oldu.<br>III. Antakya Haçlı Prinkepsi Bohemund'u esir aldı.<br>IV. Emîr Çavlı ile savaştı.<br>V. Dânişmend Gazi'yi yendi.<br><br><strong>Yukarıda maddeler hâlinde verilenlerden hangisi I. Kılıç Arslan döneminde gerçekleşmiş olaylardan biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Yalnız I" },
+                    { letter: 'B', text: "Yalnız III" },
+                    { letter: 'C', text: "Yalnız II" },
+                    { letter: 'D', text: "Yalnız V" },
+                    { letter: 'E', text: "Yalnız IV" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Saltuklular aşağıdakilerden hangisiyle daha çok mücadele etmek zorunda kalmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Ermeniler" },
+                    { letter: 'B', text: "Eyyübiler" },
+                    { letter: 'C', text: "Gürcüler" },
+                    { letter: 'D', text: "Selçuklular" },
+                    { letter: 'E', text: "Moğollar" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Dânişmendliler aşağıdakilerden hangisini fethetmemiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Malatya" },
+                    { letter: 'B', text: "Sivas" },
+                    { letter: 'C', text: "Harput" },
+                    { letter: 'D', text: "Niksar" },
+                    { letter: 'E', text: "Bayburt" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "I. Ahmedşah, Kemah'ta bulunan ve Mengücükler döneminin en meşhur eseri Kemah Ulu Camii'ni yaptıran Türk beyidir.<br>II. Ahmedşah'ın eşi Turan Melek Hatun'dur.<br>III. Divriği Kalesi'nin de Ahmedşah ve oğlu Melikşah tarafından yeniden inşa ettirildiği ve zaman zaman da tamir olunduğu bu kaleye ait kitâbelerden anlaşılıyor.<br>IV. Ahmedşah, 1243/4 (641) yılında öldü ve yerine Melik Salih geçti.<br>V. Ahmedşah'ın türbesi Divriği Kalesi'ndeki hazîrededir.<br><br><strong>Yukarıda Mengücüklü Ahmedşah hakkında verilen bilgilerden hangileri doğrudur?</strong>",
+                options: [
+                    { letter: 'A', text: "I, III ve V" },
+                    { letter: 'B', text: "I ve III" },
+                    { letter: 'C', text: "III ve V" },
+                    { letter: 'D', text: "II, III ve IV" },
+                    { letter: 'E', text: "I ve II" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "I. Antalya şehrini fethetti.<br>II. İmparator III. Aleksios üzerine bir sefer düzenledi.<br>III. Ermeniler üzerine sefer düzenledi.<br>IV. İznik Bizans Hükümdarı Theodoros Laskaris ile savaştı.<br>V. Kıbrıs kralı ile bir antlaşma yaptı.<br><br><strong>Yukarıda verilen bilgilerden hangisi Sultan I. Gıyaseddin Keyhüsrev'in birinci saltanat dönemine aittir?</strong>",
+                options: [
+                    { letter: 'A', text: "Yalnız III" },
+                    { letter: 'B', text: "Yalnız IV" },
+                    { letter: 'C', text: "Yalnız V" },
+                    { letter: 'D', text: "Yalnız II" },
+                    { letter: 'E', text: "Yalnız I" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Sultan II. Kılıç Arslan'ın oğullarından biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Kutbüddin Melikşah" },
+                    { letter: 'B', text: "Fahreddin Behrâmşâh" },
+                    { letter: 'C', text: "Gıyâseddin Keyhüsrev" },
+                    { letter: 'D', text: "Rükneddin Süleymanşah" },
+                    { letter: 'E', text: "Mugisüddin Tuğrulşah" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "Sultan I. İzzeddin Keykâvus'un ölümü üzerine Selçuklu devlet adamları onun yerine Melik Alâeddin Keykubad'ı geçirmeye karar verdiler.<br><br><strong>Melik Alaeddin Keykubâd bu sırada bir kalede hapsedilmiş olduğundan yeni hükümdarı tutuklu bulunduğu bu kaleden çıkarıp Konya'ya getirme görevi aşağıdakilerden hangisine verilmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Kemâleddin Kamyar" },
+                    { letter: 'B', text: "Sa'deddin Köpek" },
+                    { letter: 'C', text: "Mübarizeddin Ertokuş" },
+                    { letter: 'D', text: "Seyfeddin Ayaba" },
+                    { letter: 'E', text: "Seyfeddin Bozaba" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Sultan I. Mesud aşağıdakilerden hangisi ile savaşmadı?</strong>",
+                options: [
+                    { letter: 'A', text: "Kardeşi Melik Arap" },
+                    { letter: 'B', text: "Haçlılar" },
+                    { letter: 'C', text: "Ermeniler" },
+                    { letter: 'D', text: "Selçuklular" },
+                    { letter: 'E', text: "Kardeşi Sultan Şahinşah (Melikşah)" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "I. Komnenosları, Ermenileri, Eyyubileri ve Artukluları kendine tabi kılmıştır.<br>II. İyi bir eğitim almış olup Arapça, Farsça ve Türkçe şiirler yazmıştır.<br>III. Yaptığı antlaşmalarla Anadolu'da ticaretin gelişmesini sağlamıştır.<br>IV. Halkına adaletle muamele etmiş, şehirlerin ve yolların emniyetini sağlamıştır.<br>V. Sağlam bir iradeye sahip, zeki ve başarılı bir devlet adamıydı.<br><br><strong>Yukarıda Sultan I. İzzeddin Keykâvus hakkında verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Yalnız II" },
+                    { letter: 'B', text: "Yalnız III" },
+                    { letter: 'C', text: "Yalnız I" },
+                    { letter: 'D', text: "Yalnız V" },
+                    { letter: 'E', text: "Yalnız IV" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Dânişmendli Melik Muhammed dönemi genel olarak değerlendirildiğinde aşağıdakilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Onun döneminde Bizans'ın Orta Anadolu içlerine yayılmasına engel olunamadı." },
+                    { letter: 'B', text: "Onun döneminde Dânişmendliler üstünlüklerini sürdürdü." },
+                    { letter: 'C', text: "Kayseri'yi yeniden imar edip burayı kendine başkent edindi." },
+                    { letter: 'D', text: "Kardeşleri ile taht mücadelesi vermesine rağmen bundan başarılı şekilde çıktı." },
+                    { letter: 'E', text: "Türkiye Selçukluları ve Bizans ile başarılı şekilde mücadele edip beyliğin gücünü korudu." }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>II. Gıyâseddin Keyhüsrev'in ölümünden sonra gerçekleşen müşterek saltanat ile ilgili olarak aşağıdakilerden hangisi söylenemez?</strong>",
+                options: [
+                    { letter: 'A', text: "Celâleddin Karatay, üç kardeşe birden atabeg tayin edilerek görev almıştır." },
+                    { letter: 'B', text: "Müşterek saltanat döneminde Rükneddin IV. Kılıç Arslan, II. İzzeddin Keykâvus ve II. Alâeddin Keykubâd Türkiye Selçuklu tahtında bulunuyordu." },
+                    { letter: 'C', text: "Celâleddin Karatay'ın ölümünden sonra müşterek saltanat dönemi devlet adamlarının entrikaları sonucu istenen şekilde yürümemiştir." },
+                    { letter: 'D', text: "Celâleddin Karatay'ın, II. Gıyâseddin Keyhüsrev'in üç oğlunun da tahta oturması fikri ile bir uzlaşma önerisi olarak başlamıştır." },
+                    { letter: 'E', text: "Celâleddin Karatay, atabeg unvanıyla bu üç kardeşe tahakküm etmiş, yüksek kademelere kendisine sadık adamlarını yerleştirmiştir." }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Sultan I. Kılıç Arslan'ın I. Malatya Kuşatması'nı (1095-1097) iptal etmesine yol açmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Babası Süleymanşah'ın ölüm haberini alması" },
+                    { letter: 'B', text: "Musul'dan davet alması" },
+                    { letter: 'C', text: "İznik'te isyan çıkması" },
+                    { letter: 'D', text: "İznik'in Haçlılar tarafından kuşatılması" },
+                    { letter: 'E', text: "Bizans ordusunun Karadeniz'e saldırması" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Aşağıdaki tarihî şahsiyetlerden hangisi Sultan I. Alâeddin Keykubâd'ın çağdaşı değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Melik Eşref" },
+                    { letter: 'B', text: "Cihânşâh" },
+                    { letter: 'C', text: "Melik Zünnûn" },
+                    { letter: 'D', text: "Celâleddin Hârezmşah" },
+                    { letter: 'E', text: "Fahreddin Behramşâh" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "I. Alanya'nın Fethi<br>II. Alara'nın Fethi<br>III. Antalya'nın Fethi<br>IV. Sinop'un Fethi<br>V. Manavgat'ın Fethi<br><br><strong>Yukarıdakilerden hangisinin ya da hangilerinin fethi, Sultan I. Alâeddin Keykubâd döneminde gerçekleşmemiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "Yalnız IV" },
+                    { letter: 'B', text: "III ve IV" },
+                    { letter: 'C', text: "Yalnız V" },
+                    { letter: 'D', text: "II ve III" },
+                    { letter: 'E', text: "Yalnız I" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Erzurum Ulu Camii aşağıdaki Saltuklu emîrlerinden hangisi tarafından yaptırılmıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Ziyaeddin Gazi" },
+                    { letter: 'B', text: "Saltuk Bey" },
+                    { letter: 'C', text: "İzzeddin Saltuk" },
+                    { letter: 'D', text: "Nâsıreddin Muhammed" },
+                    { letter: 'E', text: "Ahmedşah" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "I. Bizans'tan Kastamonu'yu geri aldı.<br>II. Kayseri'yi yeniden imar etti.<br>III. Malatya'yı Selçuklular'dan geri aldı.<br>IV. Halife tarafından \"Melik\" unvanı verildi.<br>V. Ermenileri haraca bağladı.<br><br><strong>Yukarıdaki olaylardan hangisi Emir Gazi döneminde yaşanmamıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Yalnız V" },
+                    { letter: 'B', text: "Yalnız I" },
+                    { letter: 'C', text: "(Metin Kaynakta Eksik)" },
+                    { letter: 'D', text: "(Metin Kaynakta Eksik)" },
+                    { letter: 'E', text: "(Metin Kaynakta Eksik)" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi IV. Kılıç Arslan'ın tek başına saltanat sürdüğü dönemde gerçekleşen olaylardan biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Süleyman Pervâne ile birlikte İlhanlı tahtına çıkan Abaka Han'ın yanına gitmeleri" },
+                    { letter: 'B', text: "Sinop'un geri alınması" },
+                    { letter: 'C', text: "Sinop'un Süleyman Pervâne'ye verilmesi" },
+                    { letter: 'D', text: "Muinüddin Süleyman Pervâne'nin İlhanlı desteği ile tahakkümünü arttırması" },
+                    { letter: 'E', text: "Memlük Sultanı Baybars'ın Anadolu'ya sefer düzenlemesi" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "I. İzzeddin Keykâvus'un Maraş Emîri Nusretüddîn ile beraber Ermenilere karşı giriştiği savaşın sonucunda Ermeniler, sultan ile bir barış antlaşması yapmak zorunda kalmışlardır.<br>Buna göre;<br>- Ermeniler Selçuklulara tabi olacaklar.<br>- İhtiyaç halinde 500 asker ve yıllık 20.000 dinar haraç gönderecekler ve bazı sınır kalelerini iade edecekler.<br>- Sultan da buna karşılık Sis (Kozan) hâkimiyetini bir fermanla Leon'a verecek.<br><br><strong>Aşağıdakilerden hangisi bu anlaşmanın önemli sonuçları arasında gösterilebilir?</strong>",
+                options: [
+                    { letter: 'A', text: "Antlaşma ile Anadolu-Suriye arasındaki ticaret yolunun güvenliği sağlanmıştır." },
+                    { letter: 'B', text: "İki millet karşılıklı ilişkilerini geliştirmiştir." },
+                    { letter: 'C', text: "Yeni bir Haçlı seferi başlamıştır." },
+                    { letter: 'D', text: "Ermeniler bir daha Selçuklu topraklarına saldırmamışlardır." },
+                    { letter: 'E', text: "Bizans bu durumdan rahatsız olmuş ve Selçuklular'a saldırmıştır." }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "I. Malatya'yı kuşattı.<br>II. Haçlılara karşı savaştı.<br>III. Dânişmendliler ile mücadele etti.<br>IV. Eyyûbîler ile savaştı.<br>V. Ermeniler üzerine sefer düzenledi.<br><br><strong>Yukarıda verilen bilgilerden hangisi Sultan I. Mesud dönemine ait değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Yalnız III" },
+                    { letter: 'B', text: "Yalnız V" },
+                    { letter: 'C', text: "Yalnız I" },
+                    { letter: 'D', text: "Yalnız IV" },
+                    { letter: 'E', text: "Yalnız II" }
+                ],
+                correct: 'D'
+            },
+            {
+                question: "<strong>Sa'deddin Köpek hakkında en geniş bilgiyi veren müellif (kaynak yazarı) aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Esterâbâdî" },
+                    { letter: 'B', text: "Müneccimbaşı" },
+                    { letter: 'C', text: "Aksarayî" },
+                    { letter: 'D', text: "İbnü'l-Esîr" },
+                    { letter: 'E', text: "İbn Bîbî" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "I. Dânişmend Gazi<br>II. Artuk Bey<br>III. Mengücük Gazi<br>IV. Karasi Bey<br>V. Saltuk Bey<br><br><strong>Yukarıdaki Türkmen beylerinden hangisi Erzincan ve Kemah'ta hüküm sürmüştür?</strong>",
+                options: [
+                    { letter: 'A', text: "Yalnız III" },
+                    { letter: 'B', text: "Yalnız II" },
+                    { letter: 'C', text: "Yalnız V" },
+                    { letter: 'D', text: "Yalnız IV" },
+                    { letter: 'E', text: "Yalnız I" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Saltukoğulları Beyliği'nin kurucusunun adı ile ilgili olarak kaynaklar ve modern araştırmalar dikkate alındığında aşağıdakilerden hangisinin yazılışı yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Samuk" },
+                    { letter: 'B', text: "Salmuk" },
+                    { letter: 'C', text: "Samukh" },
+                    { letter: 'D', text: "Saltuk" },
+                    { letter: 'E', text: "Sanduk" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi II. Gıyâseddin Keyhüsrev devri devlet adamlarından biri değildir?</strong>",
+                options: [
+                    { letter: 'A', text: "Mübarizeddin Armağanşâh" },
+                    { letter: 'B', text: "Sa'deddin Köpek" },
+                    { letter: 'C', text: "Tâceddin Pervâne" },
+                    { letter: 'D', text: "Kemâleddin Kâmyâr" },
+                    { letter: 'E', text: "İhtiyarüddin Hasan" }
+                ],
+                correct: 'E'
+            },
+            {
+                question: "I. İki taraf arasındaki mücadele Sivas yakınlarında bir kalede meydana geldi.<br>II. Selçuklu ordusu ağır bir yenilgi aldı.<br>III. Gürcüler, pek çok Türk askerini öldürdüler ve ordugâhtan sayısız ganimet ele geçirdiler.<br>IV. Gürcüler tarafından esir edilenlerin arasında Erzincan Mengücüklü Hükümdarı Behrâmşâh da bulunmaktaydı.<br>V. Süleymanşâh ise Erzurum'a çekilmeye mecbur kaldı.<br><br><strong>Yukarıda Süleymanşâh ile Gürcü Kraliçesi Thamara arasında meydana gelen savaş hakkında verilen bilgilerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Yalnız I" },
+                    { letter: 'B', text: "Yalnız II" },
+                    { letter: 'C', text: "Yalnız IV" },
+                    { letter: 'D', text: "Yalnız V" },
+                    { letter: 'E', text: "Yalnız III" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "\"Mengücük Gazi ve evladına ait türbelerin Kemah'ta bulunması Mengücük Gazi'nin başkentinin burası olduğunu gösterir ve aynı zamanda Mengücükoğulları Beyliği'nin ilk merkezine de işaret eder.\"<br><br><strong>Buna göre aşağıdakilerden hangisine ulaşılamaz?</strong>",
+                options: [
+                    { letter: 'A', text: "Mengücük Gazi'nin nasıl öldüğüne" },
+                    { letter: 'B', text: "Mengücük Gazi'nin türbesinin nerede bulunduğuna" },
+                    { letter: 'C', text: "Kemah'ta Mengücüklüler'e ait türbelerin bulunduğuna" },
+                    { letter: 'D', text: "Kemah'ın Mengücüklüler'in başkenti olduğuna" },
+                    { letter: 'E', text: "Mengücüklüler'in ilk merkezinin neresi olduğuna" }
+                ],
+                correct: 'A'
+            },
+            {
+                question: "<strong>Aşağıdaki olaylardan hangisi Myriokephalon Savaşı sonrasında meydana gelmiştir?</strong>",
+                options: [
+                    { letter: 'A', text: "II. Kılıç Arslan'ın Nureddin Mahmud Zengî ile mücadele etmesi" },
+                    { letter: 'B', text: "II. Kılıç Arslan'ın Malatya'yı ele geçirmesi" },
+                    { letter: 'C', text: "II. Kılıç Arslan'ın kardeşi Melik Şahinşah ile mücadelesi" },
+                    { letter: 'D', text: "II. Kılıç Arslan'ın Dânişmendli Yağıbasan ile savaşması" },
+                    { letter: 'E', text: "II. Kılıç Arslan'ın İstanbul ziyareti" }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Dânişmend Gazi'nin İslâm dinini sonradan kabul eden Ermeni asıllı biri olduğu görüşünü savunan Türk tarihçi aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Abdülkerim Özaydın" },
+                    { letter: 'B', text: "Erdoğan Merçil" },
+                    { letter: 'C', text: "Mükrimin Halil Yinanç" },
+                    { letter: 'D', text: "Osman Turan" },
+                    { letter: 'E', text: "İsmail Hâmi Dânişmend" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "\"Beraberinde Dilmaçoğullarından Togan Arslan'ın da bulunduğu 20.000 kişilik bir orduyla hareket ederek Tell-Afrin'de 28 Haziran 1119 tarihinde Antakya Prensi Roger'in kumandası altındaki Haçlı Ordusu'nu ağır bir yenilgiye uğrattı. Bundan sonra ise, 14 Ağustos 1119 günü Tell-Danis'te Haçlı Kralı II. Baudouin'in idare ettiği orduyu mağlup etti.\"<br><br><strong>Yukarıda hakkında bilgi verilen Mardin Artuklu hükümdarı aşağıdakilerden hangisidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Timurtaş" },
+                    { letter: 'B', text: "Süleyman" },
+                    { letter: 'C', text: "Necmeddin İlgazi" },
+                    { letter: 'D', text: "Emîr Gazi" },
+                    { letter: 'E', text: "Belek b. Behram" }
+                ],
+                correct: 'C'
+            },
+            {
+                question: "<strong>Aşağıdakilerden hangisi Büyük Selçuklular'ın Ebu'l-Kasım'ı ortadan kaldırmasının asıl sebebidir?</strong>",
+                options: [
+                    { letter: 'A', text: "Ebu'l-Kasım kendini sultan olarak ilan etti." },
+                    { letter: 'B', text: "Ebu'l-Kasım Büyük Selçuklu sultanına itaat ederek İznik'i teslim etmedi." },
+                    { letter: 'C', text: "Ebu'l-Kasım, Büyük Selçuklu sultanına yardımcı kuvvet göndermedi." },
+                    { letter: 'D', text: "Ebu'l-Kasım, Bizans imparatoru ile iş birliği yaptı." },
+                    { letter: 'E', text: "Ebu'l-Kasım, Büyük Selçuklu başkentine gitmekte gecikti." }
+                ],
+                correct: 'B'
+            },
+            {
+                question: "<strong>Belek Gazi ile ilgili olarak aşağıdaki ifadelerden hangisi yanlıştır?</strong>",
+                options: [
+                    { letter: 'A', text: "Harput, Palu ve Dersim bölgesinde egemenlik kurdu." },
+                    { letter: 'B', text: "Dânişmendli Emîr Gazi ile ittifak kurarak Trabzon Dukası Konstantin'in ve müttefiki Mengücüklü İshak Bey'in ordusunu ağır bir mağlubiyete uğrattı." },
+                    { letter: 'C', text: "Haçlı liderlerinden Urfa Kontu Joscelin de Courtenay ile Kudüs Kralı II. Baudouin'i esir alarak Haçlılar'a büyük bir darbe indirdi." },
+                    { letter: 'D', text: "Kendi hâkimiyet sahasında aşırı kuvvetlenmesinden çekinen Büyük Selçuklu Sultanı Sencer tarafından öldürüldü." },
+                    { letter: 'E', text: "Sultan I. Kılıç Arslan'ın dul kalan eşi Ayşe Hatun ile evlenerek Malatya'yı hakimiyet alanına kattı." }
+                ],
+                correct: 'D'
+            }
+        ];
+
+        let answers = {};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderQuiz() {
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+
+            const shuffledQuiz = shuffle([...quizData]);
+
+            shuffledQuiz.forEach((item, index) => {
+                const qNum = index + 1;
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.id = `q${qNum}`;
+
+                const p = document.createElement('p');
+                p.innerHTML = item.question;
+                div.appendChild(p);
+
+                const shuffledOptions = shuffle([...item.options]);
+                shuffledOptions.forEach((opt, optIndex) => {
+                    const newLetter = String.fromCharCode(65 + optIndex);
+                    const label = document.createElement('label');
+                    label.className = 'option';
+                    label.htmlFor = `q${qNum}${newLetter}`;
+                    
+                    // Mouse hover (üzerine gelme) ile cevabı göstermek için veri ekliyoruz
+                    if (opt.letter === item.correct) {
+                        label.setAttribute("data-correct", "true");
+                        answers[`q${qNum}`] = { correct: newLetter, text: `${newLetter}) ${opt.text}` };
+                    } else {
+                        label.setAttribute("data-correct", "false");
+                    }
+
+                    label.innerHTML = `<input type="radio" id="q${qNum}${newLetter}" name="q${qNum}" value="${newLetter}" onchange="checkAnswer(${qNum})"><span class="radio"></span>${newLetter}) ${opt.text}`;
+                    div.appendChild(label);
+                });
+
+                const hintP = document.createElement('p');
+                hintP.className = 'answer-hint';
+                hintP.id = `hint${qNum}`;
+                hintP.innerHTML = `Doğru cevap: <strong>${answers[`q${qNum}`].text}</strong>`;
+                div.appendChild(hintP);
+
+                form.appendChild(div);
+            });
+        }
+
+        window.onload = renderQuiz;
+
+        function checkAnswer(num) {
+            const q = `q${num}`;
+            const selected = document.querySelector(`input[name="${q}"]:checked`);
+            if (!selected) return;
+
+            const correct = answers[q].correct;
+            const options = document.querySelectorAll(`#q${num} .option`);
+
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+
+            options.forEach(opt => {
+                const input = opt.querySelector('input');
+                if (input.value === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (selected.value !== correct) {
+                const selectedOpt = selected.parentElement;
+                selectedOpt.classList.add('incorrect');
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const q = `q${i}`;
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                if (selected && selected.value === answers[q].correct) {
+                    score++;
+                }
+            }
+            return score;
+        }
+
+        function finishQuiz() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                const options = document.querySelectorAll(`#q${i} .option`);
+                options.forEach(opt => {
+                    const input = opt.querySelector('input');
+                    if (input.value === answers[`q${i}`].correct) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            const score = calculateScore();
+            document.getElementById('result').innerHTML = `Toplam Skor: ${score} / ${total}`;
+            document.querySelector('.finish').disabled = true;
+        }
+
+        function showAllAnswers() {
+            const total = quizData.length;
+            for (let i = 1; i <= total; i++) {
+                document.getElementById(`hint${i}`).style.display = 'block';
+            }
+            document.getElementById('showAnswersBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>
